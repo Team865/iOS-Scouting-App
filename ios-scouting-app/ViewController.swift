@@ -8,18 +8,33 @@
 
 import UIKit
 
+struct matchData {
+    
+}
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var matchTable: UITableView!
     var matches : [matchSchedule] = []
+    
+    var jsonData = NSMutableData()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
         matches = createMatchSchedule()
         
-        
-    }
+//        URLSession.shared.dataTask(with: url){
+//            (data, response, err)
+//            in
+//            guard let data = data else { return }
+//
+//            let dataAsString = String(data : data, encoding : .utf8)
+//            print(dataAsString)
+//        }.resume()
+        }
+
+  
 
     private func setupNavigationBar(){
         let addIconButton = UIButton(type: .system)
