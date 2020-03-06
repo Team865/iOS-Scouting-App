@@ -9,33 +9,27 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    var blueTeams = [String]()
     @IBOutlet weak var matchTable: UITableView!
     var matches : [matchSchedule] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        
-        getTBATeams()
-        
+        print(getTBATeams())
         matches = createMatchSchedule()
         
-        
-        
-//
-        }
+    }
 
-    private func getTBATeams(){
+    private func getTBATeams() -> [String]{
+        var blueTeams = [String]()
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
             var request = URLRequest(url: url)
-        request.setValue("key", forHTTPHeaderField: "X-TBA-Auth-Key")
+        //Remember to remove keys before committing
+        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
             let task = URLSession.shared.dataTask(with: request) {
                 (data, response, error) in
                 guard let data = data else { return }
-                
-                //guard let dataAsString = String(data : data, encoding : .utf8) else { return }
-                //print(dataAsString)
                 
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: [])
@@ -47,8 +41,10 @@ class ViewController: UIViewController {
                                 if let alliances = dictionary["alliances"] as? [String : Any]{
                                     if let blue = alliances["blue"] as? [String : Any]{
                                         if let blueTeam = blue["team_keys"] as? [Any]{
-                                            for bTeam in blueTeam{
-                                                print(bTeam)
+                                            for case let blue as String in blueTeam{
+                                                let r = blue.index(blue.startIndex, offsetBy: 3)..<blue.endIndex
+                                                let bTeam = blue[r]
+                                                blueTeams.append(String(bTeam))
                                             }
                                         }
                                     }
@@ -56,6 +52,7 @@ class ViewController: UIViewController {
                             }
                         }
                     }
+                    print(blueTeams)
                 } catch let jsonErr {
                     print("Error retrieving json", jsonErr)
                 }
@@ -63,6 +60,7 @@ class ViewController: UIViewController {
                 
         }
             task.resume()
+        return blueTeams
     }
 
     private func setupNavigationBar(){
