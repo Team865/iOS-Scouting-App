@@ -8,33 +8,62 @@
 
 import UIKit
 
-struct matchData {
-    
-}
-
 class ViewController: UIViewController {
 
     @IBOutlet weak var matchTable: UITableView!
     var matches : [matchSchedule] = []
     
-    var jsonData = NSMutableData()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
+        
+        getTBATeams()
+        
         matches = createMatchSchedule()
         
-//        URLSession.shared.dataTask(with: url){
-//            (data, response, err)
-//            in
-//            guard let data = data else { return }
+        
+        
 //
-//            let dataAsString = String(data : data, encoding : .utf8)
-//            print(dataAsString)
-//        }.resume()
         }
 
-  
+    private func getTBATeams(){
+        let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
+            var request = URLRequest(url: url)
+        request.setValue("key", forHTTPHeaderField: "X-TBA-Auth-Key")
+            let task = URLSession.shared.dataTask(with: request) {
+                (data, response, error) in
+                guard let data = data else { return }
+                
+                //guard let dataAsString = String(data : data, encoding : .utf8) else { return }
+                //print(dataAsString)
+                
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    
+                    if let array = json as? [Any]
+                    {
+                        for obj in array {
+                            if let dictionary = obj as? [String : Any]{
+                                if let alliances = dictionary["alliances"] as? [String : Any]{
+                                    if let blue = alliances["blue"] as? [String : Any]{
+                                        if let blueTeam = blue["team_keys"] as? [Any]{
+                                            for bTeam in blueTeam{
+                                                print(bTeam)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch let jsonErr {
+                    print("Error retrieving json", jsonErr)
+                }
+                
+                
+        }
+            task.resume()
+    }
 
     private func setupNavigationBar(){
         let addIconButton = UIButton(type: .system)
