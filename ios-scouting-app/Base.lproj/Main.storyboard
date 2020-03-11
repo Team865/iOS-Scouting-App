@@ -30,21 +30,11 @@
                                                     <rect key="frame" x="20" y="6" width="42" height="38"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Izw-LS-CNQ">
-                                                    <rect key="frame" x="105" y="12" width="289" height="29"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Izw-LS-CNQ">
+                                                    <rect key="frame" x="129" y="11" width="239" height="29"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="289" id="1tb-G6-JcP"/>
                                                         <constraint firstAttribute="width" secondItem="Izw-LS-CNQ" secondAttribute="height" multiplier="289:31" id="hXV-DT-0yB"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jec-bM-orc">
-                                                    <rect key="frame" x="105" y="39" width="289" height="30"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" secondItem="Jec-bM-orc" secondAttribute="height" multiplier="289:30" id="YQz-eU-37I"/>
-                                                        <constraint firstAttribute="width" constant="289" id="oq8-nx-Itx"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -54,6 +44,16 @@
                                                     <rect key="frame" x="20" y="52" width="42" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="2IJ-hK-G3I" secondAttribute="height" multiplier="2:1" id="lLR-j6-4gh"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jec-bM-orc">
+                                                    <rect key="frame" x="129" y="40" width="239" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" secondItem="Jec-bM-orc" secondAttribute="height" multiplier="289:30" id="YQz-eU-37I"/>
+                                                        <constraint firstAttribute="width" constant="289" id="oq8-nx-Itx"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>

@@ -8,13 +8,16 @@
 
 import Foundation
 
-struct match : Decodable {
+struct Matches : Decodable {
     var alliances : Alliance
+    var comp_level : String
+    var match_number : Int
 }
 
 struct Alliance : Decodable {
     var blue : blueTeam
     var red : redTeam
+    
 }
 
 struct blueTeam : Decodable {
