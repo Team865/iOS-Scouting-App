@@ -8,59 +8,33 @@
 
 import UIKit
 
+
 class ViewController: UIViewController {
-    var blueTeams = [String]()
     @IBOutlet weak var matchTable: UITableView!
     var matches : [matchSchedule] = []
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        print(getTBATeams())
+        getTBAJson()
         matches = createMatchSchedule()
-        
     }
 
-    private func getTBATeams() -> [String]{
-        var blueTeams = [String]()
+    private func getTBAJson(){
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
-            var request = URLRequest(url: url)
-        //Remember to remove keys before committing
-        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
-            let task = URLSession.shared.dataTask(with: request) {
-                (data, response, error) in
-                guard let data = data else { return }
-                
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: [])
-                    
-                    if let array = json as? [Any]
-                    {
-                        for obj in array {
-                            if let dictionary = obj as? [String : Any]{
-                                if let alliances = dictionary["alliances"] as? [String : Any]{
-                                    if let blue = alliances["blue"] as? [String : Any]{
-                                        if let blueTeam = blue["team_keys"] as? [Any]{
-                                            for case let blue as String in blueTeam{
-                                                let r = blue.index(blue.startIndex, offsetBy: 3)..<blue.endIndex
-                                                let bTeam = blue[r]
-                                                blueTeams.append(String(bTeam))
-                                            }
-                                        }
-                                    }
-                                }
+                        var request = URLRequest(url: url)
+                    //Remember to remove keys before committing
+                    request.setValue("key", forHTTPHeaderField: "X-TBA-Auth-Key")
+                        URLSession.shared.dataTask(with: request) {
+                            (data, response, error) in
+                            guard let data = data else { return }
+                            do {
+                                let decoder = JSONDecoder()
+                                let jsonMatchSchedule = try decoder.decode([match].self, from: data)
+                                print(jsonMatchSchedule[0].alliances.blue.team_keys)
+                            } catch let jsonErr {
+                                print(jsonErr)
                             }
-                        }
-                    }
-                    print(blueTeams)
-                } catch let jsonErr {
-                    print("Error retrieving json", jsonErr)
-                }
-                
-                
-        }
-            task.resume()
-        return blueTeams
+             }.resume()
     }
 
     private func setupNavigationBar(){
@@ -98,10 +72,24 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         return cell
     }
-    
-    
-    
-   
-    
-    
 }
+
+//                                let json = try JSONSerialization.jsonObject(with: data, options: [])
+//                                if let array = json as? [Any]
+//                                {
+//                                    for obj in array {
+//                                        if let dictionary = obj as? [String : Any]{
+//                                            if let alliances = dictionary["alliances"] as? [String : Any]{
+//                                                if let blue = alliances["blue"] as? [String : Any]{
+//                                                    if let blueTeam = blue["team_keys"] as? [Any]{
+//                                                        for case let blue as String in blueTeam{
+//                                                            let r = blue.index(blue.startIndex, offsetBy: 3)..<blue.endIndex
+//                                                            let bTeam = blue[r]
+//                                                            print(bTeam)
+//                                                     }
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
