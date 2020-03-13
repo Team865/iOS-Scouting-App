@@ -11,15 +11,22 @@ class ViewController: UIViewController {
 @IBOutlet weak var matchTable: UITableView!
 var matches : [matchSchedule] = []
 
-var blueTeam : [String] = []
-var redTeam : [String] = []
+var numbers = [1,2,3,4,5]
+
 var validMatchNumber : [Int] = []
 
 var listOfMatches = [Matches]()
+    
+let settingsView = UIViewController()
+    
+    let settingsTag = 1;
+    let additemTag = 2;
+    let boardSelectionTag = 3;
 
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
+
     getTBAJson {
         for i in 0..<self.listOfMatches.count{
             if(self.listOfMatches[i].comp_level == "qm"){
@@ -32,12 +39,22 @@ override func viewDidLoad() {
         self.matchTable.reloadData()
     }
 }
-
-    private func boardSelection(){
-        
+    @objc func clickHandler(srcObj : UIButton) -> Void{
+        if(srcObj.tag == settingsTag){
+            print("Settings")
+        }
+        if(srcObj.tag == additemTag){
+            print("Add item")
+        }
+        if(srcObj.tag == boardSelectionTag){
+            let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
+            let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alert.addAction(OKAction)
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
-    private func getTBAJson(completed : @escaping () -> ()){
+   private func getTBAJson(completed : @escaping () -> ()){
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
@@ -66,7 +83,20 @@ override func viewDidLoad() {
         let settingButton = UIButton(type: .system)
         settingButton.setImage(UIImage(named : "settingsIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         
+        let selectBoardButton = UIButton(type : .system)
+        selectBoardButton.setImage(UIImage (named : "paste")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: settingButton), UIBarButtonItem(customView: addIconButton)]
+        
+        navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: selectBoardButton)]
+        
+        addIconButton.tag = self.additemTag
+        settingButton.tag = self.settingsTag
+        selectBoardButton.tag = self.boardSelectionTag
+        
+        addIconButton.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
+        settingButton.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
+        selectBoardButton.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
     }
     
     func createMatchSchedule() -> [matchSchedule]{
