@@ -22,6 +22,7 @@ class matchScheduleCells: UITableViewCell {
     func setMatch(match : matchSchedule){
         dataIcon.image = match.icon
         matchNumber.text = match.matchNumber
+        matchNumber.textColor = UIColor.black
         red1.text = match.red1
         red2.text = match.red2
         red3.text = match.red3

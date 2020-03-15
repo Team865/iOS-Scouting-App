@@ -135,7 +135,7 @@ override func viewDidLoad() {
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
-        request.setValue("key", forHTTPHeaderField: "X-TBA-Auth-Key")
+        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             guard let data = data else { return }
@@ -209,7 +209,7 @@ override func viewDidLoad() {
     }
     
     private func setupNavigationBar(){
-        
+        navigationController?.navigationBar.backgroundColor = UIColor.white
         let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = "B1"
@@ -221,12 +221,11 @@ override func viewDidLoad() {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightSideButtonsNavBar()[0]), UIBarButtonItem(customView: rightSideButtonsNavBar()[1])]
         
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
-
     }
     
     func createMatchSchedule() -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
-              for i in 0..<self.validMatchNumber.sorted().count{
+        for i in 1...self.validMatchNumber.sorted().count{
                     for u in 0..<self.listOfMatches.count{
                         if(self.listOfMatches[u].comp_level == "qm"){
                             if(self.listOfMatches[u].match_number == i){
@@ -266,7 +265,7 @@ override func viewDidLoad() {
 extension ViewController : UITableViewDataSource, UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.validMatchNumber.count
+        return self.matches.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -274,7 +273,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances") as! matchScheduleCells
         cell.setMatch(match: match)
-        
+        cell.backgroundColor = UIColor.white
         switch self.selectedBoard {
         case "B1":
             cell.blue1.textColor = UIColor.blue
