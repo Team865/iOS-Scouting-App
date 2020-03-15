@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "71FFA57F-534C-456B-832F-23507D61E099"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "917CA779-4C35-43A9-8B15-7569A2017F90"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ios-scouting-app/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "11"
+            endingLineNumber = "11"
+            landmarkName = "ViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - 2c9084aa1dddef66"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.matchTable.getter : Swift.Optional&lt;__C.UITableView&gt;"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - 809165e7c4ffdb52"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.matchTable.setter : Swift.Optional&lt;__C.UITableView&gt;"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "104">
+               </Location>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - 2984da4bea619265"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.matchTable.modify : Swift.Optional&lt;__C.UITableView&gt;"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "67">
+               </Location>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - 5afe2876fd54825b"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.matchTable.modify : Swift.Optional&lt;__C.UITableView&gt; with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "76">
+               </Location>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - ae2c874bde8ec8d"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; ios_scouting_app.ViewController"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "182">
+               </Location>
+               <Location
+                  uuid = "917CA779-4C35-43A9-8B15-7569A2017F90 - 2030595b4925bc72"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ios_scouting_app.ViewController.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;ios_scouting_app.ViewController&gt;"
+                  moduleName = "ios-scouting-app"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "11"
+                  endingLineNumber = "11"
+                  offsetFromSymbolStart = "119">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

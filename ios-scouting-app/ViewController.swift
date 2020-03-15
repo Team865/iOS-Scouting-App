@@ -20,10 +20,13 @@ var listOfMatches = [Matches]()
     
 let settingsView = UIViewController()
     
-    let settingsTag = 1;
-    let additemTag = 2;
-    let editNameTag = 3;
-    let boardSelectionTag = 4;
+let settingsTag = 1;
+let additemTag = 2;
+let editNameTag = 3;
+let boardSelectionTag = 4;
+
+var event : String = ""
+var year : Int = 0
 
 override func viewDidLoad() {
     super.viewDidLoad()
@@ -140,7 +143,7 @@ override func viewDidLoad() {
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
-        request.setValue("keys", forHTTPHeaderField: "X-TBA-Auth-Key")
+        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             guard let data = data else { return }

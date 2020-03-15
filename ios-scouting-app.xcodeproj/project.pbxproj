@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
+		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
 		25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF6762403368B00034E12 /* matchScheduleCells.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
 		25CEF6762403368B00034E12 /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
@@ -64,6 +66,8 @@
 		25F35CC22400E60600CAA81D /* ios-scouting-app */ = {
 			isa = PBXGroup;
 			children = (
+				2599A5DC241DE88A0001DF68 /* jsonEvents.swift */,
+				25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */,
 				25CEF679240338B900034E12 /* matchSchedule.swift */,
 				25CEF6762403368B00034E12 /* matchScheduleCells.swift */,
 				25F35CC32400E60600CAA81D /* AppDelegate.swift */,
@@ -73,7 +77,6 @@
 				25F35CCC2400E60800CAA81D /* Assets.xcassets */,
 				25F35CCE2400E60800CAA81D /* LaunchScreen.storyboard */,
 				25F35CD12400E60800CAA81D /* Info.plist */,
-				25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */,
 				2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */,
 			);
 			path = "ios-scouting-app";
@@ -152,6 +155,7 @@
 			files = (
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */,
+				2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */,
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
