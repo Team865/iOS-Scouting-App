@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 class SettingsViewController: UIViewController {
+    //NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx
+    var key = tbaKey()
     var listOfEvents = [event]()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +28,7 @@ class SettingsViewController: UIViewController {
         let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc865/events")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
-        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
+        request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             guard let data = data else { return }

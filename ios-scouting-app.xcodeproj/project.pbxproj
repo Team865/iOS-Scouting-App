@@ -12,6 +12,7 @@
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
 		25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF6762403368B00034E12 /* matchScheduleCells.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
+		25E0F560241E9D670034432A /* tbaKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F55F241E9D670034432A /* tbaKey.swift */; };
 		25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC32400E60600CAA81D /* AppDelegate.swift */; };
 		25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC52400E60600CAA81D /* SceneDelegate.swift */; };
 		25F35CC82400E60600CAA81D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC72400E60600CAA81D /* ViewController.swift */; };
@@ -26,6 +27,7 @@
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
 		25CEF6762403368B00034E12 /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
+		25E0F55F241E9D670034432A /* tbaKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tbaKey.swift; sourceTree = "<group>"; };
 		25F35CC02400E60600CAA81D /* ios-scouting-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-scouting-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		25F35CC32400E60600CAA81D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25F35CC52400E60600CAA81D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				25F35CCE2400E60800CAA81D /* LaunchScreen.storyboard */,
 				25F35CD12400E60800CAA81D /* Info.plist */,
 				2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */,
+				25E0F55F241E9D670034432A /* tbaKey.swift */,
 			);
 			path = "ios-scouting-app";
 			sourceTree = "<group>";
@@ -154,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
+				25E0F560241E9D670034432A /* tbaKey.swift in Sources */,
 				25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */,
 				2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */,
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
