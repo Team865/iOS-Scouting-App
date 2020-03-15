@@ -43,7 +43,12 @@ override func viewDidLoad() {
 }
     @objc func clickHandler(srcObj : UIButton) -> Void{
         if(srcObj.tag == settingsTag){
-            print("Settings")
+            let settingsBoard = UIStoryboard(name : "Main", bundle: nil)
+            
+            guard let settingsVC = settingsBoard.instantiateViewController(withIdentifier: "SettingsViewController") as?
+                SettingsViewController else { return }
+            
+            self.navigationController?.pushViewController(settingsVC, animated: true)
         }
         if(srcObj.tag == additemTag){
             print("Add item")
@@ -135,7 +140,7 @@ override func viewDidLoad() {
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
-        request.setValue("NTFtIarABYtYkZ4u3VmlDsWUtv39Sp5kiowxP1CArw3fiHi3IQ0XcenrH5ONqGOx", forHTTPHeaderField: "X-TBA-Auth-Key")
+        request.setValue("keys", forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             guard let data = data else { return }

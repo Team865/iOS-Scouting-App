@@ -120,6 +120,21 @@
             </objects>
             <point key="canvasLocation" x="1042.0289855072465" y="102.45535714285714"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="ANs-TO-IQX">
+            <objects>
+                <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="b9g-Wc-enz" customClass="SettingsViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dzO-Dl-yeB">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="S90-AF-5Yw"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E9X-E7-Ckf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1832" y="102"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="qux-dN-kGb">
             <objects>
