@@ -8,17 +8,6 @@
 
 import UIKit
 class SettingsCell : UITableViewCell{
-    var hideSwitch : Bool?
-    var cellTitle : String?
-    var cellDescription : String?
-    var cellImage : UIImage?
-    
-    func setCell (settings : Settings){
-        self.hideSwitch = settings.hideSwitch
-        self.cellTitle = settings.title
-        self.cellDescription = settings.description
-        self.cellImage = settings.image
-    }
     
     lazy var switchControl: UISwitch = {
         let switchControl = UISwitch()
@@ -37,7 +26,7 @@ class SettingsCell : UITableViewCell{
     }()
     
     lazy var titleLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 116, y : 0, width : 300, height : 60))
+        let label = UILabel(frame : CGRect(x : 116, y : 10, width : 300, height : 40))
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         label.isHighlighted = true
@@ -46,17 +35,35 @@ class SettingsCell : UITableViewCell{
     }()
     
     lazy var descriptionLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 116, y : 48, width : 300, height : 30))
+        let label = UILabel(frame : CGRect(x : 116, y : 30, width : 300, height : 60))
         label.textAlignment = .left
+        label.lineBreakMode = .byClipping
+        label.numberOfLines = 0
         label.font = label.font.withSize(15)
         return label
     }()
     
+    lazy var backView : UIView = {
+        let view : UIView = UIView(frame: CGRect(x : 4, y : 6, width : self.frame.width + 85, height : 100))
+        return view
+    }()
     
+    func setCell(settings : Settings){
+        titleLabel.text = settings.title
+        descriptionLabel.text = settings.description
+        switchControl.isHidden = settings.hideSwitch ?? true
+        imageControl.image = settings.image
+    }
+    
+    override func layoutSubviews() {
+        contentView.backgroundColor = UIColor.clear
+        backgroundColor = UIColor.clear
+        backView.clipsToBounds = true
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
+        addSubview(backView)
         addSubview(switchControl)
         addSubview(titleLabel)
         addSubview(descriptionLabel)

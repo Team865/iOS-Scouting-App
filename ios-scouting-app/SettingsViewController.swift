@@ -34,7 +34,7 @@ class SettingsViewController: UIViewController {
         var tempSection: [Settings] = []
         
         tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Select FRC Event", description: "Current Event", hideSwitch: true))
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Use Vibration", description : "Toggle Vibration",
+        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
             hideSwitch : false))
         
         return tempSection
@@ -43,8 +43,8 @@ class SettingsViewController: UIViewController {
     func createInfoSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
 
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Team 865 iOS Scouting App", description : "", hideSwitch : true))
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Repository on GitHub", description: "Including sources and new releases boi this text is so long that it will not fit", hideSwitch: true))
+        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
+        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named: "whiteboi")!, title : "Open source Licenses", description : "", hideSwitch : true))
         
         return tempSection
@@ -101,16 +101,10 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
         switch indexPath.section {
         case 0 :
             let section1 = settingsActionSection[indexPath.row]
-            cell.titleLabel.text = section1.title
-            cell.descriptionLabel.text = section1.description
-            cell.switchControl.isHidden = section1.hideSwitch ?? true
-            cell.imageControl.image = section1.image
+            cell.setCell(settings: section1)
         case 1 :
             let section2 = settingsInfoSection[indexPath.row]
-            cell.titleLabel.text = section2.title
-            cell.descriptionLabel.text = section2.description
-            cell.switchControl.isHidden = section2.hideSwitch ?? true
-            cell.imageControl.image = section2.image
+            cell.setCell(settings: section2)
         default: cell.backgroundColor = UIColor.white
         }
         
