@@ -17,7 +17,8 @@ var validMatchNumber : [Int] = []
     
 var selectedBoard = "B1"
 var scoutName = "First L"
-
+var boardList = ["B1", "B2", "B3", "R1", "R2", "R3", "RX", "BX"]
+    
 var listOfMatches = [Matches]()
     
 let settingsView = UIViewController()
@@ -71,72 +72,24 @@ override func viewDidLoad() {
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
             }
             
-            alert.addAction(getName)
+            let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
             
+            alert.addAction(getName)
+            alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         }
         if(srcObj.tag == boardSelectionTag){
             let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
             
-            let B1 = UIAlertAction(title : "B1", style: .default) {
-                (ACTION) in self.updateBoard(board: "B1", scout: self.scoutName)
-                self.selectedBoard = "B1"
-                self.matchTable.reloadData()
-
-            }
-            let B2 = UIAlertAction(title : "B2", style: .default){
-                (ACTION) in self.updateBoard(board: "B2", scout: self.scoutName)
-                self.selectedBoard = "B2"
-                self.matchTable.reloadData()
-            }
-            let B3 = UIAlertAction(title : "B3", style: .default){
-                (ACTION) in self.updateBoard(board: "B3", scout: self.scoutName)
-                self.selectedBoard = "B3"
-                self.matchTable.reloadData()
-
-            }
-            let R1 = UIAlertAction(title : "R1", style: .default){
-                (ACTION) in self.updateBoard(board: "R1", scout: self.scoutName)
-                self.selectedBoard = "R1"
-                self.matchTable.reloadData()
-
-            }
-            let R2 = UIAlertAction(title : "R2", style: .default){
-                (ACTION) in self.updateBoard(board: "R2", scout: self.scoutName)
-                self.selectedBoard = "R2"
-                self.matchTable.reloadData()
-
-            }
-            let R3 = UIAlertAction(title : "R3", style: .default){
-                (ACTION) in self.updateBoard(board: "R3", scout: self.scoutName)
-                self.selectedBoard = "R3"
-                self.matchTable.reloadData()
-
-            }
-
-            let BX = UIAlertAction(title: "BX", style: .default){
-                (ACTION) in self.updateBoard(board: "BX", scout: self.scoutName)
-                self.selectedBoard = "BX"
-                self.matchTable.reloadData()
-
-            }
-            let RX = UIAlertAction(title: "RX", style: .default){
-                (ACTION) in self.updateBoard(board: "RX", scout: self.scoutName)
-                self.selectedBoard = "RX"
-                self.matchTable.reloadData()
-
+            for i in 0..<self.boardList.count{
+                let board = UIAlertAction(title : self.boardList[i], style: .default){
+                    (ACTION) in self.updateBoard(board: self.boardList[i], scout: self.scoutName)
+                    self.selectedBoard = self.boardList[i]
+                    self.matchTable.reloadData()
+                }
+                alert.addAction(board)
             }
             
-            alert.addAction(B1)
-            alert.addAction(B2)
-            alert.addAction(B3)
-            alert.addAction(R1)
-            alert.addAction(R2)
-            alert.addAction(R3)
-            alert.addAction(RX)
-            alert.addAction(BX)
-            
-
             self.present(alert, animated: true, completion: nil)
         }
     }
