@@ -19,9 +19,11 @@ class SettingsCell : UITableViewCell{
     }()
     
     //Adjust dimensions so image will fit screen
-    lazy var imageControl : UIImageView =  {
-        var image = UIImageView(frame : CGRect(x : 4, y : 6, width : 60, height : 30))
+    lazy var imageControl : UIImageView = {
+        var image = UIImageView(frame : CGRect(x : 20, y : 10, width : 80, height : 80))
         image.contentMode = .scaleAspectFill
+        image.clipsToBounds = true
+        image.layer.cornerRadius = 30
         return image
     }()
     
@@ -43,11 +45,7 @@ class SettingsCell : UITableViewCell{
         return label
     }()
     
-    lazy var backView : UIView = {
-        let view : UIView = UIView(frame: CGRect(x : 4, y : 6, width : self.frame.width + 85, height : 100))
-        return view
-    }()
-    
+   
     func setCell(settings : Settings){
         titleLabel.text = settings.title
         descriptionLabel.text = settings.description
@@ -55,18 +53,12 @@ class SettingsCell : UITableViewCell{
         imageControl.image = settings.image
     }
     
-    override func layoutSubviews() {
-        contentView.backgroundColor = UIColor.clear
-        backgroundColor = UIColor.clear
-        backView.clipsToBounds = true
-    }
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addSubview(backView)
         addSubview(switchControl)
         addSubview(titleLabel)
         addSubview(descriptionLabel)
+        addSubview(imageControl)
         switchControl.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         switchControl.rightAnchor.constraint(equalTo: rightAnchor, constant: -12).isActive = true
     }

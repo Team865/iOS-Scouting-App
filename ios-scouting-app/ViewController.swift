@@ -9,8 +9,10 @@ import UIKit
 
 class ViewController: UIViewController {
 @IBOutlet weak var matchTable: UITableView!
-var matches : [matchSchedule] = []
+var listOfMatches : [matchSchedule] = []
+var jsonListOfMatches = [Matches]()
 
+    
 var key = tbaKey()
     
 var validMatchNumber : [Int] = []
@@ -19,7 +21,6 @@ var selectedBoard = "B1"
 var scoutName = "First L"
 var boardList = ["B1", "B2", "B3", "R1", "R2", "R3", "RX", "BX"]
     
-var listOfMatches = [Matches]()
     
 let settingsView = UIViewController()
     
@@ -36,13 +37,13 @@ override func viewDidLoad() {
     setupNavigationBar()
 
     getTBAJson {
-        for i in 0..<self.listOfMatches.count{
-            if(self.listOfMatches[i].comp_level == "qm"){
-                self.validMatchNumber.append(self.listOfMatches[i].match_number)
+        for i in 0..<self.jsonListOfMatches.count{
+            if(self.jsonListOfMatches[i].comp_level == "qm"){
+                self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
             }
         }
         
-        self.matches = self.createMatchSchedule()
+        self.listOfMatches = self.createMatchSchedule()
         
         self.matchTable.reloadData()
     }
@@ -104,7 +105,7 @@ override func viewDidLoad() {
             guard let data = data else { return }
             do {
                 let decoder = JSONDecoder()
-                self.listOfMatches = try decoder.decode([Matches].self, from: data)
+                self.jsonListOfMatches = try decoder.decode([Matches].self, from: data)
                 
                 DispatchQueue.main.async {
                     completed()
@@ -189,32 +190,32 @@ override func viewDidLoad() {
     func createMatchSchedule() -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
         for i in 1...self.validMatchNumber.sorted().count{
-                    for u in 0..<self.listOfMatches.count{
-                        if(self.listOfMatches[u].comp_level == "qm"){
-                            if(self.listOfMatches[u].match_number == i){
-                                for k in 0..<self.listOfMatches[u].alliances.blue.team_keys.count{
-                                    let bTeam = self.listOfMatches[u].alliances.blue.team_keys[k]
+                    for u in 0..<self.jsonListOfMatches.count{
+                        if(self.jsonListOfMatches[u].comp_level == "qm"){
+                            if(self.jsonListOfMatches[u].match_number == i){
+                                for k in 0..<self.jsonListOfMatches[u].alliances.blue.team_keys.count{
+                                    let bTeam = self.jsonListOfMatches[u].alliances.blue.team_keys[k]
         
                                     let index = bTeam.index(bTeam.startIndex, offsetBy: 3)..<bTeam.endIndex
         
                                     let parsedBlue = bTeam[index]
         
-                                    self.listOfMatches[u].alliances.blue.team_keys[k] = String(parsedBlue)
+                                    self.jsonListOfMatches[u].alliances.blue.team_keys[k] = String(parsedBlue)
                                 }
-                                for p in 0..<self.listOfMatches[u].alliances.red.team_keys.count{
-                                    let rTeam = self.listOfMatches[u].alliances.red.team_keys[p]
+                                for p in 0..<self.jsonListOfMatches[u].alliances.red.team_keys.count{
+                                    let rTeam = self.jsonListOfMatches[u].alliances.red.team_keys[p]
         
                                     let index = rTeam.index(rTeam.startIndex, offsetBy: 3)..<rTeam.endIndex
         
                                     let parsedRed = rTeam[index]
         
-                                    self.listOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
+                                    self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                 }
-                                let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), blue1: self.listOfMatches[u].alliances.blue.team_keys[0], blue2: self.listOfMatches[u].alliances.blue.team_keys[1],
-                                                          blue3: self.listOfMatches[u].alliances.blue.team_keys[2],
-                                                          red1: self.listOfMatches[u].alliances.red.team_keys[0],
-                                                          red2: self.listOfMatches[u].alliances.red.team_keys[1],
-                                                          red3: self.listOfMatches[u].alliances.red.team_keys[2])
+                                let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), blue1: self.jsonListOfMatches[u].alliances.blue.team_keys[0], blue2: self.jsonListOfMatches[u].alliances.blue.team_keys[1],
+                                                          blue3: self.jsonListOfMatches[u].alliances.blue.team_keys[2],
+                                                          red1: self.jsonListOfMatches[u].alliances.red.team_keys[0],
+                                                          red2: self.jsonListOfMatches[u].alliances.red.team_keys[1],
+                                                          red3: self.jsonListOfMatches[u].alliances.red.team_keys[2])
                                 tempMatch.append(match)
                             }
                         }
@@ -228,11 +229,11 @@ override func viewDidLoad() {
 extension ViewController : UITableViewDataSource, UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.matches.count
+        return self.listOfMatches.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let match = matches[indexPath.row]
+        let match = listOfMatches[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances") as! matchScheduleCells
         cell.setMatch(match: match)

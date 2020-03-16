@@ -13,28 +13,22 @@ class SettingsViewController: UIViewController {
     var tableView : UITableView!
     var settingsActionSection = [Settings]()
     var settingsInfoSection = [Settings]()
-    var key = tbaKey()
-    var listOfEvents = [event]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
-        
+        navigationItem.title = "Settings"
         settingsActionSection = createActionSettingsSection()
         settingsInfoSection = createInfoSettingsSection()
         
-        getJSONEvents {
-            for i in 0..<self.listOfEvents.count{
-                print(self.listOfEvents[i].key)
-                print(self.listOfEvents[i].year)
-            }
-        }
     }
+    
     
     func createActionSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
         
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Select FRC Event", description: "Current Event", hideSwitch: true))
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
+        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Select FRC Event", description: "Current Event", hideSwitch: true))
+        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
             hideSwitch : false))
         
         return tempSection
@@ -43,9 +37,9 @@ class SettingsViewController: UIViewController {
     func createInfoSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
 
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
-        tempSection.append(Settings(image: UIImage(named : "whiteboi")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
-        tempSection.append(Settings(image : UIImage(named: "whiteboi")!, title : "Open source Licenses", description : "", hideSwitch : true))
+        tempSection.append(Settings(image: UIImage(named : "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
+        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
+        tempSection.append(Settings(image : UIImage(named: "white")!, title : "Open source Licenses", description : "", hideSwitch : true))
         
         return tempSection
     }
@@ -61,26 +55,19 @@ class SettingsViewController: UIViewController {
         tableView.frame = view.frame
         tableView.tableFooterView = UIView()
     }
-    
-    private func getJSONEvents(completed : @escaping () -> ()){
-        let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc865/events")!
-        var request = URLRequest(url: url)
-        request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
-        URLSession.shared.dataTask(with: request) {
-            (data, response, error) in
-            guard let data = data else { return }
-            do {
-                let decoder = JSONDecoder()
-                self.listOfEvents = try decoder.decode([event].self, from: data)
-                
-                DispatchQueue.main.async {
-                    completed()
-                }
-            } catch let jsonErr {
-                print(jsonErr)
-            }
-        }.resume()
-    }
+
+
+    @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+           if(indexPath.row == 0){
+               let eventSelection = UIStoryboard(name : "Main", bundle: nil)
+               
+               guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
+                   EventSelectionController else { return }
+               
+               self.navigationController?.pushViewController(eventSelectionVC, animated: true)
+           }
+       }
+
 }
 
 extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
