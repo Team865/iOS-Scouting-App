@@ -9,10 +9,7 @@ import UIKit
 
 class ViewController: UIViewController {
 @IBOutlet weak var matchTable: UITableView!
-var listOfMatches : [matchSchedule] = []
-var jsonListOfMatches = [Matches]()
 
-    
 var key = tbaKey()
     
 var validMatchNumber : [Int] = []
@@ -31,22 +28,25 @@ let boardSelectionTag = 4;
 
 var event : String = ""
 var year : Int = 0
-
+var eventKey : String = ""
+    
+var listOfMatches : [matchSchedule] = []
+var jsonListOfMatches = [Matches]()
+    
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
-
+    
     getTBAJson {
         for i in 0..<self.jsonListOfMatches.count{
             if(self.jsonListOfMatches[i].comp_level == "qm"){
-                self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
+                
             }
         }
-        
-        self.listOfMatches = self.createMatchSchedule()
-        
-        self.matchTable.reloadData()
     }
+    
+    self.listOfMatches.append(matchSchedule.init(icon: UIImage(named: "white")!, matchNumber: "1", blue1: "b1", blue2: "b2", blue3: "b3", red1: "r1", red2: "r2", red3: "r3"))
+
 }
     @objc func clickHandler(srcObj : UIButton) -> Void{
         if(srcObj.tag == settingsTag){
@@ -94,28 +94,6 @@ override func viewDidLoad() {
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-   private func getTBAJson(completed : @escaping () -> ()){
-        let url = URL(string: "https://www.thebluealliance.com/api/v3/event/2019onwin/matches/simple")!
-        var request = URLRequest(url: url)
-        //Remember to remove keys before committing
-    request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
-        URLSession.shared.dataTask(with: request) {
-            (data, response, error) in
-            guard let data = data else { return }
-            do {
-                let decoder = JSONDecoder()
-                self.jsonListOfMatches = try decoder.decode([Matches].self, from: data)
-                
-                DispatchQueue.main.async {
-                    completed()
-                }
-            } catch let jsonErr {
-                print(jsonErr)
-            }
-        }.resume()
-    }
-    
     
     
     private func updateBoard(board : String, scout : String){
@@ -186,6 +164,26 @@ override func viewDidLoad() {
         
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
+    func getTBAJson(completed : @escaping () -> ()){
+    let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + self.eventKey + "/matches/simple")!
+        var request = URLRequest(url: url)
+        //Remember to remove keys before committing
+    request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
+        URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+            guard let data = data else { return }
+            do {
+                let decoder = JSONDecoder()
+                self.jsonListOfMatches = try decoder.decode([Matches].self, from: data)
+                
+                DispatchQueue.main.async {
+                    completed()
+                }
+            } catch let jsonErr {
+                print(jsonErr)
+            }
+        }.resume()
+    }
     
     func createMatchSchedule() -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
@@ -225,6 +223,7 @@ override func viewDidLoad() {
         
         return tempMatch
     }
+    
 }
 extension ViewController : UITableViewDataSource, UITableViewDelegate
 {
@@ -233,9 +232,9 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let match = listOfMatches[indexPath.row]
+        let match = self.listOfMatches[indexPath.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances") as! matchScheduleCells
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances", for : indexPath) as! matchScheduleCells
         cell.setMatch(match: match)
         cell.backgroundColor = UIColor.white
         switch self.selectedBoard {

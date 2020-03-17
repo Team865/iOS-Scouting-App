@@ -14,4 +14,5 @@ struct jsonEvents : Decodable{
     var country : String
     var state_prov : String
     var year : Int
+    var event_code : String
 }

@@ -10,7 +10,7 @@ import UIKit
 class EventCells : UITableViewCell {
    
  private lazy var eventName : UILabel = {
-     let label = UILabel(frame : CGRect(x : 10, y : 0, width : 370, height : 60))
+    let label = UILabel(frame : CGRect(x : 5, y : 0, width : 300, height : 60))
      label.textAlignment = .left
      label.lineBreakMode = .byClipping
      label.numberOfLines = 0
@@ -20,7 +20,7 @@ class EventCells : UITableViewCell {
  }()
     
   private lazy var eventInfo : UILabel = {
-        let label = UILabel(frame : CGRect(x : 10, y : 55,  width : 400, height : 20))
+    let label = UILabel(frame : CGRect(x : 5, y : 55, width : 300, height : 20))
         label.textAlignment = .left
     label.textColor = UIColor.blue
     label.font = label.font.withSize(17.5)
@@ -38,9 +38,9 @@ class EventCells : UITableViewCell {
         addSubview(eventInfo)
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: true)
-    }
+      override func setSelected(_ selected: Bool, animated: Bool) {
+          super.setSelected(selected, animated: true)
+      }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

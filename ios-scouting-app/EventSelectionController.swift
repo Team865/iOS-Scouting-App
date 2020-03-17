@@ -11,28 +11,44 @@ import UIKit
 
 class EventSelectionController : UIViewController{
     
-    var tableView : UITableView!
-    let y = 100
+    var eventTable : UITableView!
+    let y = Int(UIScreen.main.bounds.height / 10)
     let viewDimension = 40
     var key = tbaKey()
     var jsonListOfEvents = [jsonEvents]()
     var listOfEvents : [Events] = []
-    
+    var listOfKeys : [String] = []
     var yearText : UITextField!
     var teamText : UITextField!
+    let viewController = ViewController()
+    
+    override func viewDidLoad() {
+           super.viewDidLoad()
+//        let tap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action : #selector(dismissKeyboard(sender:)))
+//
+//        view.addGestureRecognizer(tap)
+           self.yearText = yearTextField(hint: "Year", tag : 1,  x: 15 + (Int(UIScreen.main.bounds.width / 10)))
+           self.teamText = teamTextField(hint: "Team", tag : 2, x: Int(UIScreen.main.bounds.width * 0.47) + (Int(UIScreen.main.bounds.width / 10)))
+           
+        configureTableView()
+        setUpNavigationBar()
+        setUpView(team : self.teamText, year : self.yearText)
+
+       }
     
     private func createButton(image : String, x : Int) -> UIButton {
         let button = UIButton(type : .system)
         button.setImage(UIImage(named : image)?.withRenderingMode(.alwaysOriginal), for : .normal)
         button.contentMode = .scaleAspectFit
-        button.frame = CGRect(x : x, y : self.y, width: self.viewDimension, height : self.viewDimension)
+        button.frame = CGRect(x : x, y : self.y, width: Int(UIScreen.main.bounds.width / 10), height : self.viewDimension)
         button.addTarget(self, action: #selector(onClick(sender:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(dismissKeyboard(sender:)) , for: .touchUpInside)
         return button
     }
     
     private func createImageView(image : String, x : Int) -> UIImageView
     {
-        let imageView = UIImageView(frame: CGRect(x : x, y : self.y, width: self.viewDimension, height: self.viewDimension))
+        let imageView = UIImageView(frame: CGRect(x : x, y : self.y, width: Int(UIScreen.main.bounds.width / 10), height: self.viewDimension))
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named : image)
         
@@ -40,18 +56,18 @@ class EventSelectionController : UIViewController{
     }
     
     private func yearTextField(hint : String, tag : Int, x : Int) -> UITextField{
-        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : 80, height : self.viewDimension))
+        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : (Int(UIScreen.main.bounds.width / 3)), height : self.viewDimension))
         textField.placeholder = hint
         textField.tag = tag
-        textField.textAlignment = .left
+        textField.textAlignment = .center
         return textField
     }
     
     private func teamTextField(hint : String, tag : Int, x : Int) -> UITextField{
-        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : 80, height : self.viewDimension))
+        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : Int(UIScreen.main.bounds.width / 3), height : self.viewDimension))
         textField.placeholder = hint
         textField.tag = tag
-        textField.textAlignment = .left
+        textField.textAlignment = .center
         return textField
     }
     
@@ -61,56 +77,45 @@ class EventSelectionController : UIViewController{
                     if(jsonListOfEvents[i].year == Int(self.yearText.text!) ?? 0){
                         let event = Events.init(name: jsonListOfEvents[i].name, info : jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
                         tempCell.append(event)
+                        self.listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
                     }
                 }
         return tempCell
     }
     
     private func setUpView(team : UITextField, year : UITextField){
-        self.view.addSubview(createImageView(image: "calendar", x: 20))
+        self.view.addSubview(createImageView(image: "calendar", x: 15))
         self.view.addSubview(year)
-        self.view.addSubview(createImageView(image: "team", x: 175))
+        self.view.addSubview(createImageView(image: "team", x: Int(UIScreen.main.bounds.width * 0.47)))
         self.view.addSubview(team)
-        self.view.addSubview(createButton(image: "search", x: 320 + self.viewDimension))
+        self.view.addSubview(createButton(image: "search", x: Int(UIScreen.main.bounds.width * 0.87)))
     }
     
     private func configureTableView() {
-        tableView = UITableView()
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.rowHeight = 80
+        eventTable = UITableView()
+        eventTable.delegate = self
+        eventTable.dataSource = self
+        eventTable.rowHeight = 80
         
-        tableView.register(EventCells.self, forCellReuseIdentifier: "EventCells")
-        view.addSubview(tableView)
-        tableView.frame = CGRect(x : 0, y : 145, width: UIScreen.main.bounds.width, height : UIScreen.main.bounds.height)
-        tableView.tableFooterView = UIView()
+        
+        eventTable.register(EventCells.self, forCellReuseIdentifier: "EventCells")
+        view.addSubview(eventTable)
+        
+        let tableY = self.y + self.viewDimension
+        eventTable.frame = CGRect(x: 0, y: tableY, width: Int(UIScreen.main.bounds.width), height: Int(UIScreen.main.bounds.height))
+        eventTable.tableFooterView = UIView()
+    }
+    
+    @objc func dismissKeyboard(sender : UIButton){
+        view.endEditing(true)
     }
     
     @objc func onClick (sender : UIButton){
-        self.printText()
-        
         getJSONEvents {
             self.listOfEvents = self.createEventCells()
-            self.tableView.reloadData()
+            self.eventTable.reloadData()
         }
         
-    }
-    
-    private func printText(){
-        print(self.yearText ?? "")
-        print(self.teamText ?? "")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        self.yearText = yearTextField(hint: "Year", tag : 1,  x: 20 + self.viewDimension)
-        self.teamText = teamTextField(hint: "Team", tag : 2, x: 175 + self.viewDimension)
-        
-        setUpNavigationBar()
-        setUpView(team : self.teamText, year : self.yearText)
-        configureTableView()
-
     }
     
     private func setUpNavigationBar(){
@@ -138,6 +143,11 @@ class EventSelectionController : UIViewController{
     
    }
     
+    override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    }
+    
+    
 }
 
 extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
@@ -149,23 +159,18 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
         let event = self.listOfEvents[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "EventCells", for : indexPath) as! EventCells
-        
         cell.setEvent(event: event)
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let mainController = UIStoryboard(name : "Main", bundle: nil)
+                       
+                       guard let mainVC = mainController.instantiateViewController(withIdentifier: "MainController") as?
+                           ViewController else { return }
+        mainVC.eventKey = self.listOfKeys[indexPath.row]
+        self.navigationController?.pushViewController(mainVC, animated: true)
+    
+    }
     
 }
-
-
-
-//for i in 0..<self.jsonListOfEvents.count{
-//                if(self.jsonListOfEvents[i].year == 2019){
-//                    self.indexes += 1
-//                    print(self.jsonListOfEvents[i].name)
-//                   print(self.jsonListOfEvents[i].start_date + " in " + self.jsonListOfEvents[i].city + ", " + self.jsonListOfEvents[i].state_prov + ", " + self.jsonListOfEvents[i].country)
-//                }
-//
-//            }
-
-
