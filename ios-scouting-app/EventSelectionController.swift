@@ -14,11 +14,6 @@ class EventSelectionController : UIViewController{
     @IBOutlet weak var year: UITextField!
     @IBOutlet weak var team: UITextField!
     @IBOutlet weak var searchEvent: UIButton!
-    
-//    @IBAction func click(_ sender: Any) {
-//        print(team.text!)
-//
-//    }
 
     var key = tbaKey()
     var jsonListOfEvents = [jsonEvents]()
@@ -40,10 +35,9 @@ class EventSelectionController : UIViewController{
     
     func createListOfEvents() -> [Events]{
         var tempEvent : [Events] = []
-        
-
+    
         for _ in 0...10 {
-            let event = Events.init(name : "Hi", location : "Hello")
+            let event = Events.init(name : "Hi", info : "Hello")
             tempEvent.append(event)
         }
         
@@ -52,10 +46,10 @@ class EventSelectionController : UIViewController{
     
     private func getJSONEvents(completed : @escaping () -> ()){
         let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc865/events")!
-    var request = URLRequest(url: url)
-    request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
-    URLSession.shared.dataTask(with: request) {
-        (data, response, error) in
+        var request = URLRequest(url: url)
+        request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
+        URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
         guard let data = data else { return }
         do {
             let decoder = JSONDecoder()

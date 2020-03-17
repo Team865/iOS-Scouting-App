@@ -48,7 +48,7 @@ class SettingsViewController: UIViewController {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 100
+        tableView.rowHeight = 60
         
         tableView.register(SettingsCell.self, forCellReuseIdentifier: "SettingsCell")
         view.addSubview(tableView)
@@ -58,13 +58,16 @@ class SettingsViewController: UIViewController {
 
 
     @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           if(indexPath.row == 0){
-               let eventSelection = UIStoryboard(name : "Main", bundle: nil)
-               
-               guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
-                   EventSelectionController else { return }
-               
-               self.navigationController?.pushViewController(eventSelectionVC, animated: true)
+           if(indexPath.section == 0){
+            if(indexPath.row == 0){
+                let eventSelection = UIStoryboard(name : "Main", bundle: nil)
+                
+                guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
+                    EventSelectionController else { return }
+                
+                self.navigationController?.pushViewController(eventSelectionVC, animated: true)
+            }
+            
            }
        }
 

@@ -8,5 +8,10 @@
 
 import UIKit
 class EventCells : UITableViewCell {
+   
     
+//    func setEvent (event : Events){
+//        eventName.text = event.name
+//        eventInfo.text = event.info
+//    }
 }

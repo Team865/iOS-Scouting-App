@@ -20,28 +20,28 @@ class SettingsCell : UITableViewCell{
     
     //Adjust dimensions so image will fit screen
     lazy var imageControl : UIImageView = {
-        var image = UIImageView(frame : CGRect(x : 20, y : 10, width : 80, height : 80))
+        var image = UIImageView(frame : CGRect(x : 12, y : 0, width : 60, height : 50))
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
-        image.layer.cornerRadius = 30
+        image.layer.cornerRadius = 25
         return image
     }()
     
     lazy var titleLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 116, y : 10, width : 300, height : 40))
+        let label = UILabel(frame : CGRect(x : 80, y : 10, width : 300, height : 20))
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         label.isHighlighted = true
-        label.font = label.font.withSize(20)
+        label.font = label.font.withSize(12)
         return label
     }()
     
     lazy var descriptionLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 116, y : 30, width : 300, height : 60))
+        let label = UILabel(frame : CGRect(x : 80, y : 20, width : 200, height : 40))
         label.textAlignment = .left
         label.lineBreakMode = .byClipping
         label.numberOfLines = 0
-        label.font = label.font.withSize(15)
+        label.font = label.font.withSize(10)
         return label
     }()
     

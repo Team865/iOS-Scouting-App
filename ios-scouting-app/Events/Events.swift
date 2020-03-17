@@ -10,9 +10,9 @@ import Foundation
 
 class Events {
     var name : String
-    var location : String
-    init (name : String, location : String){
+    var info : String
+    init (name : String, info : String){
         self.name = name
-        self.location = location
+        self.info = info
     }
 }

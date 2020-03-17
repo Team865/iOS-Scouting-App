@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		252866DF241F866700BFEB0C /* tbaKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 252866DE241F866700BFEB0C /* tbaKey.swift */; };
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
 		25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF6762403368B00034E12 /* matchScheduleCells.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
-		25E0F560241E9D670034432A /* tbaKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F55F241E9D670034432A /* tbaKey.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
 		25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56B241F63780034432A /* EventSelectionController.swift */; };
@@ -27,12 +27,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		252866DE241F866700BFEB0C /* tbaKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tbaKey.swift; sourceTree = "<group>"; };
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
 		25CEF6762403368B00034E12 /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
-		25E0F55F241E9D670034432A /* tbaKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tbaKey.swift; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 				25F35CCC2400E60800CAA81D /* Assets.xcassets */,
 				25F35CCE2400E60800CAA81D /* LaunchScreen.storyboard */,
 				25F35CD12400E60800CAA81D /* Info.plist */,
-				25E0F55F241E9D670034432A /* tbaKey.swift */,
+				252866DE241F866700BFEB0C /* tbaKey.swift */,
 			);
 			path = "ios-scouting-app";
 			sourceTree = "<group>";
@@ -223,7 +223,6 @@
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
-				25E0F560241E9D670034432A /* tbaKey.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
 				25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */,
 				2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */,
@@ -231,6 +230,7 @@
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
 				25E0F571241F6C1E0034432A /* EventCells.swift in Sources */,
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
+				252866DF241F866700BFEB0C /* tbaKey.swift in Sources */,
 				25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */,
 				25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */,
 			);
