@@ -44,7 +44,7 @@ class SettingsViewController: UIViewController {
         return tempSection
     }
     
-    func configureTableView() {
+    private func configureTableView() {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self

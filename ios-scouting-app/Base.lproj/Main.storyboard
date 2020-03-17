@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DYA-Ua-JQs">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -12,7 +12,7 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4I2-gb-aRF">
@@ -125,7 +125,7 @@
             <objects>
                 <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="b9g-Wc-enz" customClass="SettingsViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dzO-Dl-yeB">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="S90-AF-5Yw"/>
@@ -141,7 +141,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DYA-Ua-JQs" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nmj-xi-dIK">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -158,73 +158,18 @@
             <objects>
                 <viewController storyboardIdentifier="EventSelectionController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mhu-Ey-uhW" customClass="EventSelectionController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DG0-w4-IS2">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" translatesAutoresizingMaskIntoConstraints="NO" id="w7h-Ts-qcS">
-                                <rect key="frame" x="14" y="32" width="37" height="25.5"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="41" id="ag2-N9-HnE"/>
-                                </constraints>
-                            </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kwr-dq-hq5">
-                                <rect key="frame" x="59" y="32" width="105" height="25.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="team" translatesAutoresizingMaskIntoConstraints="NO" id="fuf-Wt-Dmw">
-                                <rect key="frame" x="172" y="32" width="29" height="25.5"/>
-                            </imageView>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3q0-3V-lCU">
-                                <rect key="frame" x="209" y="32" width="107" height="25.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AfW-Hz-d3e">
-                                <rect key="frame" x="324" y="30.5" width="35" height="26.5"/>
-                                <state key="normal" backgroundImage="search"/>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="kwr-dq-hq5" firstAttribute="bottom" secondItem="w7h-Ts-qcS" secondAttribute="bottom" id="0sB-7f-Etk"/>
-                            <constraint firstItem="3q0-3V-lCU" firstAttribute="height" secondItem="DG0-w4-IS2" secondAttribute="height" multiplier="0.0379464" id="8uQ-yr-RXw"/>
-                            <constraint firstItem="AfW-Hz-d3e" firstAttribute="trailing" secondItem="DG0-w4-IS2" secondAttribute="trailingMargin" id="FZz-nW-Ubs"/>
-                            <constraint firstItem="AfW-Hz-d3e" firstAttribute="centerY" secondItem="3q0-3V-lCU" secondAttribute="centerY" constant="-1" id="I9Q-zY-Iai"/>
-                            <constraint firstItem="kwr-dq-hq5" firstAttribute="width" secondItem="DG0-w4-IS2" secondAttribute="width" multiplier="0.210145" constant="26" id="KRp-73-Har"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="width" secondItem="DG0-w4-IS2" secondAttribute="width" multiplier="0.0772947" id="Lo2-WV-Dvb"/>
-                            <constraint firstItem="kwr-dq-hq5" firstAttribute="leading" secondItem="w7h-Ts-qcS" secondAttribute="trailing" constant="8" symbolic="YES" id="NX9-Bz-ux3"/>
-                            <constraint firstItem="3q0-3V-lCU" firstAttribute="leading" secondItem="fuf-Wt-Dmw" secondAttribute="trailing" constant="8" id="Oez-7r-1Ei"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="top" secondItem="s3z-zX-CTb" secondAttribute="top" constant="32" id="SvC-Wr-dCv"/>
-                            <constraint firstItem="w7h-Ts-qcS" firstAttribute="width" secondItem="DG0-w4-IS2" secondAttribute="width" multiplier="0.0990338" id="b6s-nN-ohB"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="bottom" secondItem="kwr-dq-hq5" secondAttribute="bottom" id="dYq-Sp-ElS"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="height" secondItem="DG0-w4-IS2" secondAttribute="height" multiplier="0.0379464" id="dq4-aG-W84"/>
-                            <constraint firstItem="AfW-Hz-d3e" firstAttribute="width" secondItem="DG0-w4-IS2" secondAttribute="width" multiplier="0.111111" id="ga6-rc-Rs1"/>
-                            <constraint firstItem="3q0-3V-lCU" firstAttribute="width" secondItem="DG0-w4-IS2" secondAttribute="width" multiplier="0.2343" constant="-1.9758454106280254" id="hyK-fn-zfh"/>
-                            <constraint firstItem="AfW-Hz-d3e" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="3q0-3V-lCU" secondAttribute="trailing" constant="8" symbolic="YES" id="lK0-zM-fTt"/>
-                            <constraint firstItem="kwr-dq-hq5" firstAttribute="top" secondItem="w7h-Ts-qcS" secondAttribute="top" id="mA6-HL-ctz"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="top" secondItem="kwr-dq-hq5" secondAttribute="top" id="mOl-wI-e1K"/>
-                            <constraint firstItem="kwr-dq-hq5" firstAttribute="height" secondItem="DG0-w4-IS2" secondAttribute="height" multiplier="0.0379464" id="pRP-ya-RJx"/>
-                            <constraint firstItem="AfW-Hz-d3e" firstAttribute="height" secondItem="DG0-w4-IS2" secondAttribute="height" multiplier="0.0334821" constant="4" id="uMz-Ne-DrC"/>
-                            <constraint firstItem="3q0-3V-lCU" firstAttribute="baseline" secondItem="kwr-dq-hq5" secondAttribute="baseline" id="uWm-ex-Yap"/>
-                            <constraint firstItem="s3z-zX-CTb" firstAttribute="trailing" secondItem="3q0-3V-lCU" secondAttribute="trailing" constant="59" id="vmB-gy-26z"/>
-                            <constraint firstItem="w7h-Ts-qcS" firstAttribute="height" secondItem="DG0-w4-IS2" secondAttribute="height" multiplier="0.0379464" id="w9t-sd-4hQ"/>
-                            <constraint firstItem="fuf-Wt-Dmw" firstAttribute="leading" secondItem="kwr-dq-hq5" secondAttribute="trailing" constant="8" id="xd4-kU-W5q"/>
-                            <constraint firstItem="w7h-Ts-qcS" firstAttribute="leading" secondItem="s3z-zX-CTb" secondAttribute="leading" constant="14" id="xuJ-BJ-hae"/>
-                            <constraint firstItem="w7h-Ts-qcS" firstAttribute="top" secondItem="s3z-zX-CTb" secondAttribute="top" constant="32" id="zOg-59-VZI"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="s3z-zX-CTb"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dw1-gp-AAF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2606.25" y="95.070422535211264"/>
+            <point key="canvasLocation" x="2604.3478260869565" y="93.75"/>
         </scene>
     </scenes>
     <resources>
-        <image name="calendar" width="32" height="32"/>
         <image name="icons8-database" width="34.666667938232422" height="34.666667938232422"/>
-        <image name="search" width="96" height="96"/>
-        <image name="team" width="32" height="32"/>
     </resources>
 </document>

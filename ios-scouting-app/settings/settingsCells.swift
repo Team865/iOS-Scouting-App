@@ -27,7 +27,7 @@ class SettingsCell : UITableViewCell{
         return image
     }()
     
-    lazy var titleLabel : UILabel = {
+    private lazy var titleLabel : UILabel = {
         let label = UILabel(frame : CGRect(x : 80, y : 10, width : 300, height : 20))
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
@@ -36,7 +36,7 @@ class SettingsCell : UITableViewCell{
         return label
     }()
     
-    lazy var descriptionLabel : UILabel = {
+    private lazy var descriptionLabel : UILabel = {
         let label = UILabel(frame : CGRect(x : 80, y : 20, width : 200, height : 40))
         label.textAlignment = .left
         label.lineBreakMode = .byClipping
