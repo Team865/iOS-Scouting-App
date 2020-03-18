@@ -165,12 +165,9 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let mainController = UIStoryboard(name : "Main", bundle: nil)
-                       
-                       guard let mainVC = mainController.instantiateViewController(withIdentifier: "MainController") as?
+        guard let mainVC = mainController.instantiateViewController(withIdentifier: "MainController") as?
                            ViewController else { return }
         mainVC.eventKey = self.listOfKeys[indexPath.row]
         self.navigationController?.pushViewController(mainVC, animated: true)
-    
-    }
-    
+        }
 }

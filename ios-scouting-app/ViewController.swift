@@ -37,15 +37,9 @@ override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
     
-    getTBAJson {
-        for i in 0..<self.jsonListOfMatches.count{
-            if(self.jsonListOfMatches[i].comp_level == "qm"){
-                
-            }
-        }
-    }
     
-    self.listOfMatches.append(matchSchedule.init(icon: UIImage(named: "white")!, matchNumber: "1", blue1: "b1", blue2: "b2", blue3: "b3", red1: "r1", red2: "r2", red3: "r3"))
+    
+//    self.listOfMatches.append(matchSchedule.init(icon: UIImage(named: "white")!, matchNumber: "1", blue1: "b1", blue2: "b2", blue3: "b3", red1: "r1", red2: "r2", red3: "r3"))
 
 }
     @objc func clickHandler(srcObj : UIButton) -> Void{
@@ -58,7 +52,16 @@ override func viewDidLoad() {
             self.navigationController?.pushViewController(settingsVC, animated: true)
         }
         if(srcObj.tag == additemTag){
-            print("Add item")
+            getTBAJson {
+                for i in 0..<self.jsonListOfMatches.count{
+                    if(self.jsonListOfMatches[i].comp_level == "qm"){
+                        self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
+                    }
+                }
+                self.listOfMatches = self.createMatchSchedule()
+                self.matchTable.reloadData()
+                
+            }
         }
         if(srcObj.tag == editNameTag){
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
@@ -164,7 +167,8 @@ override func viewDidLoad() {
         
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
-    func getTBAJson(completed : @escaping () -> ()){
+    
+    private func getTBAJson(completed : @escaping () -> ()){
     let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + self.eventKey + "/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
