@@ -167,7 +167,27 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
         let mainController = UIStoryboard(name : "Main", bundle: nil)
         guard let mainVC = mainController.instantiateViewController(withIdentifier: "MainController") as?
                            ViewController else { return }
-        mainVC.eventKey = self.listOfKeys[indexPath.row]
-        self.navigationController?.pushViewController(mainVC, animated: true)
+        //viewController.getEventKey(eventKey: self.listOfKeys[indexPath.row])
+        //print(self.listOfKeys[indexPath.row])
+            let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
+            alert.addTextField {
+                    (UITextField) in UITextField.text = "You will delete all data of current event, are you sure ?"
+                UITextField.isUserInteractionEnabled = false
+                }
+                
+                let getName = UIAlertAction(title: "OK", style: .default){
+                    [weak alert] (_) in
+                    self.viewController.eventKey = self.listOfKeys[indexPath.row]
+                    self.navigationController?.pushViewController(mainVC, animated: true)
+                    NotificationCenter.default.post(name : NSNotification.Name(rawValue: "update"), object: nil)
+                }
+                
+                let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
+                
+                alert.addAction(getName)
+                alert.addAction(cancel)
+                self.present(alert, animated: true, completion: nil)
+            }
         }
-}
+
+
