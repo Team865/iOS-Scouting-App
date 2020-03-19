@@ -17,8 +17,7 @@ var validMatchNumber : [Int] = []
 var selectedBoard = "B1"
 var scoutName = "First L"
 var boardList = ["B1", "B2", "B3", "R1", "R2", "R3", "RX", "BX"]
-    
-    
+
 let settingsView = UIViewController()
     
 let settingsTag = 1;

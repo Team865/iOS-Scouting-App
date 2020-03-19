@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   version = "1.3">
+   <BuildAction>
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForRunning = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "25F35CBF2400E60600CAA81D"
+               BuildableName = "ios-scouting-app.app"
+               BlueprintName = "ios-scouting-app"
+               ReferencedContainer = "container:ios-scouting-app.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <LaunchAction
+      useCustomWorkingDirectory = "NO"
+      buildConfiguration = "Debug"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "25F35CBF2400E60600CAA81D"
+            BuildableName = "ios-scouting-app.app"
+            BlueprintName = "ios-scouting-app"
+            ReferencedContainer = "container:ios-scouting-app.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+</Scheme>
