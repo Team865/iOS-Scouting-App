@@ -16,8 +16,10 @@ var validMatchNumber : [Int] = []
     
 var selectedBoard = "B1"
 var scoutName = "First L"
-var boardList = ["B1", "B2", "B3", "R1", "R2", "R3", "RX", "BX"]
-
+var listOfBlueBoard = ["B1", "B2", "B3"]
+var listOfRedBoard = ["R1", "R2", "R3"]
+var superScoutBoard = ["BX", "RX"]
+    
 let settingsView = UIViewController()
     
 let settingsTag = 1;
@@ -35,7 +37,7 @@ var jsonListOfMatches = [Matches]()
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
-    
+   
 }
 
     @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
@@ -89,13 +91,31 @@ override func viewDidLoad() {
         if(srcObj.tag == boardSelectionTag){
             let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
             
-            for i in 0..<self.boardList.count{
-                let board = UIAlertAction(title : self.boardList[i], style: .default){
-                    (ACTION) in self.updateBoard(board: self.boardList[i], scout: self.scoutName)
-                    self.selectedBoard = self.boardList[i]
+            for i in 0..<self.listOfBlueBoard.count{
+                let board = UIAlertAction(title : self.listOfBlueBoard[i], style: .default){
+                    (ACTION) in self.updateBoard(board: self.listOfBlueBoard[i], scout: self.scoutName)
+                    self.selectedBoard = self.listOfBlueBoard[i]
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
+            }
+            
+            for i in 0..<self.listOfRedBoard.count{
+                let board = UIAlertAction(title : self.listOfRedBoard[i], style: .default){
+                    (ACTION) in self.updateBoard(board: self.listOfRedBoard[i], scout: self.scoutName)
+                    self.selectedBoard = self.listOfRedBoard[i]
+                    self.matchTable.reloadData()
+                }
+                alert.addAction(board)
+            }
+            
+            for i in 0..<self.superScoutBoard.count{
+                let board = UIAlertAction(title : self.superScoutBoard[i], style: .default){
+                                   (ACTION) in self.updateBoard(board: self.superScoutBoard[i], scout: self.scoutName)
+                                   self.selectedBoard = self.superScoutBoard[i]
+                                   self.matchTable.reloadData()
+                               }
+                               alert.addAction(board)
             }
             
             self.present(alert, animated: true, completion: nil)
@@ -219,11 +239,7 @@ override func viewDidLoad() {
             
                                         self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                     }
-                                    let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), blue1: self.jsonListOfMatches[u].alliances.blue.team_keys[0], blue2: self.jsonListOfMatches[u].alliances.blue.team_keys[1],
-                                                              blue3: self.jsonListOfMatches[u].alliances.blue.team_keys[2],
-                                                              red1: self.jsonListOfMatches[u].alliances.red.team_keys[0],
-                                                              red2: self.jsonListOfMatches[u].alliances.red.team_keys[1],
-                                                              red3: self.jsonListOfMatches[u].alliances.red.team_keys[2])
+                                    let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys)
                                     tempMatch.append(match)
                                 }
                             }
@@ -231,7 +247,6 @@ override func viewDidLoad() {
                         }
                     }
         }
-        
         
         
         return tempMatch
@@ -250,80 +265,46 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances", for : indexPath) as! matchScheduleCells
         cell.setMatch(match: match)
         cell.backgroundColor = UIColor.white
-        switch self.selectedBoard {
-        case "B1":
-            cell.blue1.textColor = UIColor.blue
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
-            
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.black
-
-        case "B2":
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.blue
-            cell.blue3.textColor = UIColor.black
-            
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.black
-        case "B3":
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.blue
-            
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.black
-        case "R1":
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
-            
-            cell.red1.textColor = UIColor.red
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.black
-        case "R2":
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
-            
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.red
-            cell.red3.textColor = UIColor.black
-            
-        case "R3":
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
         
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.red
-            
-        case "RX":
-            cell.red1.textColor = UIColor.red
-            cell.red2.textColor = UIColor.red
-            cell.red3.textColor = UIColor.red
-            
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
-            
-        case "BX":
-            cell.blue1.textColor = UIColor.blue
-            cell.blue2.textColor = UIColor.blue
-            cell.blue3.textColor = UIColor.blue
+        let blueBoards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3]
+        let redBoards : [UILabel] = [cell.red1, cell.red2, cell.red3]
         
-        default:
-            cell.blue1.textColor = UIColor.black
-            cell.blue2.textColor = UIColor.black
-            cell.blue3.textColor = UIColor.black
-            cell.red1.textColor = UIColor.black
-            cell.red2.textColor = UIColor.black
-            cell.red3.textColor = UIColor.black
-}
+        if(selectedBoard.prefix(1) == "B"){
+            for i in 0..<redBoards.count{
+                redBoards[i].textColor = UIColor.black
+            }
+            for i in 0..<blueBoards.count{
+                if(self.listOfBlueBoard[i] == self.selectedBoard){
+                    blueBoards[i].textColor = UIColor.blue
+                } else {
+                    blueBoards[i].textColor = UIColor.black
+                }
+            }
+        } else if (selectedBoard.prefix(1) == "R"){
+           for i in 0..<blueBoards.count{
+                blueBoards[i].textColor = UIColor.black
+            }
+                for i in 0..<redBoards.count{
+                    if(self.listOfRedBoard[i] == self.selectedBoard){
+                        redBoards[i].textColor = UIColor.red
+                    } else {
+                        redBoards[i].textColor = UIColor.black
+                    }
+                    
+                    }
+        }
+        
+        if(selectedBoard == "RX"){
+            for i in 0..<redBoards.count{
+                redBoards[i].textColor = UIColor.red
+                blueBoards[i].textColor = UIColor.black
+            }
+        } else if (selectedBoard == "BX"){
+            for i in 0..<redBoards.count{
+                redBoards[i].textColor = UIColor.black
+                blueBoards[i].textColor = UIColor.blue
+            }
+        }
         
         return cell
        

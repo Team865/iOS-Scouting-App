@@ -19,15 +19,17 @@ class matchScheduleCells: UITableViewCell {
     @IBOutlet weak var blue1: UILabel!
     @IBOutlet weak var blue2: UILabel!
     @IBOutlet weak var blue3: UILabel!
+    
     func setMatch(match : matchSchedule){
         dataIcon.image = match.icon
         matchNumber.text = match.matchNumber
         matchNumber.textColor = UIColor.black
-        red1.text = match.red1
-        red2.text = match.red2
-        red3.text = match.red3
-        blue1.text = match.blue1
-        blue2.text = match.blue2
-        blue3.text = match.blue3
+        red1.text = match.redAlliance[0]
+        red2.text = match.redAlliance[1]
+        red3.text = match.redAlliance[2]
+        
+        blue1.text = match.blueAlliance[0]
+        blue2.text = match.blueAlliance[1]
+        blue3.text = match.blueAlliance[2]
     }
 }

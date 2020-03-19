@@ -9,5 +9,6 @@
 import Foundation
 
 class tbaKey{
+    //Remove key before commit
     var key = ""
 }
