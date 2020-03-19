@@ -18,6 +18,7 @@ class EventSelectionController : UIViewController{
     var jsonListOfEvents = [jsonEvents]()
     var listOfEvents : [Events] = []
     var listOfKeys : [String] = []
+    var selectedEventKey = ""
     var yearText : UITextField!
     var teamText : UITextField!
     let viewController = ViewController()
@@ -147,7 +148,10 @@ class EventSelectionController : UIViewController{
     super.didReceiveMemoryWarning()
     }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! ViewController
+        vc.eventKey = self.selectedEventKey
+    }
 }
 
 extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
@@ -164,11 +168,7 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let mainController = UIStoryboard(name : "Main", bundle: nil)
-        guard let mainVC = mainController.instantiateViewController(withIdentifier: "MainController") as?
-                           ViewController else { return }
-        //viewController.getEventKey(eventKey: self.listOfKeys[indexPath.row])
-        //print(self.listOfKeys[indexPath.row])
+       
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
             alert.addTextField {
                     (UITextField) in UITextField.text = "You will delete all data of current event, are you sure ?"
@@ -177,9 +177,9 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
                 
                 let getName = UIAlertAction(title: "OK", style: .default){
                     [weak alert] (_) in
-                    self.viewController.eventKey = self.listOfKeys[indexPath.row]
-                    self.navigationController?.pushViewController(mainVC, animated: true)
-                    NotificationCenter.default.post(name : NSNotification.Name(rawValue: "update"), object: nil)
+                    self.selectedEventKey = self.listOfKeys[indexPath.row]
+                    self.performSegue(withIdentifier: "passEventKey", sender: self)
+                    
                 }
                 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)

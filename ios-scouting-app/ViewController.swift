@@ -36,25 +36,26 @@ var jsonListOfMatches = [Matches]()
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
-
-    NotificationCenter.default.addObserver(self, selector: #selector(updateSchedule), name: NSNotification.Name(rawValue: "update"), object: nil)
+    
 }
-    func getEventKey(eventKey : String){
-        self.eventKey = eventKey
+
+    @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            DispatchQueue.main.async {
+                self.getTBAJson {
+                               for i in 0..<self.jsonListOfMatches.count{
+                                if(self.jsonListOfMatches[i].comp_level == "qm"){
+                                    self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
+                                   }
+                               }
+                               self.listOfMatches = self.createMatchSchedule()
+                               self.matchTable.reloadData()
+                }
+                self.matchTable.reloadData()
+            }
+        }
     }
     
-    @objc func updateSchedule(notifier : NSNotification){
-        
-        getTBAJson {
-                   for i in 0..<self.jsonListOfMatches.count{
-                    if(self.jsonListOfMatches[i].comp_level == "qm"){
-                        self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
-                       }
-                   }
-                   print(self.validMatchNumber.count)
-                   self.listOfMatches = self.createMatchSchedule()
-    }
-    }
     @objc func clickHandler(srcObj : UIButton) -> Void{
         if(srcObj.tag == settingsTag){
             let settingsBoard = UIStoryboard(name : "Main", bundle: nil)
@@ -174,7 +175,7 @@ override func viewDidLoad() {
     
     func getTBAJson(completed : @escaping () -> ()){
         print(self.eventKey)
-    let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + self.eventKey + "/matches/simple")!
+        let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + self.eventKey + "/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
     request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
@@ -196,39 +197,43 @@ override func viewDidLoad() {
     
     func createMatchSchedule() -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
-        for i in 1...self.validMatchNumber.sorted().count{
-                    for u in 0..<self.jsonListOfMatches.count{
-                        if(self.jsonListOfMatches[u].comp_level == "qm"){
-                            if(self.jsonListOfMatches[u].match_number == i){
-                                for k in 0..<self.jsonListOfMatches[u].alliances.blue.team_keys.count{
-                                    let bTeam = self.jsonListOfMatches[u].alliances.blue.team_keys[k]
-        
-                                    let index = bTeam.index(bTeam.startIndex, offsetBy: 3)..<bTeam.endIndex
-        
-                                    let parsedBlue = bTeam[index]
-        
-                                    self.jsonListOfMatches[u].alliances.blue.team_keys[k] = String(parsedBlue)
+        if(self.validMatchNumber.count != 0){
+            for i in 1...self.validMatchNumber.sorted().count{
+                        for u in 0..<self.jsonListOfMatches.count{
+                            if(self.jsonListOfMatches[u].comp_level == "qm"){
+                                if(self.jsonListOfMatches[u].match_number == i){
+                                    for k in 0..<self.jsonListOfMatches[u].alliances.blue.team_keys.count{
+                                        let bTeam = self.jsonListOfMatches[u].alliances.blue.team_keys[k]
+            
+                                        let index = bTeam.index(bTeam.startIndex, offsetBy: 3)..<bTeam.endIndex
+            
+                                        let parsedBlue = bTeam[index]
+            
+                                        self.jsonListOfMatches[u].alliances.blue.team_keys[k] = String(parsedBlue)
+                                    }
+                                    for p in 0..<self.jsonListOfMatches[u].alliances.red.team_keys.count{
+                                        let rTeam = self.jsonListOfMatches[u].alliances.red.team_keys[p]
+            
+                                        let index = rTeam.index(rTeam.startIndex, offsetBy: 3)..<rTeam.endIndex
+            
+                                        let parsedRed = rTeam[index]
+            
+                                        self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
+                                    }
+                                    let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), blue1: self.jsonListOfMatches[u].alliances.blue.team_keys[0], blue2: self.jsonListOfMatches[u].alliances.blue.team_keys[1],
+                                                              blue3: self.jsonListOfMatches[u].alliances.blue.team_keys[2],
+                                                              red1: self.jsonListOfMatches[u].alliances.red.team_keys[0],
+                                                              red2: self.jsonListOfMatches[u].alliances.red.team_keys[1],
+                                                              red3: self.jsonListOfMatches[u].alliances.red.team_keys[2])
+                                    tempMatch.append(match)
                                 }
-                                for p in 0..<self.jsonListOfMatches[u].alliances.red.team_keys.count{
-                                    let rTeam = self.jsonListOfMatches[u].alliances.red.team_keys[p]
-        
-                                    let index = rTeam.index(rTeam.startIndex, offsetBy: 3)..<rTeam.endIndex
-        
-                                    let parsedRed = rTeam[index]
-        
-                                    self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
-                                }
-                                let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), blue1: self.jsonListOfMatches[u].alliances.blue.team_keys[0], blue2: self.jsonListOfMatches[u].alliances.blue.team_keys[1],
-                                                          blue3: self.jsonListOfMatches[u].alliances.blue.team_keys[2],
-                                                          red1: self.jsonListOfMatches[u].alliances.red.team_keys[0],
-                                                          red2: self.jsonListOfMatches[u].alliances.red.team_keys[1],
-                                                          red3: self.jsonListOfMatches[u].alliances.red.team_keys[2])
-                                tempMatch.append(match)
                             }
+            
                         }
-        
                     }
-                }
+        }
+        
+        
         
         return tempMatch
     }
