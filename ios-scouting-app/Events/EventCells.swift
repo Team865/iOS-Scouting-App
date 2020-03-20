@@ -21,7 +21,7 @@ class EventCells : UITableViewCell {
     
   private lazy var eventInfo : UILabel = {
     let label = UILabel(frame : CGRect(x : 5, y : 55, width : 300, height : 20))
-        label.textAlignment = .left
+    label.textAlignment = .left
     label.textColor = UIColor.blue
     label.font = label.font.withSize(17.5)
         return label

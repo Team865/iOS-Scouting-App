@@ -12,24 +12,25 @@ import UIKit
 class EventSelectionController : UIViewController{
     
     var eventTable : UITableView!
+    
     let y = Int(UIScreen.main.bounds.height / 10)
     let viewDimension = 40
+    
     var key = tbaKey()
+    
     var jsonListOfEvents = [jsonEvents]()
     var listOfEvents : [Events] = []
     var listOfKeys : [String] = []
     var selectedEventKey = ""
+    
     var yearText : UITextField!
     var teamText : UITextField!
+    
     let viewController = ViewController()
     
     override func viewDidLoad() {
            super.viewDidLoad()
-//        let tap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action : #selector(dismissKeyboard(sender:)))
-//
-//        view.addGestureRecognizer(tap)
-           self.yearText = yearTextField(hint: "Year", tag : 1,  x: 15 + (Int(UIScreen.main.bounds.width / 10)))
-           self.teamText = teamTextField(hint: "Team", tag : 2, x: Int(UIScreen.main.bounds.width * 0.47) + (Int(UIScreen.main.bounds.width / 10)))
+        
            
         configureTableView()
         setUpNavigationBar()
@@ -47,29 +48,18 @@ class EventSelectionController : UIViewController{
         return button
     }
     
-    private func createImageView(image : String, x : Int) -> UIImageView
-    {
-        let imageView = UIImageView(frame: CGRect(x : x, y : self.y, width: Int(UIScreen.main.bounds.width / 10), height: self.viewDimension))
-        imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named : image)
-        
-        return imageView
-    }
-    
-    private func yearTextField(hint : String, tag : Int, x : Int) -> UITextField{
-        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : (Int(UIScreen.main.bounds.width / 3)), height : self.viewDimension))
+    private func yearTextField(x : Double, y : Double, width : Double, height : Double, hint : String) -> UITextField{
+        let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
         textField.placeholder = hint
-        textField.tag = tag
         textField.textAlignment = .center
         return textField
     }
     
-    private func teamTextField(hint : String, tag : Int, x : Int) -> UITextField{
-        let textField = UITextField(frame: CGRect(x : x, y : self.y, width : Int(UIScreen.main.bounds.width / 3), height : self.viewDimension))
-        textField.placeholder = hint
-        textField.tag = tag
-        textField.textAlignment = .center
-        return textField
+    private func teamTextField(x : Double, y : Double, width : Double, height : Double, hint : String) -> UITextField{
+    let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
+    textField.placeholder = hint
+    textField.textAlignment = .center
+    return textField
     }
     
     private func createEventCells() -> [Events]{
@@ -85,25 +75,22 @@ class EventSelectionController : UIViewController{
     }
     
     private func setUpView(team : UITextField, year : UITextField){
-        self.view.addSubview(createImageView(image: "calendar", x: 15))
-        self.view.addSubview(year)
-        self.view.addSubview(createImageView(image: "team", x: Int(UIScreen.main.bounds.width * 0.47)))
-        self.view.addSubview(team)
-        self.view.addSubview(createButton(image: "search", x: Int(UIScreen.main.bounds.width * 0.87)))
+        view.addSubview(team)
+        view.addSubview(year)
     }
     
     private func configureTableView() {
         eventTable = UITableView()
         eventTable.delegate = self
         eventTable.dataSource = self
-        eventTable.rowHeight = 80
+        eventTable.rowHeight = UIScreen.main.bounds.height * 0.08
         
         
         eventTable.register(EventCells.self, forCellReuseIdentifier: "EventCells")
         view.addSubview(eventTable)
         
-        let tableY = self.y + self.viewDimension
-        eventTable.frame = CGRect(x: 0, y: tableY, width: Int(UIScreen.main.bounds.width), height: Int(UIScreen.main.bounds.height))
+        
+        eventTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.15, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
         eventTable.tableFooterView = UIView()
     }
     

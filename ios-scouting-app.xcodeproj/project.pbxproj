@@ -10,7 +10,6 @@
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
-		25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF6762403368B00034E12 /* matchScheduleCells.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
@@ -24,13 +23,13 @@
 		25F35CCD2400E60800CAA81D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 25F35CCC2400E60800CAA81D /* Assets.xcassets */; };
 		25F35CD02400E60800CAA81D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25F35CCE2400E60800CAA81D /* LaunchScreen.storyboard */; };
 		25F96487242104F10095A6DF /* tbaKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F96486242104F10095A6DF /* tbaKey.swift */; };
+		25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F9648824237AE90095A6DF /* matchScheduleCells.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
-		25CEF6762403368B00034E12 /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
@@ -46,6 +45,7 @@
 		25F35CCF2400E60800CAA81D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		25F35CD12400E60800CAA81D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		25F96486242104F10095A6DF /* tbaKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tbaKey.swift; sourceTree = "<group>"; };
+		25F9648824237AE90095A6DF /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				25CEF679240338B900034E12 /* matchSchedule.swift */,
-				25CEF6762403368B00034E12 /* matchScheduleCells.swift */,
+				25F9648824237AE90095A6DF /* matchScheduleCells.swift */,
 			);
 			path = Matches;
 			sourceTree = "<group>";
@@ -221,10 +221,10 @@
 			files = (
 				25E0F56E241F6BFE0034432A /* Events.swift in Sources */,
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
+				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
-				25CEF6772403368B00034E12 /* matchScheduleCells.swift in Sources */,
 				2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */,
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
