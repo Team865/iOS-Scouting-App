@@ -14,6 +14,8 @@ class SettingsViewController: UIViewController {
     var settingsActionSection = [Settings]()
     var settingsInfoSection = [Settings]()
     
+    var sectionTitle : [String] = ["Configurations", "About"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
@@ -27,8 +29,8 @@ class SettingsViewController: UIViewController {
     func createActionSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
         
-        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Select FRC Event", description: "Current Event", hideSwitch: true))
-        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
+        tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: "Current Event", hideSwitch: true))
+        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
             hideSwitch : false))
         
         return tempSection
@@ -37,9 +39,9 @@ class SettingsViewController: UIViewController {
     func createInfoSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
 
-        tempSection.append(Settings(image: UIImage(named : "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
-        tempSection.append(Settings(image: UIImage(named : "white")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
-        tempSection.append(Settings(image : UIImage(named: "white")!, title : "Open source Licenses", description : "", hideSwitch : true))
+        tempSection.append(Settings(image : UIImage(named: "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
+        tempSection.append(Settings(image : UIImage(named : "github")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
+        tempSection.append(Settings(image : UIImage(named : "badge")!, title : "Open source Licenses", description : "MIT License", hideSwitch : true))
         
         return tempSection
     }
@@ -48,7 +50,7 @@ class SettingsViewController: UIViewController {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 60
+        tableView.rowHeight = UIScreen.main.bounds.height * 0.1
         
         tableView.register(SettingsCell.self, forCellReuseIdentifier: "SettingsCell")
         view.addSubview(tableView)
@@ -85,6 +87,24 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
         default : return 0
         }
       }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+        
+        view.backgroundColor = UIColor.systemGray6
+        
+        let title = UILabel()
+        title.font = title.font.withSize(15)
+        title.textColor = UIColor.black
+        title.text = self.sectionTitle[section]
+        view.addSubview(title)
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        title.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
+        
+        return view
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for : indexPath) as! SettingsCell
@@ -92,10 +112,15 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
         case 0 :
             let section1 = settingsActionSection[indexPath.row]
             cell.setCell(settings: section1)
+            
+            if(indexPath.row != 1){
+                cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            }
         case 1 :
             let section2 = settingsInfoSection[indexPath.row]
             cell.setCell(settings: section2)
-        default: cell.backgroundColor = UIColor.white
+            cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
+            default: cell.backgroundColor = UIColor.white
         }
         
         return cell

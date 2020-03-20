@@ -7,7 +7,10 @@
 //
 
 import UIKit
-class SettingsCell : UITableViewCell{
+class SettingsCell :UITableViewCell{
+    
+    let cellHeight = UIScreen.main.bounds.height * 0.1
+    let cellWidth = UIScreen.main.bounds.width
     
     lazy var switchControl: UISwitch = {
         let switchControl = UISwitch()
@@ -18,17 +21,16 @@ class SettingsCell : UITableViewCell{
         return switchControl
     }()
     
-    //Adjust dimensions so image will fit screen
     lazy var imageControl : UIImageView = {
-        var image = UIImageView(frame : CGRect(x : 12, y : 0, width : 60, height : 50))
-        image.contentMode = .scaleAspectFill
+        var image = UIImageView(frame : CGRect(x : Double(self.cellWidth * 0.05), y : Double(self.cellHeight * 0.05), width : Double(self.cellWidth * 0.1), height : Double(self.cellHeight * 0.9)))
+        image.contentMode = .scaleAspectFit
         image.clipsToBounds = true
-        image.layer.cornerRadius = 25
+        image.layer.cornerRadius = 10
         return image
     }()
     
     private lazy var titleLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 80, y : 10, width : 300, height : 20))
+        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.05), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.45)))
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         label.isHighlighted = true
@@ -37,11 +39,12 @@ class SettingsCell : UITableViewCell{
     }()
     
     private lazy var descriptionLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : 80, y : 20, width : 200, height : 40))
+        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.45), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.45)))
         label.textAlignment = .left
         label.lineBreakMode = .byClipping
+        label.textColor = UIColor.lightGray
         label.numberOfLines = 0
-        label.font = label.font.withSize(10)
+        label.font = label.font.withSize(12)
         return label
     }()
     
@@ -55,6 +58,9 @@ class SettingsCell : UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+         
+        
+        
         addSubview(switchControl)
         addSubview(titleLabel)
         addSubview(descriptionLabel)
