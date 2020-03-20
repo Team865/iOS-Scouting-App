@@ -156,7 +156,7 @@ override func viewDidLoad() {
            
            matchTable.register(matchScheduleCells.self, forCellReuseIdentifier: "matchScheduleCells")
            view.addSubview(matchTable)
-            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.17, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
+            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.17, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.83)
            matchTable.tableFooterView = UIView()
        }
     
@@ -299,7 +299,6 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "matchScheduleCells", for : indexPath) as! matchScheduleCells
         cell.setMatch(match: match)
-        cell.backgroundColor = UIColor.white
         
         let boards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3, cell.red1, cell.red2, cell.red3]
         
