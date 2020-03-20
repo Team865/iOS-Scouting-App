@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-@IBOutlet weak var matchTable: UITableView!
+var matchTable: UITableView!
 
 var key = tbaKey()
     
@@ -16,9 +16,7 @@ var validMatchNumber : [Int] = []
     
 var selectedBoard = "B1"
 var scoutName = "First L"
-var listOfBlueBoard = ["B1", "B2", "B3"]
-var listOfRedBoard = ["R1", "R2", "R3"]
-var superScoutBoard = ["BX", "RX"]
+var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
     
 let settingsView = UIViewController()
     
@@ -37,9 +35,16 @@ var jsonListOfMatches = [Matches]()
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
-   
+    
+    let border = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1495, width: UIScreen.main.bounds.width, height: 1))
+    border.backgroundColor = UIColor.lightGray
+    
+    self.view.addSubview(border)
+    configureTableView()
+    
 }
-
+    //Segue to update board
+    //https://stackoverflow.com/questions/25921623/how-to-reload-tableview-from-another-view-controller-in-swift
     @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
         DispatchQueue.global(qos: .userInitiated).async {
             DispatchQueue.main.async {
@@ -52,11 +57,11 @@ override func viewDidLoad() {
                                self.listOfMatches = self.createMatchSchedule()
                                self.matchTable.reloadData()
                 }
-                self.matchTable.reloadData()
             }
         }
     }
     
+    //Handle clicking objects
     @objc func clickHandler(srcObj : UIButton) -> Void{
         if(srcObj.tag == settingsTag){
             let settingsBoard = UIStoryboard(name : "Main", bundle: nil)
@@ -91,38 +96,20 @@ override func viewDidLoad() {
         if(srcObj.tag == boardSelectionTag){
             let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
             
-            for i in 0..<self.listOfBlueBoard.count{
-                let board = UIAlertAction(title : self.listOfBlueBoard[i], style: .default){
-                    (ACTION) in self.updateBoard(board: self.listOfBlueBoard[i], scout: self.scoutName)
-                    self.selectedBoard = self.listOfBlueBoard[i]
+            for i in 0..<self.listOfBoards.count{
+                let board = UIAlertAction(title : self.listOfBoards[i], style: .default){
+                    (ACTION) in self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
+                    self.selectedBoard = self.listOfBoards[i]
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
-            }
-            
-            for i in 0..<self.listOfRedBoard.count{
-                let board = UIAlertAction(title : self.listOfRedBoard[i], style: .default){
-                    (ACTION) in self.updateBoard(board: self.listOfRedBoard[i], scout: self.scoutName)
-                    self.selectedBoard = self.listOfRedBoard[i]
-                    self.matchTable.reloadData()
-                }
-                alert.addAction(board)
-            }
-            
-            for i in 0..<self.superScoutBoard.count{
-                let board = UIAlertAction(title : self.superScoutBoard[i], style: .default){
-                                   (ACTION) in self.updateBoard(board: self.superScoutBoard[i], scout: self.scoutName)
-                                   self.selectedBoard = self.superScoutBoard[i]
-                                   self.matchTable.reloadData()
-                               }
-                               alert.addAction(board)
             }
             
             self.present(alert, animated: true, completion: nil)
         }
     }
     
-    
+    //Update board after an action is performed
     private func updateBoard(board : String, scout : String){
         let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         selectedBoard.isUserInteractionEnabled = false
@@ -133,6 +120,18 @@ override func viewDidLoad() {
         scoutName.text = scout
         self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
+    //UI Configurations
+    private func configureTableView(){
+           matchTable = UITableView()
+           matchTable.delegate = self
+           matchTable.dataSource = self
+           matchTable.rowHeight = UIScreen.main.bounds.height * 0.08
+           
+           matchTable.register(matchScheduleCells.self, forCellReuseIdentifier: "matchScheduleCells")
+           view.addSubview(matchTable)
+            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.15, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
+           matchTable.tableFooterView = UIView()
+       }
     
     private func createSelectBoardButton() -> UIButton{
         let selectBoardButton = UIButton(type : .system)
@@ -191,6 +190,7 @@ override func viewDidLoad() {
         
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
+    
     
     func getTBAJson(completed : @escaping () -> ()){
         print(self.eventKey)
@@ -262,48 +262,31 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let match = self.listOfMatches[indexPath.row]
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Alliances", for : indexPath) as! matchScheduleCells
+        let cell = tableView.dequeueReusableCell(withIdentifier: "matchScheduleCells", for : indexPath) as! matchScheduleCells
         cell.setMatch(match: match)
         cell.backgroundColor = UIColor.white
         
-        let blueBoards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3]
-        let redBoards : [UILabel] = [cell.red1, cell.red2, cell.red3]
+        let boards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3, cell.red1, cell.red2, cell.red3]
         
-        if(selectedBoard.prefix(1) == "B"){
-            for i in 0..<redBoards.count{
-                redBoards[i].textColor = UIColor.black
-            }
-            for i in 0..<blueBoards.count{
-                if(self.listOfBlueBoard[i] == self.selectedBoard){
-                    blueBoards[i].textColor = UIColor.blue
-                } else {
-                    blueBoards[i].textColor = UIColor.black
-                }
-            }
-        } else if (selectedBoard.prefix(1) == "R"){
-           for i in 0..<blueBoards.count{
-                blueBoards[i].textColor = UIColor.black
-            }
-                for i in 0..<redBoards.count{
-                    if(self.listOfRedBoard[i] == self.selectedBoard){
-                        redBoards[i].textColor = UIColor.red
-                    } else {
-                        redBoards[i].textColor = UIColor.black
-                    }
-                    
-                    }
+        for i in 0..<boards.count{
+            boards[i].textColor = UIColor.gray
         }
         
-        if(selectedBoard == "RX"){
-            for i in 0..<redBoards.count{
-                redBoards[i].textColor = UIColor.red
-                blueBoards[i].textColor = UIColor.black
+        switch(self.selectedBoard){
+        case "B1" : cell.blue1.textColor = UIColor.blue
+        case "B2" : cell.blue2.textColor = UIColor.blue
+        case "B3" : cell.blue3.textColor = UIColor.blue
+        case "R1" : cell.red1.textColor = UIColor.red
+        case "R2" : cell.red2.textColor = UIColor.red
+        case "R3" : cell.red3.textColor = UIColor.red
+        case "BX" : for i in 0..<boards.count/2{
+            boards[i].textColor = UIColor.blue
             }
-        } else if (selectedBoard == "BX"){
-            for i in 0..<redBoards.count{
-                redBoards[i].textColor = UIColor.black
-                blueBoards[i].textColor = UIColor.blue
+        case "RX" : for i in boards.count/2..<boards.count{
+            boards[i].textColor = UIColor.red
             }
+        default:
+            break
         }
         
         return cell
