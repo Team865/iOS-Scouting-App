@@ -9,22 +9,26 @@
 import UIKit
 class EventCells : UITableViewCell {
    
+    let cellHeight = UIScreen.main.bounds.height
+    let cellWidth = UIScreen.main.bounds.width
+    
+    let multiplier = 0.1
+    
  private lazy var eventName : UILabel = {
-    let label = UILabel(frame : CGRect(x : 5, y : 0, width : 300, height : 60))
+    let label = UILabel(frame : CGRect(x: Double(self.cellWidth * 0.05), y: Double(self.cellHeight * 0.05) * self.multiplier, width: Double(self.cellWidth * 0.9), height: Double(self.cellHeight * 0.6) * self.multiplier))
      label.textAlignment = .left
      label.lineBreakMode = .byClipping
      label.numberOfLines = 0
-     label.isHighlighted = true
-     label.font = label.font.withSize(20)
+     label.font = label.font.withSize(15)
      return label
  }()
     
   private lazy var eventInfo : UILabel = {
-    let label = UILabel(frame : CGRect(x : 5, y : 55, width : 300, height : 20))
+    let label = UILabel(frame : CGRect(x: Double(self.cellWidth * 0.05), y: Double(self.cellHeight * 0.50) * self.multiplier, width: Double(self.cellWidth * 0.9), height: Double(self.cellHeight * 0.4) * self.multiplier))
     label.textAlignment = .left
-    label.textColor = UIColor.blue
-    label.font = label.font.withSize(17.5)
-        return label
+    label.textColor = UIColor.systemBlue
+    label.font = label.font.withSize(15)
+    return label
     }()
     
     func setEvent (event : Events){

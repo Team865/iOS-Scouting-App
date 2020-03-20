@@ -28,18 +28,25 @@ let boardSelectionTag = 4;
 var event : String = ""
 var year : Int = 0
 var eventKey : String = ""
-    
+var currentEvent : String = "Current Event : None"
 var listOfMatches : [matchSchedule] = []
 var jsonListOfMatches = [Matches]()
+
+var currentEventLabel : UILabel!
     
 override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
     
-    let border = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1495, width: UIScreen.main.bounds.width, height: 1))
+    let border = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1695, width: UIScreen.main.bounds.width, height: 1))
     border.backgroundColor = UIColor.lightGray
     
     self.view.addSubview(border)
+    
+    currentEventLabel = self.createCurrentEventName()
+    currentEventLabel.text = self.currentEvent
+    
+    self.view.addSubview(currentEventLabel)
     configureTableView()
     
 }
@@ -48,14 +55,17 @@ override func viewDidLoad() {
     @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
         DispatchQueue.global(qos: .userInitiated).async {
             DispatchQueue.main.async {
+                print(self.currentEvent)
                 self.getTBAJson {
                                for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
                                     self.validMatchNumber.append(self.jsonListOfMatches[i].match_number)
                                    }
                                }
-                               self.listOfMatches = self.createMatchSchedule()
-                               self.matchTable.reloadData()
+                    self.currentEventLabel.text = self.currentEvent
+                    self.view.addSubview(self.currentEventLabel)
+                    self.listOfMatches = self.createMatchSchedule()
+                    self.matchTable.reloadData()
                 }
             }
         }
@@ -129,9 +139,16 @@ override func viewDidLoad() {
            
            matchTable.register(matchScheduleCells.self, forCellReuseIdentifier: "matchScheduleCells")
            view.addSubview(matchTable)
-            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.15, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
+            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.17, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
            matchTable.tableFooterView = UIView()
        }
+    
+    private func createCurrentEventName() -> UILabel{
+        let label = UILabel(frame: CGRect(x : Double(UIScreen.main.bounds.width * 0.05), y: Double(UIScreen.main.bounds.height * 0.075), width: Double(UIScreen.main.bounds.width * 0.9), height: Double(UIScreen.main.bounds.height * 0.12)))
+        label.textAlignment = .center
+        label.textColor = UIColor.systemBlue
+        return label
+    }
     
     private func createSelectBoardButton() -> UIButton{
         let selectBoardButton = UIButton(type : .system)

@@ -9,11 +9,13 @@
 import Foundation
 import UIKit
 
-class EventSelectionController : UIViewController{
+class EventSelectionController : UIViewController, UITextFieldDelegate{
     
     var eventTable : UITableView!
     
-    let y = Int(UIScreen.main.bounds.height / 10)
+    let screenWidth = UIScreen.main.bounds.width
+    let screenHeight = UIScreen.main.bounds.height
+    
     let viewDimension = 40
     
     var key = tbaKey()
@@ -21,7 +23,9 @@ class EventSelectionController : UIViewController{
     var jsonListOfEvents = [jsonEvents]()
     var listOfEvents : [Events] = []
     var listOfKeys : [String] = []
+    var listOfNames : [String] = []
     var selectedEventKey = ""
+    var selectedName = ""
     
     var yearText : UITextField!
     var teamText : UITextField!
@@ -31,27 +35,64 @@ class EventSelectionController : UIViewController{
     override func viewDidLoad() {
            super.viewDidLoad()
         
-           
+        yearText = yearTextField(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13), hint: "year")
+        teamText = teamTextField(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13), hint: "team")
+        
+        yearText.delegate = self
+        teamText.delegate = self
+        
         configureTableView()
         setUpNavigationBar()
         setUpView(team : self.teamText, year : self.yearText)
 
        }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        yearText.resignFirstResponder()
+        teamText.resignFirstResponder()
+        
+        getJSONEvents {
+            self.listOfEvents = self.createEventCells()
+            self.eventTable.reloadData()
+        }
+        return true
+    }
+    //UI Configurations
+    private func setUpView(team : UITextField, year : UITextField){
+        view.addSubview(team)
+        view.addSubview(year)
+    }
     
-    private func createButton(image : String, x : Int) -> UIButton {
-        let button = UIButton(type : .system)
-        button.setImage(UIImage(named : image)?.withRenderingMode(.alwaysOriginal), for : .normal)
-        button.contentMode = .scaleAspectFit
-        button.frame = CGRect(x : x, y : self.y, width: Int(UIScreen.main.bounds.width / 10), height : self.viewDimension)
-        button.addTarget(self, action: #selector(onClick(sender:)), for: .touchUpInside)
-        button.addTarget(self, action: #selector(dismissKeyboard(sender:)) , for: .touchUpInside)
-        return button
+    private func configureTableView() {
+        eventTable = UITableView()
+        eventTable.delegate = self
+        eventTable.dataSource = self
+        eventTable.rowHeight = UIScreen.main.bounds.height * 0.1
+        
+        eventTable.register(EventCells.self, forCellReuseIdentifier: "EventCells")
+        view.addSubview(eventTable)
+        
+        eventTable.frame = CGRect(x: 0, y: Double(self.screenHeight * 0.15), width: Double(UIScreen.main.bounds.width), height: Double(self.screenHeight * 0.85))
+        eventTable.tableFooterView = UIView()
     }
     
     private func yearTextField(x : Double, y : Double, width : Double, height : Double, hint : String) -> UITextField{
         let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
         textField.placeholder = hint
         textField.textAlignment = .center
+        
+        let image = UIImageView(frame : CGRect(x : 0, y : 0, width : width * 0.8, height : height * 0.75))
+        image.image = UIImage(named : "calendar")
+        
+        let bottomLine = CALayer()
+            bottomLine.frame = CGRect(x : 0, y : y * 1.45, width: width, height : 2)
+        bottomLine.backgroundColor = UIColor.black.cgColor
+        textField.borderStyle = .none
+        textField.layer.addSublayer(bottomLine)
+        
+        textField.font = textField.font?.withSize(15)
+        
+        textField.leftViewMode = UITextField.ViewMode.always
+        textField.leftView = image
         return textField
     }
     
@@ -59,6 +100,19 @@ class EventSelectionController : UIViewController{
     let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
     textField.placeholder = hint
     textField.textAlignment = .center
+        
+    let image = UIImageView(frame : CGRect(x : 0, y : 0, width : width, height : height))
+    image.image = UIImage(named : "team")
+    
+    let bottomLine = CALayer()
+        bottomLine.frame = CGRect(x : 0, y : y * 1.45, width: width, height : 2)
+    bottomLine.backgroundColor = UIColor.black.cgColor
+    textField.borderStyle = .none
+    textField.layer.addSublayer(bottomLine)
+        
+    textField.font = textField.font?.withSize(15)
+    textField.leftViewMode = UITextField.ViewMode.always
+    textField.leftView = image
     return textField
     }
     
@@ -69,41 +123,10 @@ class EventSelectionController : UIViewController{
                         let event = Events.init(name: jsonListOfEvents[i].name, info : jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
                         tempCell.append(event)
                         self.listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
+                        self.listOfNames.append(self.jsonListOfEvents[i].name)
                     }
                 }
         return tempCell
-    }
-    
-    private func setUpView(team : UITextField, year : UITextField){
-        view.addSubview(team)
-        view.addSubview(year)
-    }
-    
-    private func configureTableView() {
-        eventTable = UITableView()
-        eventTable.delegate = self
-        eventTable.dataSource = self
-        eventTable.rowHeight = UIScreen.main.bounds.height * 0.08
-        
-        
-        eventTable.register(EventCells.self, forCellReuseIdentifier: "EventCells")
-        view.addSubview(eventTable)
-        
-        
-        eventTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.15, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.85)
-        eventTable.tableFooterView = UIView()
-    }
-    
-    @objc func dismissKeyboard(sender : UIButton){
-        view.endEditing(true)
-    }
-    
-    @objc func onClick (sender : UIButton){
-        getJSONEvents {
-            self.listOfEvents = self.createEventCells()
-            self.eventTable.reloadData()
-        }
-        
     }
     
     private func setUpNavigationBar(){
@@ -138,6 +161,7 @@ class EventSelectionController : UIViewController{
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let vc = segue.destination as! ViewController
         vc.eventKey = self.selectedEventKey
+        vc.currentEvent = self.selectedName
     }
 }
 
@@ -165,6 +189,7 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
                 let getName = UIAlertAction(title: "OK", style: .default){
                     [weak alert] (_) in
                     self.selectedEventKey = self.listOfKeys[indexPath.row]
+                    self.selectedName = self.listOfNames[indexPath.row]
                     self.performSegue(withIdentifier: "passEventKey", sender: self)
                     
                 }
