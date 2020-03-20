@@ -16,6 +16,7 @@ var validMatchNumber : [Int] = []
     
 var selectedBoard = "B1"
 var scoutName = "First L"
+var listOfBoardsTitles = ["Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3", "Blue Super Scout", "Red Super Scout"]
 var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
     
 let settingsView = UIViewController()
@@ -107,14 +108,17 @@ override func viewDidLoad() {
             let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
             
             for i in 0..<self.listOfBoards.count{
-                let board = UIAlertAction(title : self.listOfBoards[i], style: .default){
-                    (ACTION) in self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
+                let board = UIAlertAction(title : self.listOfBoardsTitles[i], style: .default){
+                    (ACTION) in
+                    self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
                     self.selectedBoard = self.listOfBoards[i]
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
             }
             
+            let cancel = UIAlertAction(title : "Cancel", style: .cancel)
+            alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         }
     }
@@ -124,6 +128,19 @@ override func viewDidLoad() {
         let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = board
+        
+        switch(board){
+        case "B1" : selectedBoard.textColor = UIColor.blue
+        case "B2" : selectedBoard.textColor = UIColor.blue
+        case "B3" : selectedBoard.textColor = UIColor.blue
+        case "R1" : selectedBoard.textColor = UIColor.red
+        case "R2" : selectedBoard.textColor = UIColor.red
+        case "R3" : selectedBoard.textColor = UIColor.red
+        case "BX" : selectedBoard.textColor = UIColor.blue
+        case "RX" : selectedBoard.textColor = UIColor.red
+        default :
+            selectedBoard.textColor = UIColor.black
+        }
         
         let scoutName = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
@@ -198,6 +215,7 @@ override func viewDidLoad() {
         let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = "B1"
+        selectedBoard.textColor = UIColor.blue
         
         let scoutName = UITextField(frame : .init(x : 0, y : 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
@@ -310,5 +328,13 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
        
 }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
+        
+        guard let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingViewController") as?
+            ScoutingViewController else { return }
+        
+        self.navigationController?.pushViewController(scoutingVC, animated: true)
+    }
 
 }

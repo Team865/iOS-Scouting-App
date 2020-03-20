@@ -50,6 +50,15 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         yearText.resignFirstResponder()
         teamText.resignFirstResponder()
         
+        self.selectedName = ""
+        self.selectedEventKey = ""
+        
+        viewController.currentEvent = ""
+        viewController.eventKey = ""
+        
+        self.listOfNames.removeAll()
+        self.listOfKeys.removeAll()
+        
         getJSONEvents {
             self.listOfEvents = self.createEventCells()
             self.eventTable.reloadData()
@@ -180,11 +189,7 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        
-            let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
-            alert.addTextField {
-                    (UITextField) in UITextField.text = "You will delete all data of current event, are you sure ?"
-                UITextField.isUserInteractionEnabled = false
-                }
+            let alert = UIAlertController(title: "Warning", message: "You will delete all data of current event, are you sure ?", preferredStyle: .alert)
                 
                 let getName = UIAlertAction(title: "OK", style: .default){
                     [weak alert] (_) in

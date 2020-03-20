@@ -24,6 +24,9 @@
 		25F35CD02400E60800CAA81D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25F35CCE2400E60800CAA81D /* LaunchScreen.storyboard */; };
 		25F96487242104F10095A6DF /* tbaKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F96486242104F10095A6DF /* tbaKey.swift */; };
 		25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F9648824237AE90095A6DF /* matchScheduleCells.swift */; };
+		25F9648B242499FA0095A6DF /* ScoutingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F9648A242499FA0095A6DF /* ScoutingViewController.swift */; };
+		25F964902424A34D0095A6DF /* ScoutingScreenCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F9648F2424A34D0095A6DF /* ScoutingScreenCells.swift */; };
+		25F964922424A3690095A6DF /* ScoutingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F964912424A3690095A6DF /* ScoutingScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +49,9 @@
 		25F35CD12400E60800CAA81D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		25F96486242104F10095A6DF /* tbaKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tbaKey.swift; sourceTree = "<group>"; };
 		25F9648824237AE90095A6DF /* matchScheduleCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchScheduleCells.swift; sourceTree = "<group>"; };
+		25F9648A242499FA0095A6DF /* ScoutingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingViewController.swift; sourceTree = "<group>"; };
+		25F9648F2424A34D0095A6DF /* ScoutingScreenCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingScreenCells.swift; sourceTree = "<group>"; };
+		25F964912424A3690095A6DF /* ScoutingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +68,7 @@
 		25E0F565241EC1660034432A /* TableView */ = {
 			isa = PBXGroup;
 			children = (
+				25F9648C2424A3190095A6DF /* ScoutingScreens */,
 				25E0F56F241F6C020034432A /* Events */,
 				25E0F568241EC1A20034432A /* Matches */,
 				25E0F567241EC1980034432A /* settings */,
@@ -102,6 +109,7 @@
 				25F35CC72400E60600CAA81D /* ViewController.swift */,
 				2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */,
 				25E0F56B241F63780034432A /* EventSelectionController.swift */,
+				25F9648A242499FA0095A6DF /* ScoutingViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -146,6 +154,15 @@
 				25F96486242104F10095A6DF /* tbaKey.swift */,
 			);
 			path = "ios-scouting-app";
+			sourceTree = "<group>";
+		};
+		25F9648C2424A3190095A6DF /* ScoutingScreens */ = {
+			isa = PBXGroup;
+			children = (
+				25F9648F2424A34D0095A6DF /* ScoutingScreenCells.swift */,
+				25F964912424A3690095A6DF /* ScoutingScreen.swift */,
+			);
+			path = ScoutingScreens;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +237,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				25E0F56E241F6BFE0034432A /* Events.swift in Sources */,
+				25F964902424A34D0095A6DF /* ScoutingScreenCells.swift in Sources */,
+				25F964922424A3690095A6DF /* ScoutingScreen.swift in Sources */,
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
 				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
@@ -229,6 +248,7 @@
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
 				25E0F571241F6C1E0034432A /* EventCells.swift in Sources */,
+				25F9648B242499FA0095A6DF /* ScoutingViewController.swift in Sources */,
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
 				25F96487242104F10095A6DF /* tbaKey.swift in Sources */,
 				25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */,
