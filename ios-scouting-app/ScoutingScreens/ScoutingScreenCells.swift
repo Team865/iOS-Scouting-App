@@ -9,23 +9,27 @@
 import Foundation
 import UIKit
 class ScoutingScreenCells : UICollectionViewCell{
-    let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
+    let screenWidth = UIScreen.main.bounds.width
     
-    func createMatchNumberLabel(x : Double, y : Double, width: Double, height : Double) -> UILabel {
+    var screenNameLabel : UILabel!
+    
+    func ScreenNameLabel(x : Double, y : Double, width: Double, height : Double) -> UILabel {
         let label = UILabel(frame : CGRect(x: x, y: y, width: width, height: height))
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.text = "M1"
+        label.textAlignment = .left
+        label.font = label.font.withSize(self.screenHeight * 0.03)
         return label
     }
-    
-    
+
+    func setScreen(screen : ScoutingScreen){
+        screenNameLabel.text = screen.title
+    }
     
     override init(frame: CGRect) {
         super.init(frame : frame)
-        let matchNumber = createMatchNumberLabel(x: Double(self.screenWidth * 0.01), y: -Double(self.screenHeight * 0.025), width: Double(self.screenWidth * 0.2), height: Double(self.screenHeight * 0.15))
-        addSubview(matchNumber)
+        self.screenNameLabel = ScreenNameLabel(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.008), width: Double(self.screenWidth * 0.3), height: Double(self.screenHeight * 0.04))
+       
+           addSubview(self.screenNameLabel)
     }
     
     required init?(coder: NSCoder) {

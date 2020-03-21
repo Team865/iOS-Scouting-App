@@ -15,7 +15,11 @@ var key = tbaKey()
 var validMatchNumber : [Int] = []
     
 var selectedBoard = "B1"
-var scoutName = "First L"
+var selectedTeam = ""
+var selectedMatch = "M"
+    
+var listOfSelectedTeams : [String] = []
+var scoutName = ""
 var listOfBoardsTitles = ["Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3", "Blue Super Scout", "Red Super Scout"]
 var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
     
@@ -57,6 +61,8 @@ override func viewDidLoad() {
         DispatchQueue.global(qos: .userInitiated).async {
             DispatchQueue.main.async {
                 print(self.currentEvent)
+                self.listOfMatches.removeAll()
+                self.listOfSelectedTeams.removeAll()
                 self.getTBAJson {
                                for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -89,6 +95,7 @@ override func viewDidLoad() {
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
             alert.addTextField {
                 (UITextField) in UITextField.placeholder = "First L"
+                UITextField.text = self.scoutName
             }
             
             let getName = UIAlertAction(title: "OK", style: .default){
@@ -104,6 +111,7 @@ override func viewDidLoad() {
             alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         }
+        
         if(srcObj.tag == boardSelectionTag){
             let alert = UIAlertController(title: "Select board", message: "", preferredStyle: .alert)
             
@@ -128,6 +136,8 @@ override func viewDidLoad() {
         let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = board
+        
+        self.listOfSelectedTeams.removeAll()
         
         switch(board){
         case "B1" : selectedBoard.textColor = UIColor.blue
@@ -308,16 +318,26 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         switch(self.selectedBoard){
         case "B1" : cell.blue1.textColor = UIColor.blue
+        self.listOfSelectedTeams.append(cell.blue1.text!)
         case "B2" : cell.blue2.textColor = UIColor.blue
+        self.listOfSelectedTeams.append(cell.blue2.text!)
+        print(listOfSelectedTeams)
         case "B3" : cell.blue3.textColor = UIColor.blue
+        self.listOfSelectedTeams.append(cell.blue3.text!)
+
         case "R1" : cell.red1.textColor = UIColor.red
+        self.listOfSelectedTeams.append(cell.red1.text!)
         case "R2" : cell.red2.textColor = UIColor.red
+        self.listOfSelectedTeams.append(cell.red2.text!)
         case "R3" : cell.red3.textColor = UIColor.red
+        self.listOfSelectedTeams.append(cell.red3.text!)
         case "BX" : for i in 0..<boards.count/2{
             boards[i].textColor = UIColor.blue
+            self.listOfSelectedTeams.append(contentsOf: [cell.blue1.text!, cell.blue2.text!, cell.blue3.text!])
             }
         case "RX" : for i in boards.count/2..<boards.count{
             boards[i].textColor = UIColor.red
+            self.listOfSelectedTeams.append(contentsOf: [cell.red1.text!, cell.red2.text!, cell.red3.text!])
             }
         default:
             break
@@ -329,11 +349,15 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
+        let scoutingVC = (scoutingActivity.instantiateViewController(withIdentifier: "ScoutingViewController") as?
+            ScoutingViewController)!
         
-        guard let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingViewController") as?
-            ScoutingViewController else { return }
+        scoutingVC.boardName = self.selectedBoard
+        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
+        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
         
         self.navigationController?.pushViewController(scoutingVC, animated: true)
+
     }
 
 }
