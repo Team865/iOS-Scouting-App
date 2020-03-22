@@ -13,7 +13,7 @@ class ScoutingPagerViewController : UIPageViewController, UIPageViewControllerDa
     
     let images = ["timer", "team", "paste", "layers2"]
 
-    let scoutingScreensTitle = ["Auto", "Teleop", "Endgame", "QRCode"]
+    let scoutingScreensTitle = ["Auto", "Teleop", "Endgame"]
     
     var selectedBoardLabel : UILabel!
         var matchNumberLabel : UILabel!
@@ -27,15 +27,22 @@ class ScoutingPagerViewController : UIPageViewController, UIPageViewControllerDa
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
+        setViewControllers([scoutingScreens[0]], direction: .forward, animated: true)
+        
+        self.delegate = self
+        self.dataSource = self
+        }
+   
+    required init?(coder: NSCoder) {
+        super.init(transitionStyle : .scroll, navigationOrientation : .horizontal, options : nil)
     }
     
     lazy var scoutingScreens : [UIViewController] = {
-        var listOfVC : [UIViewController] = []
-        for i in 0..<self.scoutingScreensTitle.count{
-//            listOfVC.append(UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.scoutingScreensTitle[i]))
-        }
-        
-        return listOfVC
+            return [
+                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Auto"),
+                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Teleop"),
+                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Endgame")
+        ]
     }()
     
     func createLabel() -> UILabel{
@@ -79,13 +86,27 @@ class ScoutingPagerViewController : UIPageViewController, UIPageViewControllerDa
             navigationItem.rightBarButtonItems = navBarItems
         }
     
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
+        return self.scoutingScreens.count
+    }
+    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        var view = UIViewController()
-        return view
+        let currentIndex : Int = scoutingScreens.firstIndex(of: viewController) ?? 0
+        
+        if (currentIndex <= 0){
+            return nil
+        }
+        
+        return scoutingScreens[currentIndex - 1]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        var view = UIViewController()
-        return view
+        let currentIndex : Int = scoutingScreens.firstIndex(of: viewController) ?? 0
+        
+        if (currentIndex >= scoutingScreens.count - 1)
+        {
+         return nil
+        }
+        return scoutingScreens[currentIndex + 1]
     }
 }

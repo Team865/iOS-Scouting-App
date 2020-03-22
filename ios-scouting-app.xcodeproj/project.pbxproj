@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		251EF5BD24260658006536F1 /* ScoutingPagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251EF5BC24260658006536F1 /* ScoutingPagerViewController.swift */; };
 		251EF5C324262098006536F1 /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = 251EF5C224262098006536F1 /* layout.json */; };
+		251EF5C624262973006536F1 /* ViewController1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251EF5C524262973006536F1 /* ViewController1.swift */; };
+		251EF5C82426298E006536F1 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251EF5C72426298E006536F1 /* ViewController2.swift */; };
+		251EF5CA242629AA006536F1 /* ViewController3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251EF5C9242629AA006536F1 /* ViewController3.swift */; };
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
@@ -31,6 +34,9 @@
 /* Begin PBXFileReference section */
 		251EF5BC24260658006536F1 /* ScoutingPagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingPagerViewController.swift; sourceTree = "<group>"; };
 		251EF5C224262098006536F1 /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
+		251EF5C524262973006536F1 /* ViewController1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController1.swift; sourceTree = "<group>"; };
+		251EF5C72426298E006536F1 /* ViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		251EF5C9242629AA006536F1 /* ViewController3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController3.swift; sourceTree = "<group>"; };
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
@@ -63,6 +69,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		251EF5C42426294F006536F1 /* ScoutingScreens */ = {
+			isa = PBXGroup;
+			children = (
+				251EF5C524262973006536F1 /* ViewController1.swift */,
+				251EF5C72426298E006536F1 /* ViewController2.swift */,
+				251EF5C9242629AA006536F1 /* ViewController3.swift */,
+			);
+			name = ScoutingScreens;
+			sourceTree = "<group>";
+		};
 		25E0F565241EC1660034432A /* TableView */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +156,7 @@
 		25F35CC22400E60600CAA81D /* ios-scouting-app */ = {
 			isa = PBXGroup;
 			children = (
+				251EF5C42426294F006536F1 /* ScoutingScreens */,
 				25E0F56A241EC2460034432A /* ViewControllers */,
 				25E0F569241EC1BB0034432A /* tba */,
 				25E0F565241EC1660034432A /* TableView */,
@@ -234,7 +251,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				251EF5C624262973006536F1 /* ViewController1.swift in Sources */,
 				25E0F56E241F6BFE0034432A /* Events.swift in Sources */,
+				251EF5CA242629AA006536F1 /* ViewController3.swift in Sources */,
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
 				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
@@ -245,6 +264,7 @@
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
 				25E0F571241F6C1E0034432A /* EventCells.swift in Sources */,
+				251EF5C82426298E006536F1 /* ViewController2.swift in Sources */,
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
 				25F96487242104F10095A6DF /* tbaKey.swift in Sources */,
 				25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */,

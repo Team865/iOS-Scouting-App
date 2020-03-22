@@ -76,42 +76,57 @@
             <point key="canvasLocation" x="2619" y="102"/>
         </scene>
         <!--Scouting Pager View Controller-->
-        <scene sceneID="vWl-pl-RkF">
+        <scene sceneID="RJm-hr-Pvc">
             <objects>
-                <viewController storyboardIdentifier="ScoutingPagerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8Zz-fE-efa" customClass="ScoutingPagerViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="xOD-Gs-e8r">
+                <pageViewController storyboardIdentifier="ScoutingPagerViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="Xnd-08-95i" customClass="ScoutingPagerViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tvP-9g-DTF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3319" y="102"/>
+        </scene>
+        <!--View Controller1-->
+        <scene sceneID="5iE-Ge-vCc">
+            <objects>
+                <viewController storyboardIdentifier="Auto" id="yn4-Ix-GyD" customClass="ViewController1" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9VS-UR-dhK">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="4aD-mN-QsA"/>
+                        <viewLayoutGuide key="safeArea" id="xoW-Vl-gwW"/>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0h8-IT-cYb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iEA-V4-mm3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3328" y="102"/>
+            <point key="canvasLocation" x="4715" y="-208"/>
         </scene>
-        <!--Custom Scouting Page View Controller-->
-        <scene sceneID="RYZ-4Z-xLf">
+        <!--View Controller2-->
+        <scene sceneID="WvK-fo-2yE">
             <objects>
-                <pageViewController storyboardIdentifier="CustomScoutingPageViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="eHn-gf-u3s" customClass="CustomScoutingPageViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Epd-MV-1f4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4032" y="102"/>
-        </scene>
-        <!--Scouting Screen View Controller-->
-        <scene sceneID="dbh-rC-Sm2">
-            <objects>
-                <viewController storyboardIdentifier="ScoutingScreenViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="jxF-zw-uJu" customClass="ScoutingScreenViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="GJ9-Ps-9ja">
+                <viewController storyboardIdentifier="Teleop" id="NRw-C3-SPs" customClass="ViewController2" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ZcH-U3-Rkp">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="H0b-dx-pY5"/>
+                        <viewLayoutGuide key="safeArea" id="bT0-Sz-18j"/>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="5hg-mx-3Qm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jae-yp-S8s" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4748" y="102"/>
+            <point key="canvasLocation" x="4187" y="210"/>
+        </scene>
+        <!--View Controller3-->
+        <scene sceneID="DoP-b4-zng">
+            <objects>
+                <viewController storyboardIdentifier="Endgame" id="iic-A9-S2C" customClass="ViewController3" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="aZy-ef-AdJ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="uQb-AC-Ugb"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HX2-gs-FOL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5574" y="-192"/>
         </scene>
     </scenes>
 </document>
