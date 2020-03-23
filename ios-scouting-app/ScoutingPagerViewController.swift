@@ -26,7 +26,6 @@ class ScoutingPagerViewController : UIPageViewController, UIPageViewControllerDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpNavigationBar()
         setViewControllers([scoutingScreens[0]], direction: .forward, animated: true)
         
         self.delegate = self
@@ -38,53 +37,18 @@ class ScoutingPagerViewController : UIPageViewController, UIPageViewControllerDa
     }
     
     lazy var scoutingScreens : [UIViewController] = {
-            return [
-                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Auto"),
-                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Teleop"),
-                UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: "Endgame")
-        ]
+        var screens : [UIViewController] = []
+        
+        for i in 0..<3 {
+            let screen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(identifier: String(describing : ViewController1.self)) as? ViewController1
+            
+            screens.append(screen!)
+        }
+        
+        return screens
     }()
     
-    func createLabel() -> UILabel{
-        let label = UILabel(frame : CGRect(x : 0, y : 0, width : 30, height : 15))
-        label.textAlignment = .center
-        return label
-    }
     
-    func createIcon(imageName : String) -> UIImageView{
-        let icon = UIImageView(frame: CGRect(x : 0, y : 0, width : 10, height : 15))
-        icon.image = UIImage(named: imageName)
-        return icon
-    }
-    
-    private func setUpNavigationBar(){
-            
-            self.matchNumberLabel = self.createLabel()
-            self.teamNumberLabel = self.createLabel()
-            self.selectedBoardLabel = self.createLabel()
-            self.timeLeft = self.createLabel()
-            
-            matchNumberLabel.text = self.matchNumber
-            teamNumberLabel.text = self.teamNumber
-            selectedBoardLabel.text = self.boardName
-            
-            if(self.boardName.prefix(1) == "B"){
-                selectedBoardLabel.textColor = UIColor.blue
-            } else if (self.boardName.prefix(1) == "R"){
-                selectedBoardLabel.textColor = UIColor.red
-            }
-            
-            var navBarItems : [UIBarButtonItem] = []
-            
-            let navBarLabels : [UILabel] = [self.timeLeft, self.teamNumberLabel, self.selectedBoardLabel, self.matchNumberLabel]
-            
-            for i in 0..<self.images.count{
-                navBarItems.append(UIBarButtonItem(customView: self.createIcon(imageName: self.images[i])))
-                navBarItems.append(UIBarButtonItem(customView: navBarLabels[i]))
-            }
-            
-            navigationItem.rightBarButtonItems = navBarItems
-        }
     
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return self.scoutingScreens.count
