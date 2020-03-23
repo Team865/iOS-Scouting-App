@@ -350,22 +350,13 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
-        scoutingVC.boardName = self.selectedBoard
+        
         scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
         scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
+        scoutingVC.boardName = self.selectedBoard
         
         self.navigationController?.pushViewController(scoutingVC, animated: true)
         
-        
-//        let scoutingVC = (scoutingActivity.instantiateViewController(withIdentifier: "ScoutingPageViewController") as?
-//            ScoutingPageViewController?)
-//
-//        scoutingVC!.boardName = self.selectedBoard
-//        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
-//        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
-//
-//        self.navigationController?.pushViewController(scoutingVC, animated: true)
-
     }
 
 }

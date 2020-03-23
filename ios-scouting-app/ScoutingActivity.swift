@@ -28,7 +28,13 @@ class ScoutingActivity : UIViewController{
     
     let screenTitle = ["Auto", "Teleop", "Endgame", "QRCode"]
     
-    var currentScreenIndex = 0 
+    var currentScreenIndex = 0
+    
+    //Button controllers
+    var hideStartTimer = false
+    var hidePlayButton = true
+    var hidePauseButton = true
+    var hideUndoButton = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +64,6 @@ class ScoutingActivity : UIViewController{
     }
     
     private func setUpNavigationBar(){
-            
             self.matchNumberLabel = self.createLabel()
             self.teamNumberLabel = self.createLabel()
             self.selectedBoardLabel = self.createLabel()
@@ -106,7 +111,7 @@ class ScoutingActivity : UIViewController{
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
         
-        if index >= self.screenTitle.count || self.screenTitle.count == 0{
+        if index >= self.screenTitle.count || self.screenTitle.count == 0 {
             return nil
         }
         
@@ -114,6 +119,14 @@ class ScoutingActivity : UIViewController{
         
         scoutingScreen.index = index
         scoutingScreen.displayText = self.screenTitle[index]
+        scoutingScreen.StartTimerButton.isHidden = self.hideStartTimer
+        scoutingScreen.PlayButton.isHidden = self.hidePlayButton
+        scoutingScreen.PauseButton.isHidden = self.hidePauseButton
+        scoutingScreen.undoButton.isHidden = self.hideUndoButton
+        
+        scoutingScreen.matchNumber = self.matchNumber
+        scoutingScreen.teamNumber = self.teamNumber
+        scoutingScreen.boardName = self.boardName
         
         return scoutingScreen
     }
@@ -135,12 +148,14 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         }
         
         currentScreenIndex = currentIndex
-        
         if (currentIndex == 0){
             return nil
         }
         
+        print(self.hideStartTimer)
+        
         currentIndex -= 1
+        
         
         return scoutingScreenAtIndex(index: currentIndex)
     }
@@ -157,7 +172,11 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         }
         
         currentIndex += 1
+        
+        print(self.hideStartTimer)
+        
         currentScreenIndex = currentIndex
+        
         
         return scoutingScreenAtIndex(index: currentIndex)
     }
