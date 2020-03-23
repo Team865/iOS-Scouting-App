@@ -43,12 +43,6 @@ override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
     
-    print("Pushed")
-    
-    print(self.selectedBoard)
-    print(self.selectedTeam)
-    print(self.selectedMatch)
-    
     let border = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1695, width: UIScreen.main.bounds.width, height: 1))
     border.backgroundColor = UIColor.lightGray
     
@@ -357,13 +351,12 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
         
-        scoutingVC.scoutingInformation.removeAll()
-        
-        scoutingVC.scoutingInformation.append(self.listOfSelectedTeams[indexPath.row])
-        scoutingVC.scoutingInformation.append("M" + String(indexPath.row + 1))
-        scoutingVC.scoutingInformation.append(self.selectedBoard)
+        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
+        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
+        scoutingVC.boardName = self.selectedBoard
         
         self.navigationController?.pushViewController(scoutingVC, animated: true)
+        
     }
 
 }

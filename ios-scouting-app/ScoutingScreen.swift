@@ -20,10 +20,12 @@ class ScoutingScreen : UIViewController {
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     var comment = ""
     
-    
+    var matchNumber : String?
+    var boardName : String?
+    var teamNumber : String?
     
     lazy var label : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.viewWidth) * 0.0 , y : Double(self.viewHeight) * 0.02, width : Double(self.viewWidth) * 0.4, height : Double(self.viewHeight) * 0.35))
+        let label = UILabel(frame : CGRect(x : Double(self.viewWidth) * 0.05 , y : Double(self.viewHeight) * 0.02, width : Double(self.viewWidth) * 0.4, height : Double(self.viewHeight) * 0.35))
         label.font = label.font.withSize(CGFloat(self.viewHeight * 0.30))
         label.textAlignment = .left
         return label
@@ -90,6 +92,11 @@ class ScoutingScreen : UIViewController {
             scoutingVC.hidePauseButton = false
             scoutingVC.hideUndoButton = false
             scoutingVC.currentScreenIndex = self.index!
+            
+            scoutingVC.matchNumber = self.matchNumber!
+            scoutingVC.boardName = self.boardName!
+            scoutingVC.teamNumber = self.teamNumber!
+            
             self.navigationController?.pushViewController(scoutingVC, animated: false)
             
         } else if (sender.tag == 2){
@@ -98,6 +105,12 @@ class ScoutingScreen : UIViewController {
             scoutingVC.hideStartTimer = true
             scoutingVC.hideUndoButton = false
             scoutingVC.currentScreenIndex = self.index!
+            
+            scoutingVC.matchNumber = self.matchNumber!
+            scoutingVC.boardName = self.boardName!
+            scoutingVC.teamNumber = self.teamNumber!
+            
+            
             self.navigationController?.pushViewController(scoutingVC, animated: false)
         } else if (sender.tag == 3){
             scoutingVC.hidePlayButton = true
@@ -105,6 +118,11 @@ class ScoutingScreen : UIViewController {
             scoutingVC.hideStartTimer = true
             scoutingVC.hideUndoButton = false
             scoutingVC.currentScreenIndex = self.index!
+            
+            scoutingVC.matchNumber = self.matchNumber!
+            scoutingVC.boardName = self.boardName!
+            scoutingVC.teamNumber = self.teamNumber!
+            
             self.navigationController?.pushViewController(scoutingVC, animated: false)
         } else if (sender.tag == 5){
             let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)

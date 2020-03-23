@@ -17,7 +17,9 @@ class ScoutingActivity : UIViewController{
     var selectedBoardLabel : UILabel!
     var timeLeft : UILabel!
     
-    var scoutingInformation : [String] = []
+    var matchNumber = ""
+    var teamNumber = ""
+    var boardName = ""
     
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
@@ -67,13 +69,13 @@ class ScoutingActivity : UIViewController{
             self.selectedBoardLabel = self.createLabel()
             self.timeLeft = self.createLabel()
             
-        teamNumberLabel.text = self.scoutingInformation[0]
-        matchNumberLabel.text = self.scoutingInformation[1]
-        selectedBoardLabel.text = self.scoutingInformation[2]
+            matchNumberLabel.text = self.matchNumber
+            teamNumberLabel.text = self.teamNumber
+            selectedBoardLabel.text = self.boardName
             
-        if(self.scoutingInformation[2].prefix(1) == "B"){
+            if(self.boardName.prefix(1) == "B"){
                 selectedBoardLabel.textColor = UIColor.blue
-            } else if (self.scoutingInformation[2].prefix(1) == "R"){
+            } else if (self.boardName.prefix(1) == "R"){
                 selectedBoardLabel.textColor = UIColor.red
             }
             
@@ -121,6 +123,10 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.PlayButton.isHidden = self.hidePlayButton
         scoutingScreen.PauseButton.isHidden = self.hidePauseButton
         scoutingScreen.undoButton.isHidden = self.hideUndoButton
+        
+        scoutingScreen.matchNumber = self.matchNumber
+        scoutingScreen.teamNumber = self.teamNumber
+        scoutingScreen.boardName = self.boardName
         
         return scoutingScreen
     }
