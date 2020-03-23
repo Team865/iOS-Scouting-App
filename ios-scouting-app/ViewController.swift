@@ -43,6 +43,12 @@ override func viewDidLoad() {
     super.viewDidLoad()
     setupNavigationBar()
     
+    print("Pushed")
+    
+    print(self.selectedBoard)
+    print(self.selectedTeam)
+    print(self.selectedMatch)
+    
     let border = UIView(frame: CGRect(x: 0, y: UIScreen.main.bounds.height * 0.1695, width: UIScreen.main.bounds.width, height: 1))
     border.backgroundColor = UIColor.lightGray
     
@@ -350,22 +356,14 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
-        scoutingVC.boardName = self.selectedBoard
-        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
-        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
+        
+        scoutingVC.scoutingInformation.removeAll()
+        
+        scoutingVC.scoutingInformation.append(self.listOfSelectedTeams[indexPath.row])
+        scoutingVC.scoutingInformation.append("M" + String(indexPath.row + 1))
+        scoutingVC.scoutingInformation.append(self.selectedBoard)
         
         self.navigationController?.pushViewController(scoutingVC, animated: true)
-        
-        
-//        let scoutingVC = (scoutingActivity.instantiateViewController(withIdentifier: "ScoutingPageViewController") as?
-//            ScoutingPageViewController?)
-//
-//        scoutingVC!.boardName = self.selectedBoard
-//        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
-//        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
-//
-//        self.navigationController?.pushViewController(scoutingVC, animated: true)
-
     }
 
 }
