@@ -10,19 +10,7 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "iphone",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "filename" : "layers.png",
+      "filename" : "pause.png",
       "scale" : "3x"
     }
   ],

@@ -58,9 +58,7 @@ class SettingsCell :UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-         
-        
-        
+
         addSubview(switchControl)
         addSubview(titleLabel)
         addSubview(descriptionLabel)
