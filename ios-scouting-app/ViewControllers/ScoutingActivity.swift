@@ -26,9 +26,11 @@ class ScoutingActivity : UIViewController{
     
     let images = ["timer", "team", "paste", "layers2"]
     
-    let screenTitle = ["Auto", "Teleop", "Endgame", "QRCode"]
+    var screenTitles : [String] = []
     
     var currentScreenIndex = 0
+    
+    var screenLayout : ScoutingScreenLayout!
     
     //Button controllers
     var hideStartTimer = false
@@ -36,11 +38,45 @@ class ScoutingActivity : UIViewController{
     var hidePauseButton = true
     var hideUndoButton = true
     
+    var names : [String] = []
+    var types : [String] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         view.addSubview(scoutingView)
-        configurePageViewController()
+        
+        getLayoutForScreen{
+            for i in 0..<self.screenLayout.robot_scout.screens.count{
+                self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
+                for j in 0..<self.screenLayout.robot_scout.screens[i].layout.count{
+                    for k in 0..<self.screenLayout.robot_scout.screens[i].layout[j].count{
+                        self.names.append(self.screenLayout.robot_scout.screens[i].layout[j][k].name)
+                        self.types.append(self.screenLayout.robot_scout.screens[i].layout[j][k].type)
+                    }
+                }
+            }
+            
+            print(self.names)
+            print(self.types)
+            self.configurePageViewController()
+        }
+        
+    }
+    
+    func getLayoutForScreen(completed : @escaping () -> ()){
+        do {
+            let url = Bundle.main.url(forResource: "layout", withExtension: "json")
+            let jsonData = try Data(contentsOf : url!)
+            self.screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
+            
+            DispatchQueue.main.async{
+                completed()
+            }
+            
+        } catch let err{
+            print(err)
+        }
     }
     
     //UI Configurations
@@ -111,14 +147,14 @@ class ScoutingActivity : UIViewController{
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
         
-        if index >= self.screenTitle.count || self.screenTitle.count == 0 {
+        if index >= self.screenTitles.count || self.screenTitles.count == 0 {
             return nil
         }
         
         guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
         
         scoutingScreen.index = index
-        scoutingScreen.displayText = self.screenTitle[index]
+        scoutingScreen.displayText = self.screenTitles[index]
         scoutingScreen.StartTimerButton.isHidden = self.hideStartTimer
         scoutingScreen.PlayButton.isHidden = self.hidePlayButton
         scoutingScreen.PauseButton.isHidden = self.hidePauseButton
@@ -127,6 +163,8 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.matchNumber = self.matchNumber
         scoutingScreen.teamNumber = self.teamNumber
         scoutingScreen.boardName = self.boardName
+        
+        scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[0].layout.count
         
         return scoutingScreen
     }
@@ -138,7 +176,7 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
     }
 
     func presentationCount(for pageViewController: UIPageViewController) -> Int {
-        return screenTitle.count
+        return screenTitles.count
     }
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         let scoutingScreen = viewController as? ScoutingScreen
@@ -167,7 +205,7 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
             return nil
         }
         
-        if currentIndex == self.screenTitle.count{
+        if currentIndex == self.screenTitles.count{
             return nil
         }
         
