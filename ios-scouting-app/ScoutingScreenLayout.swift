@@ -9,7 +9,22 @@
 import Foundation
 
 struct ScoutingScreenLayout : Decodable {
-    var string : String
-    var integer : Int
+    var year : Int
+    var revision : Int
+    var robot_scout : robot_scout
+}
+
+struct robot_scout : Decodable {
+    var screens : [screens]
+}
+
+struct screens : Decodable{
+    var title : String
+    var layout : [[layout]]
+}
+//
+struct layout : Decodable {
+   var name : String
+    var type : String
 }
 

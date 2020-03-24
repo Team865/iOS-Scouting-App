@@ -13,10 +13,11 @@ class ScoutingScreen : UIViewController {
     var displayText : String?
     var index : Int?
     
-    let viewWidth = UIScreen.main.bounds.width
-    let viewHeight = Double(UIScreen.main.bounds.height * 0.1)
+    //Need to fix this, view height is Screen size * 0.9, not 0.1 (It's gonna be annoying
+    let navBarWidth = UIScreen.main.bounds.width
+    let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
-    let multiplier = 0.023
+    let multiplier = 0.048
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     var comment = ""
     
@@ -24,16 +25,30 @@ class ScoutingScreen : UIViewController {
     var boardName : String?
     var teamNumber : String?
     
+    var numberOfItemsInRow : Int?
+    var numberOfRows = 0
+    
+    let scoutingViewHeight = Double(UIScreen.main.bounds.height) * 0.855
+    let scoutingViewWidth = Double(UIScreen.main.bounds.width) * 0.96
+    
+    var startingY = Double(UIScreen.main.bounds.height * 0.1) * 0.45
+    
+    func createScoutingRows(y : Double, color : UIColor) -> UIView{
+        let view = UIView(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : y , width: self.scoutingViewWidth, height : Double(UIScreen.main.bounds.height) * 0.82 / Double(self.numberOfRows)))
+        view.backgroundColor = color
+        return view
+    }
+    
     lazy var screenTitle : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.viewWidth) * 0.05 , y : Double(self.viewHeight) * 0.02, width : Double(self.viewWidth) * 0.4, height : Double(self.viewHeight) * 0.35))
-        label.font = label.font.withSize(CGFloat(self.viewHeight * 0.30))
+        let label = UILabel(frame : CGRect(x : Double(self.navBarWidth) * 0.05 , y : Double(self.navBarHeight) * 0.02, width : Double(self.navBarWidth) * 0.4, height : Double(self.navBarHeight) * 0.35))
+        label.font = label.font.withSize(CGFloat(self.navBarHeight * 0.30))
         label.textAlignment = .left
         return label
     }()
     
     lazy var StartTimerButton : UIButton = {
            let button = UIButton(type : .system)
-        button.frame = CGRect(x : Double(self.viewWidth * 0.55), y : Double(self.viewHeight) * self.multiplier, width : Double(self.buttonsWidth * 2), height : Double(self.viewHeight * 0.35))
+        button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(self.navBarHeight) * self.multiplier, width : Double(self.buttonsWidth * 2), height : Double(self.navBarHeight * 0.35))
            button.tag = 1
            button.setTitle("Start Timer", for: .normal)
            button.setTitleColor(UIColor.white, for: .normal)
@@ -45,7 +60,7 @@ class ScoutingScreen : UIViewController {
 
        lazy var PauseButton : UIButton = {
            let button = UIButton(type : .system)
-         button.frame = CGRect(x : Double(self.viewWidth * 0.55), y : Double(viewHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.viewHeight * 0.35))
+         button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.navBarHeight * 0.35))
            button.tag = 2
            button.setImage(UIImage(named : "pause"), for: .normal)
            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
@@ -55,7 +70,7 @@ class ScoutingScreen : UIViewController {
 
        lazy var PlayButton : UIButton = {
            let button = UIButton(type : .system)
-        button.frame = CGRect(x : Double(self.viewWidth * 0.55), y : Double(viewHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.viewHeight * 0.35))
+        button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.navBarHeight * 0.35))
            button.tag = 3
            button.setImage(UIImage(named : "play"), for: .normal)
            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
@@ -65,7 +80,7 @@ class ScoutingScreen : UIViewController {
 
        lazy var undoButton : UIButton = {
            let button = UIButton(type : .system)
-        button.frame = CGRect(x : Double(self.viewWidth * 0.7), y : Double(viewHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.viewHeight * 0.35))
+        button.frame = CGRect(x : Double(self.navBarWidth * 0.7), y : Double(navBarHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.navBarHeight * 0.35))
            button.tag = 4
            button.setImage(UIImage(named : "undo"), for: .normal)
            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
@@ -75,7 +90,7 @@ class ScoutingScreen : UIViewController {
 
        lazy var commentButton : UIButton = {
            let button = UIButton(type : .system)
-        button.frame = CGRect(x : Double(self.viewWidth * 0.85), y : Double(viewHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.viewHeight * 0.35))
+        button.frame = CGRect(x : Double(self.navBarWidth * 0.85), y : Double(navBarHeight) * self.multiplier, width : Double(self.buttonsWidth), height : Double(self.navBarHeight * 0.35))
            button.tag = 5
            button.setImage(UIImage(named : "comments"), for: .normal)
            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
@@ -147,8 +162,6 @@ class ScoutingScreen : UIViewController {
     }
     
     //Configure UI for scouting activity
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -159,5 +172,12 @@ class ScoutingScreen : UIViewController {
         view.addSubview(PlayButton)
         view.addSubview(commentButton)
         view.addSubview(undoButton)
+        
+        let colors : [UIColor] = [.blue, .red, .yellow, .green]
+        
+        for i in 0..<self.numberOfRows{
+            view.addSubview(self.createScoutingRows(y: self.startingY, color: colors[i]))
+            startingY += (self.scoutingViewHeight) / Double(self.numberOfRows)
+        }
     }
 }
