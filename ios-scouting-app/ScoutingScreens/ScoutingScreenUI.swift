@@ -162,6 +162,7 @@ class ScoutingScreen : UIViewController {
     }
     
     //Configure UI for scouting activity
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
