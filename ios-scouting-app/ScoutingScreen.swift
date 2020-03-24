@@ -82,7 +82,8 @@ class ScoutingScreen : UIViewController {
            return button
        }()
 
-
+    
+    
     @objc func clickHandler(sender : UIButton){
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
