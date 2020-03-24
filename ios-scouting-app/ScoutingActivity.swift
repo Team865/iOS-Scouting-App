@@ -177,7 +177,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         
         currentScreenIndex = currentIndex
         
-        
         return scoutingScreenAtIndex(index: currentIndex)
     }
 }
