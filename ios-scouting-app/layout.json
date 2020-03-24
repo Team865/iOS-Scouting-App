@@ -1,169 +1,169 @@
 {
-  "year": 2020,
-  "revision": 7,
-  "robot_scout": {
-    "screens": [
-      {
-        "title": "Auto",
-        "layout": [
-          [
-            {
-              "name": "opponent_trench",
-              "type": "Button"
-            },
-            {
-              "name": "rendezvous",
-              "type": "Button"
-            },
-            {
-              "name": "alliance_trench",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "auto_high_miss",
-              "type": "Button"
-            },
-            {
-              "name": "auto_high_hit",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "auto_low_miss",
-              "type": "Button"
-            },
-            {
-              "name": "auto_low_hit",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "field_area",
-              "type": "MultiToggle",
-              "choices": [
-                "Cross",
-                "Trench",
-                "Mid",
-                "Target"
-              ],
-              "default_choice": 2
-            }
-          ]
+"year": 2020,
+"revision": 7,
+"robot_scout": {
+  "screens": [
+    {
+      "title": "Auto",
+      "layout": [
+        [
+          {
+            "name": "opponent_trench",
+            "type": "Button"
+          },
+          {
+            "name": "rendezvous",
+            "type": "Button"
+          },
+          {
+            "name": "alliance_trench",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "auto_high_miss",
+            "type": "Button"
+          },
+          {
+            "name": "auto_high_hit",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "auto_low_miss",
+            "type": "Button"
+          },
+          {
+            "name": "auto_low_hit",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "field_area",
+            "type": "MultiToggle",
+            "choices": [
+              "Cross",
+              "Trench",
+              "Mid",
+              "Target"
+            ],
+            "default_choice": 2
+          }
         ]
-      },
-      {
-        "title": "Teleop",
-        "layout": [
-          [
-            {
-              "name": "control_panel",
-              "type": "Switch"
-            },
-            {
-              "name": "defending",
-              "type": "Switch"
-            },
-            {
-              "name": "resisting",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "high_miss",
-              "type": "Button"
-            },
-            {
-              "name": "high_hit",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "low_miss",
-              "type": "Button"
-            },
-            {
-              "name": "low_hit",
-              "type": "Button"
-            }
-          ],
-          [
-            {
-              "name": "field_area",
-              "type": "MultiToggle",
-              "choices": [
-                "Cross",
-                "Trench",
-                "Mid",
-                "Target"
-              ],
-              "default_choice": 2
-            }
-          ]
+      ]
+    },
+    {
+      "title": "Teleop",
+      "layout": [
+        [
+          {
+            "name": "control_panel",
+            "type": "Switch"
+          },
+          {
+            "name": "defending",
+            "type": "Switch"
+          },
+          {
+            "name": "resisting",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "high_miss",
+            "type": "Button"
+          },
+          {
+            "name": "high_hit",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "low_miss",
+            "type": "Button"
+          },
+          {
+            "name": "low_hit",
+            "type": "Button"
+          }
+        ],
+        [
+          {
+            "name": "field_area",
+            "type": "MultiToggle",
+            "choices": [
+              "Cross",
+              "Trench",
+              "Mid",
+              "Target"
+            ],
+            "default_choice": 2
+          }
         ]
-      },
-      {
-        "title": "Endgame",
-        "layout": [
-          [
-            {
-              "name": "climb",
-              "type": "MultiToggle",
-              "choices": [
-                "None",
-                "Attempt",
-                "Success"
-              ]
-            }
-          ],
-          [
-            {
-              "name": "climb_location",
-              "type": "MultiToggle",
-              "choices": [
-                "Middle",
-                "Up",
-                "Down",
-                "Balanced"
-              ]
-            }
-          ],
-          [
-            {
-              "name": "balanced",
-              "type": "Checkbox"
-            },
-            {
-              "name": "active_balance",
-              "type": "Checkbox"
-            }
-          ],
-          [
-            {
-              "name": "driver_skill_rating",
-              "type": "MultiToggle",
-              "choices": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "5"
-              ],
-              "default_choice": 2
-            }
-          ]
+      ]
+    },
+    {
+      "title": "Endgame",
+      "layout": [
+        [
+          {
+            "name": "climb",
+            "type": "MultiToggle",
+            "choices": [
+              "None",
+              "Attempt",
+              "Success"
+            ]
+          }
+        ],
+        [
+          {
+            "name": "climb_location",
+            "type": "MultiToggle",
+            "choices": [
+              "Middle",
+              "Up",
+              "Down",
+              "Balanced"
+            ]
+          }
+        ],
+        [
+          {
+            "name": "balanced",
+            "type": "Checkbox"
+          },
+          {
+            "name": "active_balance",
+            "type": "Checkbox"
+          }
+        ],
+        [
+          {
+            "name": "driver_skill_rating",
+            "type": "MultiToggle",
+            "choices": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "default_choice": 2
+          }
         ]
-      }
-    ],
-    "tags": [
-      "robot_DISABLED",
-      "robot_incapacitated",
-      "entry_started_late",
-      "rescout_required"
-    ]
-  }
+      ]
+    }
+  ],
+  "tags": [
+    "robot_DISABLED",
+    "robot_incapacitated",
+    "entry_started_late",
+    "rescout_required"
+  ]
+}

@@ -30,17 +30,41 @@ class ScoutingActivity : UIViewController{
     
     var currentScreenIndex = 0
     
+    var screenLayout : ScoutingScreenLayout!
+    
     //Button controllers
     var hideStartTimer = false
     var hidePlayButton = true
     var hidePauseButton = true
     var hideUndoButton = true
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         view.addSubview(scoutingView)
         configurePageViewController()
+        
+        getLayoutForScreen{
+            print(self.screenLayout.integer)
+            print(self.screenLayout.string)
+        }
+        
+    }
+    
+    func getLayoutForScreen(completed : @escaping () -> ()){
+        do {
+            let url = Bundle.main.url(forResource: "layout", withExtension: "json")
+            let jsonData = try Data(contentsOf : url!)
+            self.screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
+            
+            DispatchQueue.main.async{
+                completed()
+            }
+            
+        } catch let err{
+            print(err)
+        }
     }
     
     //UI Configurations

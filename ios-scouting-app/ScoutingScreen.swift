@@ -24,7 +24,7 @@ class ScoutingScreen : UIViewController {
     var boardName : String?
     var teamNumber : String?
     
-    lazy var label : UILabel = {
+    lazy var screenTitle : UILabel = {
         let label = UILabel(frame : CGRect(x : Double(self.viewWidth) * 0.05 , y : Double(self.viewHeight) * 0.02, width : Double(self.viewWidth) * 0.4, height : Double(self.viewHeight) * 0.35))
         label.font = label.font.withSize(CGFloat(self.viewHeight * 0.30))
         label.textAlignment = .left
@@ -82,8 +82,6 @@ class ScoutingScreen : UIViewController {
            return button
        }()
 
-    
-    
     @objc func clickHandler(sender : UIButton){
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
@@ -148,29 +146,18 @@ class ScoutingScreen : UIViewController {
         }
     }
     
-   
+    //Configure UI for scouting activity
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        label.text = self.displayText
-        view.addSubview(label)
+        
+        screenTitle.text = self.displayText
+        view.addSubview(screenTitle)
         view.addSubview(StartTimerButton)
         view.addSubview(PauseButton)
         view.addSubview(PlayButton)
         view.addSubview(commentButton)
         view.addSubview(undoButton)
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
