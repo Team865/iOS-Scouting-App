@@ -7,3 +7,12 @@
 //
 
 import Foundation
+import UIKit
+
+class Button : UIButton {
+    var row : Int?
+    var position : Int?
+
+}
+
+

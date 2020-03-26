@@ -49,19 +49,9 @@ class ScoutingActivity : UIViewController{
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
-                for j in 0..<self.screenLayout.robot_scout.screens[i].layout.count{
-                    for k in 0..<self.screenLayout.robot_scout.screens[i].layout[j].count{
-                        self.names.append(self.screenLayout.robot_scout.screens[i].layout[j][k].name)
-                        self.types.append(self.screenLayout.robot_scout.screens[i].layout[j][k].type)
-                    }
-                }
             }
-            
-            print(self.names)
-            print(self.types)
             self.configurePageViewController()
         }
-        
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -80,7 +70,6 @@ class ScoutingActivity : UIViewController{
     }
     
     //UI Configurations
-    
     lazy var scoutingView : UIView = {
         let view = UIView(frame : CGRect(x: 0, y: Double(self.screenHeight) * 0.1, width: Double(self.screenWidth), height: Double(self.screenHeight) * 0.9))
         
@@ -97,6 +86,19 @@ class ScoutingActivity : UIViewController{
         let icon = UIImageView(frame: CGRect(x : 0, y : 0, width : 10, height : 15))
         icon.image = UIImage(named: imageName)
         return icon
+    }
+    
+    lazy var backButton : UIButton = {
+        let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 15))
+        button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func clickHandler(srcObj : UIButton){
+        let mainVC = UIStoryboard.init(name: "Main", bundle: nil)
+        let main = mainVC.instantiateViewController(identifier: "MainController") as ViewController
+        self.navigationController?.pushViewController(main, animated: true)
     }
     
     private func setUpNavigationBar(){
@@ -124,7 +126,8 @@ class ScoutingActivity : UIViewController{
                 navBarItems.append(UIBarButtonItem(customView: navBarLabels[i]))
             }
             
-            navigationItem.rightBarButtonItems = navBarItems
+        navigationItem.rightBarButtonItems = navBarItems
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
         }
     
     func configurePageViewController(){
@@ -164,7 +167,24 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.teamNumber = self.teamNumber
         scoutingScreen.boardName = self.boardName
         
-        scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[0].layout.count
+        scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
+
+        for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
+           scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
+            var typesInRow : [String] = []
+            var namesInRow : [String] = []
+                for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
+                    typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
+                    namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
+                    scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
+                   
+                }
+            scoutingScreen.typeOfItemsInRow.append(typesInRow)
+            scoutingScreen.nameOfItemsInRow.append(namesInRow)
+
+        }
+        
+        
         
         return scoutingScreen
     }
@@ -190,8 +210,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
             return nil
         }
         
-        print(self.hideStartTimer)
-        
         currentIndex -= 1
         
         
@@ -210,8 +228,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         }
         
         currentIndex += 1
-        
-        print(self.hideStartTimer)
         
         currentScreenIndex = currentIndex
         

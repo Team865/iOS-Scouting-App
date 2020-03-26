@@ -7,3 +7,14 @@
 //
 
 import Foundation
+class QREntry{
+    var type : String
+    var index : Int
+    var timeStamp : Float
+    
+    init(type : String, index : Int, timeStamp : Float) {
+        self.type = type
+        self.index = index
+        self.timeStamp = timeStamp
+    }
+}
