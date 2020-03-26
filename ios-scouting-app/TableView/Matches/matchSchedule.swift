@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 class matchSchedule{
-    var icon : UIImage
+    var imageName : String
     var matchNumber : String
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
     
     
-    init(icon : UIImage, matchNumber : String, redAlliance : [String], blueAlliance : [String]){
-        self.icon = icon
+    init(imageName : String, matchNumber : String, redAlliance : [String], blueAlliance : [String]){
+        self.imageName = imageName
         self.matchNumber = matchNumber
         
         self.blueAlliance.append(contentsOf: blueAlliance)

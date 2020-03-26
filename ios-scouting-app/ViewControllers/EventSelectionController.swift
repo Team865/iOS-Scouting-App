@@ -35,8 +35,8 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     override func viewDidLoad() {
            super.viewDidLoad()
         
-        yearText = yearTextField(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13), hint: "year")
-        teamText = teamTextField(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13), hint: "team")
+        yearText = self.yearTextField
+        teamText = self.teamTextField
         
         yearText.delegate = self
         teamText.delegate = self
@@ -46,6 +46,26 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         setUpView(team : self.teamText, year : self.yearText)
 
        }
+    
+    //Load data from cache
+    override func viewDidAppear(_ animated: Bool) {
+        if let eventKeys = UserDefaults.standard.object(forKey: "EventKeys") as? [String]{
+            self.listOfKeys = eventKeys
+        }
+        
+        if let eventInfo = UserDefaults.standard.object(forKey: "EventInfos") as? [String], let eventName = UserDefaults.standard.object(forKey: "EventNames") as? [String]{
+            self.listOfEvents = self.loadEventListFromCore(name : eventName, info : eventInfo)
+            self.listOfNames = eventName
+            self.eventTable.reloadData()
+        }
+        
+        //Save the input year and the team number
+//        if let year = UserDefaults.standard.object(forKey: "year") as? Int, let teamNumber = UserDefaults.standard.object(forKey: "teamNumber") as? String{
+//            self.yearText.text = String(year)
+//            self.teamText.text = teamNumber
+//        }
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         yearText.resignFirstResponder()
         teamText.resignFirstResponder()
@@ -84,37 +104,16 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         eventTable.tableFooterView = UIView()
     }
     
-    private func yearTextField(x : Double, y : Double, width : Double, height : Double, hint : String) -> UITextField{
-        let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
-        textField.placeholder = hint
-        textField.textAlignment = .center
-        
-        let image = UIImageView(frame : CGRect(x : 0, y : 0, width : width * 0.8, height : height * 0.75))
-        image.image = UIImage(named : "calendar")
-        
-        let bottomLine = CALayer()
-            bottomLine.frame = CGRect(x : 0, y : y * 1.45, width: width, height : 2)
-        bottomLine.backgroundColor = UIColor.black.cgColor
-        textField.borderStyle = .none
-        textField.layer.addSublayer(bottomLine)
-        
-        textField.font = textField.font?.withSize(15)
-        
-        textField.leftViewMode = UITextField.ViewMode.always
-        textField.leftView = image
-        return textField
-    }
-    
-    private func teamTextField(x : Double, y : Double, width : Double, height : Double, hint : String) -> UITextField{
-    let textField = UITextField(frame: CGRect(x : x, y : y, width : width, height : height))
-    textField.placeholder = hint
+    lazy var yearTextField : UITextField = {
+        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
+    textField.placeholder = "Year"
     textField.textAlignment = .center
         
-    let image = UIImageView(frame : CGRect(x : 0, y : 0, width : width, height : height))
-    image.image = UIImage(named : "team")
+        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(self.screenHeight * 0.13)))
+    image.image = UIImage(named : "calendar")
     
     let bottomLine = CALayer()
-        bottomLine.frame = CGRect(x : 0, y : y * 1.45, width: width, height : 2)
+        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
     bottomLine.backgroundColor = UIColor.black.cgColor
     textField.borderStyle = .none
     textField.layer.addSublayer(bottomLine)
@@ -123,18 +122,57 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     textField.leftViewMode = UITextField.ViewMode.always
     textField.leftView = image
     return textField
+    }()
+    
+    lazy var teamTextField : UITextField = {
+        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06), width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
+    textField.placeholder = "Team (e.g 865)"
+    textField.textAlignment = .center
+        
+        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(screenWidth * 0.40)))
+    image.image = UIImage(named : "team")
+    
+    let bottomLine = CALayer()
+        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
+    bottomLine.backgroundColor = UIColor.black.cgColor
+    textField.borderStyle = .none
+    textField.layer.addSublayer(bottomLine)
+        
+    textField.font = textField.font?.withSize(15)
+    textField.leftViewMode = UITextField.ViewMode.always
+    textField.leftView = image
+    return textField
+    }()
+    
+    private func loadEventListFromCore(name : [String], info : [String]) -> [Events]{
+        var tempEvent : [Events] = []
+        for i in 0..<info.count{
+            tempEvent.append(Events.init(name: name[i], info: info[i]))
+        }
+        
+        return tempEvent
     }
     
     private func createEventCells() -> [Events]{
         var tempCell : [Events] = []
+        
+        var listOfInfo : [String] = []
+        
                 for i in 0..<self.jsonListOfEvents.count{
                     if(jsonListOfEvents[i].year == Int(self.yearText.text!) ?? 0){
                         let event = Events.init(name: jsonListOfEvents[i].name, info : jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
                         tempCell.append(event)
+                        listOfInfo.append(jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
                         self.listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
                         self.listOfNames.append(self.jsonListOfEvents[i].name)
                     }
                 }
+        UserDefaults.standard.set(self.yearText.text!, forKey: "year")
+        UserDefaults.standard.set(self.listOfKeys, forKey: "EventKeys")
+        
+        UserDefaults.standard.set(self.listOfNames, forKey: "EventNames")
+        UserDefaults.standard.set(listOfInfo, forKey: "EventInfos")
+        
         return tempCell
     }
     
@@ -144,6 +182,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     
     private func getJSONEvents(completed : @escaping () -> ()){
         let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc" + self.teamText.text! + "/events")!
+        UserDefaults.standard.set(self.teamText.text!, forKey: "teamNumber")
         var request = URLRequest(url: url)
         request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
