@@ -17,7 +17,6 @@ class matchScheduleCells : UITableViewCell{
     var blue2 : UILabel!
     var blue3 : UILabel!
     
-    var icon : UIImageView!
     var matchNumber : UILabel!
     
     let labelWidth = 50.0
@@ -39,6 +38,7 @@ class matchScheduleCells : UITableViewCell{
         blue3.text = match.blueAlliance[2]
         
         matchNumber.text = "M" + match.matchNumber
+        self.icon.image = UIImage(named : match.imageName)!
     }
     
     func configureUILabel(x : Double, y : Double, width : Double, height : Double) -> UILabel{
@@ -47,12 +47,12 @@ class matchScheduleCells : UITableViewCell{
         return label
     }
     
-    func configureUIImage(x : Double, y : Double, width : Double, height : Double) -> UIImageView{
-        let image = UIImageView(frame: CGRect(x: x, y: y, width: width, height: height))
-        image.image = UIImage(named: "layers")
+    lazy var icon : UIImageView = {
+        let yCoordinate = cellHeight * 0.125
+        let image = UIImageView(frame : CGRect(x: Double(cellWidth * 0.05), y: Double(yCoordinate), width: Double(cellWidth * 0.3) - Double(cellWidth * 0.05), height: Double(imageHeight)))
         image.contentMode = .scaleAspectFit
         return image
-    }
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -66,8 +66,6 @@ class matchScheduleCells : UITableViewCell{
         blue1 = configureUILabel(x: Double(Int(cellWidth * 0.3)), y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
         blue2 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth, y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
         blue3 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth * 2, y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
-        
-        icon = configureUIImage(x: Double(cellWidth * 0.05), y: Double(yCoordinate), width: Double(cellWidth * 0.3) - Double(cellWidth * 0.05), height: Double(imageHeight))
         
         matchNumber = configureUILabel(x: Double(cellWidth * 0.05), y: Double(yCoordinate) + Double(imageHeight) * 1.15, width: Double(cellWidth * 0.3) - Double(cellWidth * 0.05), height: Double(labelHeight))
         

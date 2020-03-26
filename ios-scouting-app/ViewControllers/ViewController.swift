@@ -19,7 +19,7 @@ var selectedTeam = ""
 var selectedMatch = "M"
     
 var listOfSelectedTeams : [String] = []
-var scoutName = ""
+var scoutName = "First L"
 var listOfBoardsTitles = ["Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3", "Blue Super Scout", "Red Super Scout"]
 var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
     
@@ -48,6 +48,8 @@ override func viewDidLoad() {
     
     self.view.addSubview(border)
     
+    
+    
     currentEventLabel = self.createCurrentEventName()
     currentEventLabel.text = self.currentEvent
     
@@ -55,14 +57,41 @@ override func viewDidLoad() {
     configureTableView()
     
 }
+    //Load data from core
+    override func viewDidAppear(_ animated: Bool) {
+            if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
+                    if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
+                        if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [String]{
+                            if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
+                                    self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName)
+                                        self.matchTable.reloadData()
+                        }
+                    }
+                }
+            }
+        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+            self.currentEventLabel.text = currentEvent
+        }
+        
+        if let selectedBoard = UserDefaults.standard.object(forKey: "Board") as? String, let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+            self.updateBoard(board: selectedBoard, scout: scoutName)
+        }
+    }
     //Segue to update board
     //https://stackoverflow.com/questions/25921623/how-to-reload-tableview-from-another-view-controller-in-swift
     @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
         DispatchQueue.global(qos: .userInitiated).async {
             DispatchQueue.main.async {
-                print(self.currentEvent)
+                var blueAlliance : [[String]] = []
+                var redAlliance : [[String]] = []
+                var matchNumber : [String] = []
+                var imageName : [String] = []
                 self.listOfMatches.removeAll()
                 self.listOfSelectedTeams.removeAll()
+                blueAlliance.removeAll()
+                redAlliance.removeAll()
+                matchNumber.removeAll()
+                imageName.removeAll()
                 self.getTBAJson {
                                for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -73,6 +102,21 @@ override func viewDidLoad() {
                     self.view.addSubview(self.currentEventLabel)
                     self.listOfMatches = self.createMatchSchedule()
                     self.matchTable.reloadData()
+                    
+                    
+                    
+                    for i in 0..<self.listOfMatches.count{
+                        blueAlliance.append(self.listOfMatches[i].blueAlliance)
+                        redAlliance.append(self.listOfMatches[i].redAlliance)
+                        matchNumber.append(String(i + 1))
+                        imageName.append("layers")
+                    }
+                    
+                    UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
+                    UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
+                    UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
+                    UserDefaults.standard.set(imageName, forKey: "icon")
+                    UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                 }
             }
         }
@@ -102,6 +146,7 @@ override func viewDidLoad() {
                 [weak alert] (_) in
                 let textField = alert?.textFields![0]
                 self.scoutName = textField!.text ?? ""
+                UserDefaults.standard.set(self.scoutName, forKey: "ScoutName")
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
             }
             
@@ -120,6 +165,7 @@ override func viewDidLoad() {
                     (ACTION) in
                     self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
                     self.selectedBoard = self.listOfBoards[i]
+                    UserDefaults.standard.set(self.selectedBoard, forKey: "Board")
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
@@ -259,6 +305,16 @@ override func viewDidLoad() {
         }.resume()
     }
     
+    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [String], imageName : [String]) -> [matchSchedule]{
+        var tempMatch : [matchSchedule] = []
+        
+        for i in 0..<blueAlliance.count{
+            tempMatch.append(matchSchedule.init(imageName: imageName[i], matchNumber: matchNumber[i], redAlliance: redAlliance[i], blueAlliance: blueAlliance[i]))
+        }
+        
+        return tempMatch
+    }
+    
     func createMatchSchedule() -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
         if(self.validMatchNumber.count != 0){
@@ -284,7 +340,7 @@ override func viewDidLoad() {
             
                                         self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                     }
-                                    let match = matchSchedule(icon : UIImage(named : "layers")!, matchNumber: String(i), redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys)
+                                    let match = matchSchedule(imageName : "layers", matchNumber: String(i), redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys)
                                     tempMatch.append(match)
                                 }
                             }
@@ -321,7 +377,6 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         self.listOfSelectedTeams.append(cell.blue1.text!)
         case "B2" : cell.blue2.textColor = UIColor.blue
         self.listOfSelectedTeams.append(cell.blue2.text!)
-        print(listOfSelectedTeams)
         case "B3" : cell.blue3.textColor = UIColor.blue
         self.listOfSelectedTeams.append(cell.blue3.text!)
 
