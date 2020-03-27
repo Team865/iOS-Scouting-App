@@ -11,6 +11,13 @@ import UIKit
 
 class ScoutingActivity : UIViewController{
     //var scoutingScreens = [UIPageViewController]()
+    let navBarWidth = UIScreen.main.bounds.width
+    let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
+    
+    let Ymultiplier = 1.325
+    let heightMultiplier = 0.6
+    let buttonsWidth = UIScreen.main.bounds.width * 0.15
+    var comment = ""
     
     var matchNumberLabel : UILabel!
     var teamNumberLabel : UILabel!
@@ -38,6 +45,11 @@ class ScoutingActivity : UIViewController{
     var hidePauseButton = true
     var hideUndoButton = true
     
+    //Progress bar
+    var progressBarTimer : Timer!
+    var totalProgress : Float = 0
+    let progress = Progress(totalUnitCount: 165)
+    
     var names : [String] = []
     var types : [String] = []
     
@@ -45,6 +57,12 @@ class ScoutingActivity : UIViewController{
         super.viewDidLoad()
         setUpNavigationBar()
         view.addSubview(scoutingView)
+        view.addSubview(StartTimerButton)
+        view.addSubview(PauseButton)
+        view.addSubview(PlayButton)
+        view.addSubview(commentButton)
+        view.addSubview(undoButton)
+        view.addSubview(progressBar)
         
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
@@ -77,8 +95,8 @@ class ScoutingActivity : UIViewController{
     }()
     
     func createLabel() -> UILabel{
-        let label = UILabel(frame : CGRect(x : 0, y : 0, width : 30, height : 15))
-        label.textAlignment = .center
+        let label = UILabel(frame : CGRect(x : 0, y : 0, width : 40, height : 15))
+        label.textAlignment = .right
         return label
     }
     
@@ -101,6 +119,144 @@ class ScoutingActivity : UIViewController{
         self.navigationController?.pushViewController(main, animated: true)
     }
     
+    lazy var progressBar : UIProgressView = {
+        let progressBar = UIProgressView(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : Double(self.navBarHeight) * self.Ymultiplier * 0.875, width : Double(self.navBarWidth) * 0.96, height : Double(self.navBarHeight) * 0.25))
+           progressBar.progress = 0
+           return progressBar
+       }()
+    
+    lazy var StartTimerButton : UIButton = {
+               let button = UIButton(type : .system)
+        button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.buttonsWidth * 2), height : Double(self.navBarHeight) * self.heightMultiplier * 0.75)
+               button.tag = 1
+               button.setTitle("Start Timer", for: .normal)
+               button.titleLabel?.font = button.titleLabel?.font.withSize(20)
+               button.setTitleColor(UIColor.white, for: .normal)
+               button.backgroundColor = UIColor.systemBlue
+               button.layer.cornerRadius = 5
+               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+              return button
+           }()
+
+           lazy var PauseButton : UIButton = {
+               let button = UIButton(type : .system)
+            button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
+               button.tag = 2
+               button.setImage(UIImage(named : "pause"), for: .normal)
+               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+            button.isHidden = true
+               return button
+           }()
+
+           lazy var PlayButton : UIButton = {
+               let button = UIButton(type : .system)
+            button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
+               button.tag = 3
+               button.setImage(UIImage(named : "play"), for: .normal)
+               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+               button.isHidden = true
+               return button
+           }()
+
+           lazy var undoButton : UIButton = {
+               let button = UIButton(type : .system)
+            button.frame = CGRect(x : Double(self.navBarWidth * 0.7), y : Double(navBarHeight) * self.Ymultiplier * 0.95 , width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
+               button.tag = 4
+               button.setImage(UIImage(named : "undo"), for: .normal)
+               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+               button.isHidden = true
+               return button
+           }()
+
+           lazy var commentButton : UIButton = {
+               let button = UIButton(type : .system)
+            button.frame = CGRect(x : Double(self.navBarWidth * 0.85), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
+               button.tag = 5
+               button.setImage(UIImage(named : "comments"), for: .normal)
+               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+               return button
+           }()
+        
+    func updateTimer(){
+        if(165 * self.totalProgress <= 15.0){
+            self.timeLeft.text = (String(15 - round(165 * self.totalProgress)))
+            self.timeLeft.textColor = UIColor.systemYellow
+        } else if (165 * self.totalProgress <= 120){
+            self.timeLeft.text = (String(120 - round(165 * self.totalProgress)))
+            self.timeLeft.textColor = UIColor.systemGreen
+        } else if (165 * self.totalProgress > 120){
+            self.timeLeft.text = (String(150 - round(165 * self.totalProgress)))
+            self.timeLeft.textColor = UIColor.red
+        }
+    }
+    
+        @objc func clickHandler(sender : UIButton){
+            if(sender.tag == 1){
+                StartTimerButton.isHidden = true
+                PauseButton.isHidden = false
+                PlayButton.isHidden = true
+                undoButton.isHidden = false
+                
+                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){
+                (timer) in
+                guard self.progress.isFinished == false else {
+                    timer.invalidate()
+                    return
+                }
+                    self.progress.completedUnitCount += 1
+                    self.totalProgress = Float(self.progress.fractionCompleted)
+                    
+                    self.updateTimer()
+                    
+                    self.progressBar.setProgress(self.totalProgress, animated: true)
+                }
+                
+            } else if (sender.tag == 2){
+                PlayButton.isHidden = false
+                PauseButton.isHidden = true
+                
+                self.progressBarTimer.invalidate()
+                self.totalProgress = self.progressBar.progress
+                self.progressBar.setProgress(self.progressBar.progress, animated: true)
+
+            } else if (sender.tag == 3){
+                PlayButton.isHidden = true
+                PauseButton.isHidden = false
+                
+                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){
+                    (timer) in
+                    guard self.progress.isFinished == false else {
+                        timer.invalidate()
+                        return
+                    }
+                    self.progress.completedUnitCount += 1
+                    self.totalProgress = Float(self.progress.fractionCompleted)
+                    self.updateTimer()
+                    self.progressBar.setProgress(self.totalProgress, animated: true)
+                    }
+            } else if (sender.tag == 5){
+                let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
+
+                alert.addTextField{
+                    (UITextField) in UITextField.placeholder = "Enter comment"
+                    UITextField.text = self.comment
+                }
+
+                let getComment = UIAlertAction(title: "OK", style: .default){
+                    [weak alert] (_) in
+                    let textField = alert?.textFields![0]
+                    self.comment = textField!.text!
+                }
+
+                let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
+
+                alert.addAction(getComment)
+                alert.addAction(cancel)
+
+                self.present(alert, animated : true, completion : nil)
+            }
+        }
+    
     private func setUpNavigationBar(){
             self.matchNumberLabel = self.createLabel()
             self.teamNumberLabel = self.createLabel()
@@ -110,7 +266,8 @@ class ScoutingActivity : UIViewController{
             matchNumberLabel.text = self.matchNumber
             teamNumberLabel.text = self.teamNumber
             selectedBoardLabel.text = self.boardName
-            
+            self.timeLeft.text = String(15.0)
+        
             if(self.boardName.prefix(1) == "B"){
                 selectedBoardLabel.textColor = UIColor.blue
             } else if (self.boardName.prefix(1) == "R"){
@@ -157,16 +314,7 @@ class ScoutingActivity : UIViewController{
         guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
         
         scoutingScreen.index = index
-        scoutingScreen.displayText = self.screenTitles[index]
-        scoutingScreen.StartTimerButton.isHidden = self.hideStartTimer
-        scoutingScreen.PlayButton.isHidden = self.hidePlayButton
-        scoutingScreen.PauseButton.isHidden = self.hidePauseButton
-        scoutingScreen.undoButton.isHidden = self.hideUndoButton
-        
-        scoutingScreen.matchNumber = self.matchNumber
-        scoutingScreen.teamNumber = self.teamNumber
-        scoutingScreen.boardName = self.boardName
-        
+        scoutingScreen.screenTitles = self.screenTitles[index]
         scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
 
         for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{

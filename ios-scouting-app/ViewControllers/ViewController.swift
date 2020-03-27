@@ -74,7 +74,13 @@ override func viewDidLoad() {
         }
         
         if let selectedBoard = UserDefaults.standard.object(forKey: "Board") as? String, let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+            self.selectedBoard = selectedBoard
+            self.scoutName = scoutName
             self.updateBoard(board: selectedBoard, scout: scoutName)
+            self.matchTable.reloadData()
+        }
+        if let selectedTeams = UserDefaults.standard.object(forKey: "SelectedTeams") as? [String]{
+            self.listOfSelectedTeams = selectedTeams
         }
     }
     //Segue to update board
@@ -410,6 +416,8 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
         scoutingVC.boardName = self.selectedBoard
         
+        UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
+        self.listOfSelectedTeams.removeAll()
         self.navigationController?.pushViewController(scoutingVC, animated: true)
         
     }
