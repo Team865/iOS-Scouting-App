@@ -229,8 +229,8 @@ class ScoutingActivity : UIViewController{
            }()
         
     func updateTimer(){
-        if(16500 * self.totalProgress < 15.0){
-            let time = 1500 - round(165 * self.totalProgress)
+        if(165 * self.totalProgress < 15.0){
+            let time = 15 - round(165 * self.totalProgress)
             var timeLeft = String(time)
             
             switch timeLeft.count{
@@ -247,8 +247,8 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].text = timeLeft
             self.listOfLabels[3].textColor = UIColor.systemYellow
             
-        } else if (16500 * self.totalProgress >= 15.0 && 16500 * self.totalProgress < 135.0){
-            let time = 13500 - round(16500 * self.totalProgress)
+        } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
+            let time = 135 - round(165 * self.totalProgress)
             var timeLeft = String(time)
             
             switch timeLeft.count{
@@ -263,8 +263,8 @@ class ScoutingActivity : UIViewController{
             }
             self.listOfLabels[3].text = timeLeft
             self.listOfLabels[3].textColor = UIColor.systemGreen
-        } else if (16500 * self.totalProgress >= 13500){
-            let time = 16500 - round(16500 * self.totalProgress)
+        } else if (165 * self.totalProgress >= 135){
+            let time = 165 - round(165 * self.totalProgress)
             var timeLeft = String(time)
             
             switch timeLeft.count{
