@@ -19,14 +19,13 @@ class ScoutingActivity : UIViewController{
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     var comment = ""
     
-    var matchNumberLabel : UILabel!
-    var teamNumberLabel : UILabel!
-    var selectedBoardLabel : UILabel!
-    var timeLeft : UILabel!
+    var listOfLabels : [UILabel] = []
+    var navBarView : UIView!
     
     var matchNumber = ""
     var teamNumber = ""
     var boardName = ""
+    var timeOnStart = "015"
     
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
@@ -48,14 +47,13 @@ class ScoutingActivity : UIViewController{
     //Progress bar
     var progressBarTimer : Timer!
     var totalProgress : Float = 0
-    let progress = Progress(totalUnitCount: 165)
+    let progress = Progress(totalUnitCount: 16500)
     
     var names : [String] = []
     var types : [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpNavigationBar()
         view.addSubview(scoutingView)
         view.addSubview(StartTimerButton)
         view.addSubview(PauseButton)
@@ -64,6 +62,8 @@ class ScoutingActivity : UIViewController{
         view.addSubview(undoButton)
         view.addSubview(progressBar)
         
+        self.navBarView = self.createNavBarView()
+        setUpNavigationBar()
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
@@ -94,16 +94,67 @@ class ScoutingActivity : UIViewController{
         return view
     }()
     
-    func createLabel() -> UILabel{
-        let label = UILabel(frame : CGRect(x : 0, y : 0, width : 40, height : 15))
-        label.textAlignment = .right
+    func createLabels(x : Double, y : Double, width : Double, height : Double, fontSize : CGFloat, text : String) -> UILabel{
+        let label = UILabel(frame : CGRect(x : x, y : y, width : width, height : height))
+        label.font = label.font.withSize(fontSize)
+        label.textAlignment = .center
+        
+        switch (text.prefix(1)){
+        case "B":
+            label.textColor = UIColor.blue
+        case "R":
+        label.textColor = UIColor.red
+        default :
+            label.textColor = UIColor.black
+        }
+        
         return label
     }
     
-    func createIcon(imageName : String) -> UIImageView{
-        let icon = UIImageView(frame: CGRect(x : 0, y : 0, width : 10, height : 15))
-        icon.image = UIImage(named: imageName)
+    func createIcon(x : Double, y : Double, width : Double, height : Double, iconName : String) -> UIImageView{
+        let icon = UIImageView(frame : CGRect(x : x, y : y, width : width, height : height))
+        icon.image = UIImage(named : iconName)
+        icon.contentMode = .scaleAspectFit
         return icon
+    }
+    
+    func createNavBarView() -> UIView{
+        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: Double(UIScreen.main.bounds.width), height : Double(UIScreen.main.bounds.height * 0.1)))
+        
+        let navBarElementsHeight = Double(UIScreen.main.bounds.height * 0.08)
+        let navBarElementY = Double(UIScreen.main.bounds.height * -0.02)
+        let fontSize = CGFloat(navBarElementsHeight * 0.225)
+        let navBarWidth = Double(UIScreen.main.bounds.width)
+        let iconsWidth = Double(UIScreen.main.bounds.width * 0.1)
+        
+        let spacing = iconsWidth * 0.05
+        var startingX = 0.0
+        
+        let listOfTexts = [self.matchNumber, self.boardName, self.teamNumber, String(self.timeOnStart)]
+        let listOfIconNames = ["layers2", "paste", "users", "timer"]
+        let listOfSpacing = [spacing, spacing, 0.0, spacing * 2]
+        let listOfLabelWidth = [navBarWidth * 0.1, navBarWidth * 0.08, navBarWidth * 0.1, navBarWidth * 0.1]
+        for i in 0..<listOfTexts.count{
+            let label = self.createLabels(x: startingX + iconsWidth + listOfSpacing[i], y: navBarElementY, width: listOfLabelWidth[i], height: navBarElementsHeight, fontSize: fontSize, text : listOfTexts[i])
+            label.text = listOfTexts[i]
+            view.addSubview(self.createIcon(x: startingX, y: navBarElementY, width: iconsWidth, height: navBarElementsHeight, iconName: listOfIconNames[i]))
+            
+            if(i == 3){
+                label.textColor = UIColor.systemYellow
+            }
+            
+            view.addSubview(label)
+            startingX += iconsWidth + listOfLabelWidth[i] + listOfSpacing[i]
+            self.listOfLabels.append(label)
+        }
+
+        
+        return view
+    }
+    
+    private func setUpNavigationBar(){
+    navigationItem.titleView = self.navBarView
+    navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
     }
     
     lazy var backButton : UIButton = {
@@ -178,15 +229,57 @@ class ScoutingActivity : UIViewController{
            }()
         
     func updateTimer(){
-        if(165 * self.totalProgress <= 15.0){
-            self.timeLeft.text = (String(15 - round(165 * self.totalProgress)))
-            self.timeLeft.textColor = UIColor.systemYellow
-        } else if (165 * self.totalProgress <= 120){
-            self.timeLeft.text = (String(120 - round(165 * self.totalProgress)))
-            self.timeLeft.textColor = UIColor.systemGreen
-        } else if (165 * self.totalProgress > 120){
-            self.timeLeft.text = (String(150 - round(165 * self.totalProgress)))
-            self.timeLeft.textColor = UIColor.red
+        if(16500 * self.totalProgress < 15.0){
+            let time = 1500 - round(165 * self.totalProgress)
+            var timeLeft = String(time)
+            
+            switch timeLeft.count{
+            case 5:
+                timeLeft = String(timeLeft.prefix(3))
+            case 4:
+                timeLeft = "0" + String(timeLeft.prefix(2))
+            case 3:
+                timeLeft = "00" + String(timeLeft.prefix(1))
+            default :
+                break
+            }
+            
+            self.listOfLabels[3].text = timeLeft
+            self.listOfLabels[3].textColor = UIColor.systemYellow
+            
+        } else if (16500 * self.totalProgress >= 15.0 && 16500 * self.totalProgress < 135.0){
+            let time = 13500 - round(16500 * self.totalProgress)
+            var timeLeft = String(time)
+            
+            switch timeLeft.count{
+            case 5:
+                timeLeft = String(timeLeft.prefix(3))
+            case 4:
+                timeLeft = "0" + String(timeLeft.prefix(2))
+            case 3:
+                timeLeft = "00" + String(timeLeft.prefix(1))
+            default :
+                break
+            }
+            self.listOfLabels[3].text = timeLeft
+            self.listOfLabels[3].textColor = UIColor.systemGreen
+        } else if (16500 * self.totalProgress >= 13500){
+            let time = 16500 - round(16500 * self.totalProgress)
+            var timeLeft = String(time)
+            
+            switch timeLeft.count{
+            case 5:
+                timeLeft = String(timeLeft.prefix(3))
+            case 4:
+                timeLeft = "0" + String(timeLeft.prefix(2))
+            case 3:
+                timeLeft = "00" + String(timeLeft.prefix(1))
+            default :
+                break
+            }
+            
+            self.listOfLabels[3].text = timeLeft
+            self.listOfLabels[3].textColor = UIColor.red
         }
     }
     
@@ -197,7 +290,7 @@ class ScoutingActivity : UIViewController{
                 PlayButton.isHidden = true
                 undoButton.isHidden = false
                 
-                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){
+                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                 (timer) in
                 guard self.progress.isFinished == false else {
                     timer.invalidate()
@@ -217,13 +310,14 @@ class ScoutingActivity : UIViewController{
                 
                 self.progressBarTimer.invalidate()
                 self.totalProgress = self.progressBar.progress
+                print(self.totalProgress * 165)
                 self.progressBar.setProgress(self.progressBar.progress, animated: true)
 
             } else if (sender.tag == 3){
                 PlayButton.isHidden = true
                 PauseButton.isHidden = false
                 
-                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){
+                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                     (timer) in
                     guard self.progress.isFinished == false else {
                         timer.invalidate()
@@ -255,36 +349,6 @@ class ScoutingActivity : UIViewController{
 
                 self.present(alert, animated : true, completion : nil)
             }
-        }
-    
-    private func setUpNavigationBar(){
-            self.matchNumberLabel = self.createLabel()
-            self.teamNumberLabel = self.createLabel()
-            self.selectedBoardLabel = self.createLabel()
-            self.timeLeft = self.createLabel()
-            
-            matchNumberLabel.text = self.matchNumber
-            teamNumberLabel.text = self.teamNumber
-            selectedBoardLabel.text = self.boardName
-            self.timeLeft.text = String(15.0)
-        
-            if(self.boardName.prefix(1) == "B"){
-                selectedBoardLabel.textColor = UIColor.blue
-            } else if (self.boardName.prefix(1) == "R"){
-                selectedBoardLabel.textColor = UIColor.red
-            }
-            
-            var navBarItems : [UIBarButtonItem] = []
-            
-            let navBarLabels : [UILabel] = [self.timeLeft, self.teamNumberLabel, self.selectedBoardLabel, self.matchNumberLabel]
-            
-            for i in 0..<self.images.count{
-                navBarItems.append(UIBarButtonItem(customView: self.createIcon(imageName: self.images[i])))
-                navBarItems.append(UIBarButtonItem(customView: navBarLabels[i]))
-            }
-            
-        navigationItem.rightBarButtonItems = navBarItems
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
         }
     
     func configurePageViewController(){
