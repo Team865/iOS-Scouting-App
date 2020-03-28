@@ -48,7 +48,7 @@
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
 		25E0F56D241F6BFE0034432A /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		25E0F570241F6C1E0034432A /* EventCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCells.swift; sourceTree = "<group>"; };
-		25F35CC02400E60600CAA81D /* ios-scouting-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-scouting-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		25F35CC02400E60600CAA81D /* Scouting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scouting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25F35CC32400E60600CAA81D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25F35CC52400E60600CAA81D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		25F35CC72400E60600CAA81D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 		25F35CC12400E60600CAA81D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				25F35CC02400E60600CAA81D /* ios-scouting-app.app */,
+				25F35CC02400E60600CAA81D /* Scouting.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -193,9 +193,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		25F35CBF2400E60600CAA81D /* ios-scouting-app */ = {
+		25F35CBF2400E60600CAA81D /* Scouting */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 25F35CD42400E60800CAA81D /* Build configuration list for PBXNativeTarget "ios-scouting-app" */;
+			buildConfigurationList = 25F35CD42400E60800CAA81D /* Build configuration list for PBXNativeTarget "Scouting" */;
 			buildPhases = (
 				25F35CBC2400E60600CAA81D /* Sources */,
 				25F35CBD2400E60600CAA81D /* Frameworks */,
@@ -205,9 +205,9 @@
 			);
 			dependencies = (
 			);
-			name = "ios-scouting-app";
+			name = Scouting;
 			productName = "ios-scouting-app";
-			productReference = 25F35CC02400E60600CAA81D /* ios-scouting-app.app */;
+			productReference = 25F35CC02400E60600CAA81D /* Scouting.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -238,7 +238,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				25F35CBF2400E60600CAA81D /* ios-scouting-app */,
+				25F35CBF2400E60600CAA81D /* Scouting */,
 			);
 		};
 /* End PBXProject section */
@@ -468,7 +468,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		25F35CD42400E60800CAA81D /* Build configuration list for PBXNativeTarget "ios-scouting-app" */ = {
+		25F35CD42400E60800CAA81D /* Build configuration list for PBXNativeTarget "Scouting" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				25F35CD52400E60800CAA81D /* Debug */,

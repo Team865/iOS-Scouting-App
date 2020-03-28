@@ -38,7 +38,7 @@ class matchScheduleCells : UITableViewCell{
         blue3.text = match.blueAlliance[2]
         
         matchNumber.text = "M" + match.matchNumber
-        self.icon.image = UIImage(named : match.imageName)!
+        self.icon.image = UIImage(named : match.imageName) ?? UIImage(named : "layers")
     }
     
     func configureUILabel(x : Double, y : Double, width : Double, height : Double) -> UILabel{
