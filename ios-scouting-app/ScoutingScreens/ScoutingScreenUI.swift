@@ -54,10 +54,13 @@ class ScoutingScreen : UIViewController {
     var colorChanged = false
     var counter : [Int]  = []
     var states : [Bool] = []
-    var timeStamp = 0
+    var timeStamp : Float = 0
     
+    //Timer elements
+    var timer : Timer!
+    let progress = Progress(totalUnitCount: 16500)
+    let progressBar = UIProgressView()
     //UIs classes
-    
     
     //Another way to identify which button you are clicking is to disregard the rows and shit, just set the tags of the buttons from 0 to which ever number you can
     
@@ -212,9 +215,17 @@ class ScoutingScreen : UIViewController {
         
         return multiToggle
     }
+    
+    func getTimeStamp() -> Float {
+        var itemStamp : Float = 0
+        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
+           itemStamp = timeStamp
+        }
+        return itemStamp
+    }
     @objc func collectQRCodeData(sender : UIButton){
         print(sender.titleLabel?.text ?? "")
-        print(sender.tag)
+        //print(getTimeStamp())
     }
 
 //    else if (sender.tag == 2){

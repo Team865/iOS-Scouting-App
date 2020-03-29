@@ -229,6 +229,7 @@ class ScoutingActivity : UIViewController{
            }()
         
     func updateTimer(){
+        UserDefaults.standard.set(165 * self.totalProgress, forKey: "timeStamp")
         if(165 * self.totalProgress < 15.0){
             let time = 15 - round(165 * self.totalProgress)
             var timeLeft = String(time)
@@ -308,7 +309,7 @@ class ScoutingActivity : UIViewController{
                 PlayButton.isHidden = false
                 PauseButton.isHidden = true
                 
-                self.progressBarTimer.invalidate()
+                //self.progressBarTimer.invalidate()
                 self.totalProgress = self.progressBar.progress
                 print(self.totalProgress * 165)
                 self.progressBar.setProgress(self.progressBar.progress, animated: true)
