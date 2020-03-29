@@ -39,9 +39,11 @@ class ScoutingScreen : UIViewController {
     var nameOfMultiToggleItems : [[String]] = []
     var notEmptyIndex = 0
     
-    var itemsTag = 0
-    var tagAtIndex = 0
+    var itemIndex = 0
+    var listOfIndices : [Int] = []
     var numberOfRows = 0
+    
+    let backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
     
     let scoutingViewHeight = Double(UIScreen.main.bounds.height) * 0.85
     let scoutingViewWidth = Double(UIScreen.main.bounds.width) * 0.96
@@ -55,6 +57,7 @@ class ScoutingScreen : UIViewController {
     var counter : [Int]  = []
     var states : [Bool] = []
     var timeStamp : Float = 0
+    var listOfToggleButtons : [[ToggleButton]] = []
     
     //Timer elements
     var timer : Timer!
@@ -77,24 +80,22 @@ class ScoutingScreen : UIViewController {
         let spacing = itemWidth * 0.01
         
         //To compress the view but keep the ratio of views, simply reduce itemHeight, and reduce spacing between items (which is found in viewDidLoad()
-        let itemHeight = rowHeight * 0.92
-        
+        let itemHeight = rowHeight * 0.92        
         
         for i in 0..<self.numberOfItemsInRow[currentRow]{
-            
             if(self.typeOfItemsInRow[currentRow][i] == "Button"){
-                scoutingRowView.addSubview(createScoutingButton(x: startingX, width: itemWidth * 0.99, height: itemHeight, title : self.nameOfItemsInRow[currentRow][i], tag: self.itemsTag))
-                    self.itemsTag += 1
-                self.tagAtIndex += 1
+                scoutingRowView.addSubview(createScoutingButton(x: startingX, width: itemWidth * 0.99, height: itemHeight, title : self.nameOfItemsInRow[currentRow][i], tag: self.listOfIndices[self.itemIndex]))
+                self.itemIndex += 1
             } else if (self.typeOfItemsInRow[currentRow][i] == "Switch"){
-                scoutingRowView.addSubview(createScoutingSwitch(x: startingX, width: itemWidth * 0.99, height: itemHeight, title: self.nameOfItemsInRow[currentRow][i], tag : self.itemsTag))
-                self.itemsTag += 1
+                scoutingRowView.addSubview(createScoutingSwitch(x: startingX, width: itemWidth * 0.99, height: itemHeight, title: self.nameOfItemsInRow[currentRow][i], tag : self.listOfIndices[self.itemIndex]))
+                self.itemIndex += 1
             } else if (self.typeOfItemsInRow[currentRow][i] == "MultiToggle"){
                 if(self.notEmptyIndex < self.nameOfMultiToggleItems.count){
                 while (self.nameOfMultiToggleItems[self.notEmptyIndex].count == 0){
                     self.notEmptyIndex += 1
                 }
-                    scoutingRowView.addSubview(createMultiToggleField(x: 0.0, width: rowWidth, height: itemHeight, numberOfToggleFields: self.nameOfMultiToggleItems[self.notEmptyIndex].count, toggleButtonTitle : self.nameOfMultiToggleItems[self.notEmptyIndex], toggleFieldTitle: self.nameOfItemsInRow[currentRow][i]))
+                    scoutingRowView.addSubview(createMultiToggleField(x: 0.0, width: rowWidth, height: itemHeight, numberOfToggleFields: self.nameOfMultiToggleItems[self.notEmptyIndex].count, toggleButtonTitle : self.nameOfMultiToggleItems[self.notEmptyIndex], toggleFieldTitle: self.nameOfItemsInRow[currentRow][i], index: self.listOfIndices[self.itemIndex]))
+                    self.itemIndex += 1
                     self.notEmptyIndex += 1
                 }
 
@@ -105,7 +106,7 @@ class ScoutingScreen : UIViewController {
     }
     
     func createScoutingButton(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
-        let button = UIButton()
+        let buttonField = Button()
 
         let titleArr = title.components(separatedBy: "_")
         var title = ""
@@ -117,23 +118,25 @@ class ScoutingScreen : UIViewController {
                 title += titleArr[i] + " "
             }
         }
-        button.frame = CGRect(x : x, y : 0, width : width, height : height)
-        button.setTitleColor(UIColor.black, for: .normal)
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.numberOfLines = 0
-        button.contentHorizontalAlignment = .center
-        button.titleLabel?.textAlignment = .center
-        button.titleLabel?.lineBreakMode = .byWordWrapping
-        button.titleLabel?.font = button.titleLabel?.font.withSize(CGFloat(height * 0.125))
-        button.backgroundColor = UIColor.systemGray5
-        button.tag = tag
-        button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-        return button
+        buttonField.frame = CGRect(x : x, y : 0, width : width, height : height)
+        buttonField.setTitleColor(self.backgroundColor, for: .normal)
+        buttonField.setTitle(title, for: .normal)
+        buttonField.titleLabel?.numberOfLines = 0
+        buttonField.contentHorizontalAlignment = .center
+        buttonField.titleLabel?.textAlignment = .center
+        buttonField.titleLabel?.lineBreakMode = .byWordWrapping
+        buttonField.titleLabel?.font = buttonField.titleLabel?.font.withSize(CGFloat(height * 0.125))
+        buttonField.backgroundColor = UIColor.systemGray5
+        buttonField.index = tag
+        buttonField.value = 1
+        buttonField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
+        return buttonField
     }
     
     func createScoutingSwitch(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
-        let Switch = UIButton(frame : CGRect(x : x, y : 0, width : width, height : height))
-        Switch.setTitle("Switch", for: .normal)
+        let switchField = Switch()
+        switchField.frame = CGRect(x : x, y : 0, width : width, height : height)
+        switchField.setTitle("Switch", for: .normal)
         let titleArr = title.components(separatedBy: "_")
         var title = ""
         
@@ -144,18 +147,19 @@ class ScoutingScreen : UIViewController {
                 title += titleArr[i] + " "
             }
         }
-        Switch.setTitleColor(UIColor.black, for: .normal)
-        Switch.setTitle(title, for: .normal)
-        Switch.titleLabel?.numberOfLines = 0
-        Switch.contentHorizontalAlignment = .center
-        Switch.titleLabel?.textAlignment = .center
-        Switch.titleLabel?.lineBreakMode = .byWordWrapping
-        Switch.titleLabel?.font = Switch.titleLabel?.font.withSize(CGFloat(height * 0.125))
-        Switch.tag = tag
-        Switch.setTitleColor(UIColor.black, for: .normal)
-        Switch.backgroundColor = UIColor.systemGray5
-        Switch.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-        return Switch
+        switchField.setTitleColor(UIColor.black, for: .normal)
+        switchField.setTitle(title, for: .normal)
+        switchField.titleLabel?.numberOfLines = 0
+        switchField.contentHorizontalAlignment = .center
+        switchField.titleLabel?.textAlignment = .center
+        switchField.titleLabel?.lineBreakMode = .byWordWrapping
+        switchField.titleLabel?.font = switchField.titleLabel?.font.withSize(CGFloat(height * 0.125))
+        switchField.index = tag
+        switchField.value = 0
+        switchField.setTitleColor(self.backgroundColor, for: .normal)
+        switchField.backgroundColor = UIColor.systemGray5
+        switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
+        return switchField
     }
     
     func createCheckBox(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
@@ -163,15 +167,14 @@ class ScoutingScreen : UIViewController {
         return checkBox
     }
     
-    func createMultiToggleField(x : Double, width : Double, height : Double, numberOfToggleFields : Int, toggleButtonTitle : [String], toggleFieldTitle : String) -> UIView{
+    func createMultiToggleField(x : Double, width : Double, height : Double, numberOfToggleFields : Int, toggleButtonTitle : [String], toggleFieldTitle : String, index : Int) -> UIView{
         let toggleHeight = height
         
-        let multiToggle = UIView(frame : CGRect(x : x, y : 0, width : width, height : toggleHeight * 0.75))
+        let multiToggle = UIView(frame : CGRect(x : x, y : 0, width : width * 0.975, height : toggleHeight * 0.75))
         
         multiToggle.backgroundColor = UIColor.systemGray5
-        
-        let spacing = width / Double(numberOfToggleFields) * 0.01
-        let toggleFieldWidth = width / Double(numberOfToggleFields) * 0.99
+        multiToggle.tag = index
+        let toggleFieldWidth = width * 0.975 / Double(numberOfToggleFields) * 1.027
         var startingX = x
         
         let fieldTitle = UILabel(frame : CGRect(x : x, y : 0, width : width, height : toggleHeight * 0.15))
@@ -179,11 +182,7 @@ class ScoutingScreen : UIViewController {
         let titleArr = toggleFieldTitle.components(separatedBy: "_")
         var toggleTitle = ""
         for u in 0..<titleArr.count{
-            if (u == 0){
-                toggleTitle += titleArr[u].prefix(1).uppercased() + titleArr[u].lowercased().dropFirst() + " "
-            } else {
-                toggleTitle += titleArr[u]
-            }
+           toggleTitle += titleArr[u].prefix(1).uppercased() + titleArr[u].lowercased().dropFirst() + " "
         }
         
         fieldTitle.text = toggleTitle
@@ -192,26 +191,27 @@ class ScoutingScreen : UIViewController {
         fieldTitle.backgroundColor = UIColor.systemGray5
         multiToggle.addSubview(fieldTitle)
         
+        var toggleList : [ToggleButton] = []
+        
         for i in 0..<numberOfToggleFields{
-            let toggleButton = UIButton(frame : CGRect(x : startingX, y : toggleHeight * 0.15, width : toggleFieldWidth, height : toggleHeight * 0.85))
+            let toggleButton = ToggleButton()
+            toggleButton.frame = CGRect(x : startingX, y : toggleHeight * 0.15, width : toggleFieldWidth, height : toggleHeight * 0.85)
             toggleButton.setTitle(toggleButtonTitle[i], for: .normal)
-            toggleButton.setTitleColor(UIColor.black, for: .normal)
+            toggleButton.setTitleColor(self.backgroundColor, for: .normal)
             toggleButton.titleLabel?.numberOfLines = 0
             toggleButton.contentHorizontalAlignment = .center
             toggleButton.titleLabel?.textAlignment = .center
             toggleButton.titleLabel?.lineBreakMode = .byWordWrapping
             toggleButton.backgroundColor = UIColor.systemGray5
-            toggleButton.tag = i
+            toggleButton.value = i
+            toggleButton.index = index
             toggleButton.titleLabel?.font = toggleButton.titleLabel?.font.withSize(CGFloat(toggleHeight * 0.125))
-            
-            if(i == 2)
-            {
-                toggleButton.backgroundColor = UIColor.blue
-            }
+            toggleButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
             multiToggle.addSubview(toggleButton)
-            
-            startingX += toggleFieldWidth + spacing
+            toggleList.append(toggleButton)
+            startingX += toggleFieldWidth
         }
+        self.listOfToggleButtons.append(toggleList)
         
         return multiToggle
     }
@@ -223,19 +223,50 @@ class ScoutingScreen : UIViewController {
         }
         return itemStamp
     }
-    @objc func collectQRCodeData(sender : UIButton){
-        print(sender.titleLabel?.text ?? "")
-        //print(getTimeStamp())
+    
+    @objc func collectQRCodeData(sender : AnyObject){
+        if let button = sender as? Button{
+        print(button.value)
+        print(button.index!)
+        print(getTimeStamp())
+        }
+        if let switchField = sender as? Switch{
+            if switchField.value == 0{
+                switchField.backgroundColor = self.backgroundColor
+                switchField.setTitleColor(UIColor.white, for: .normal)
+                switchField.value = 1
+                print(getTimeStamp())
+            } else {
+                switchField.backgroundColor = UIColor.systemGray5
+                switchField.setTitleColor(self.backgroundColor, for: .normal)
+                switchField.value = 0
+                print(getTimeStamp())
+            }
+        }
+        
+        if let toggleField = sender as? ToggleButton{
+            for i in 0..<self.listOfToggleButtons.count{
+                for k in 0..<self.listOfToggleButtons[i].count{
+                    listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
+                    listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
+                }
+            }
+            
+            toggleField.backgroundColor = self.backgroundColor
+            toggleField.setTitleColor(UIColor.white, for: .normal)
+            
+            print(toggleField.index ?? 0)
+            print(toggleField.value ?? 0)
+            
+            let indices = [7,15]
+            //Find a way to not hard code this
+            UserDefaults.standard.set(indices, forKey: "selectedIndex")
+            UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
+            
+        }
     }
 
-//    else if (sender.tag == 2){
-//    if !self.colorChanged{
-//        sender.backgroundColor = UIColor.blue
-//        self.colorChanged = true
-//    } else {
-//        sender.backgroundColor = UIColor.systemGray5
-//        self.colorChanged = false
-//    }
+
     
     lazy var screenTitle : UILabel = {
         let label = UILabel(frame : CGRect(x : Double(self.navBarWidth) * 0.025 , y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.navBarWidth) * 0.5, height : Double(self.navBarHeight) * self.heightMultiplier))
@@ -247,7 +278,26 @@ class ScoutingScreen : UIViewController {
    
     
     override func viewDidAppear(_ animated: Bool) {
+        for i in 0..<self.listOfToggleButtons.count{
+            for k in 0..<self.listOfToggleButtons[i].count{
+                listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
+                listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
+            }
+        }
         
+        if let selectedIndex = UserDefaults.standard.object(forKey: "selectedIndex") as? [Int]{
+            if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
+                for i in 0..<self.listOfToggleButtons.count{
+                    for k in 0..<self.listOfToggleButtons[i].count{
+                        if (self.listOfToggleButtons[i][k].index == selectedIndex[0] || self.listOfToggleButtons[i][k].index == selectedIndex[1]) && self.listOfToggleButtons[i][k].value == selectedValue{
+                            self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
+                            self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -255,7 +305,7 @@ class ScoutingScreen : UIViewController {
         
         screenTitle.text = self.screenTitles
         view.addSubview(screenTitle)
-
+        
         for i in 0..<self.numberOfRows{
             view.addSubview(self.createScoutingRows(y: self.startingY, currentRow: i))
             startingY += ((self.scoutingViewHeight) / Double(self.numberOfRows)) * 0.92

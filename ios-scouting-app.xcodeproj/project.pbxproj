@@ -13,6 +13,9 @@
 		251EF5D12429D16E006536F1 /* ScoutingScreenJSONLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251EF5D02429D16E006536F1 /* ScoutingScreenJSONLayout.swift */; };
 		251EF5D62429D613006536F1 /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = 251EF5D52429D612006536F1 /* layout.json */; };
 		25322E0824308D2A0089AEA6 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25322E0724308D2A0089AEA6 /* Button.swift */; };
+		25322E0A243099960089AEA6 /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25322E09243099960089AEA6 /* Switch.swift */; };
+		25322E0C24309F930089AEA6 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25322E0B24309F930089AEA6 /* Checkbox.swift */; };
+		25322E0E2430A0750089AEA6 /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25322E0D2430A0750089AEA6 /* ToggleButton.swift */; };
 		253343B2242C7228000E6409 /* QREntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253343B1242C7228000E6409 /* QREntry.swift */; };
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
@@ -40,6 +43,9 @@
 		251EF5D02429D16E006536F1 /* ScoutingScreenJSONLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoutingScreenJSONLayout.swift; path = "ios-scouting-app/ScoutingScreens/ScoutingScreenJSONLayout.swift"; sourceTree = SOURCE_ROOT; };
 		251EF5D52429D612006536F1 /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
 		25322E0724308D2A0089AEA6 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		25322E09243099960089AEA6 /* Switch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
+		25322E0B24309F930089AEA6 /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
+		25322E0D2430A0750089AEA6 /* ToggleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
 		253343B1242C7228000E6409 /* QREntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QREntry.swift; sourceTree = "<group>"; };
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
@@ -77,6 +83,9 @@
 			isa = PBXGroup;
 			children = (
 				25322E0724308D2A0089AEA6 /* Button.swift */,
+				25322E09243099960089AEA6 /* Switch.swift */,
+				25322E0B24309F930089AEA6 /* Checkbox.swift */,
+				25322E0D2430A0750089AEA6 /* ToggleButton.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -268,9 +277,12 @@
 				251EF5C624262973006536F1 /* ScoutingScreenUI.swift in Sources */,
 				253343B2242C7228000E6409 /* QREntry.swift in Sources */,
 				25E0F56E241F6BFE0034432A /* Events.swift in Sources */,
+				25322E0E2430A0750089AEA6 /* ToggleButton.swift in Sources */,
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
+				25322E0C24309F930089AEA6 /* Checkbox.swift in Sources */,
 				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
+				25322E0A243099960089AEA6 /* Switch.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
 				251EF5D12429D16E006536F1 /* ScoutingScreenJSONLayout.swift in Sources */,

@@ -14,6 +14,9 @@ class ScoutingActivity : UIViewController{
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
+    let screenHeight = UIScreen.main.bounds.height
+    let screenWidth = UIScreen.main.bounds.width
+    
     let Ymultiplier = 1.325
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
@@ -21,22 +24,16 @@ class ScoutingActivity : UIViewController{
     
     var listOfLabels : [UILabel] = []
     var navBarView : UIView!
+    var itemTags = 0
+    let images = ["timer", "team", "paste", "layers2"]
+    var screenTitles : [String] = []
+    var currentScreenIndex = 0
+    var screenLayout : ScoutingScreenLayout!
     
     var matchNumber = ""
     var teamNumber = ""
     var boardName = ""
     var timeOnStart = "015"
-    
-    let screenHeight = UIScreen.main.bounds.height
-    let screenWidth = UIScreen.main.bounds.width
-    
-    let images = ["timer", "team", "paste", "layers2"]
-    
-    var screenTitles : [String] = []
-    
-    var currentScreenIndex = 0
-    
-    var screenLayout : ScoutingScreenLayout!
     
     //Button controllers
     var hideStartTimer = false
@@ -61,6 +58,8 @@ class ScoutingActivity : UIViewController{
         view.addSubview(commentButton)
         view.addSubview(undoButton)
         view.addSubview(progressBar)
+        
+        self.progressBar.isEnabled = false
         
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
@@ -121,9 +120,9 @@ class ScoutingActivity : UIViewController{
     func createNavBarView() -> UIView{
         let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: Double(UIScreen.main.bounds.width), height : Double(UIScreen.main.bounds.height * 0.1)))
         
-        let navBarElementsHeight = Double(UIScreen.main.bounds.height * 0.08)
-        let navBarElementY = Double(UIScreen.main.bounds.height * -0.02)
-        let fontSize = CGFloat(navBarElementsHeight * 0.225)
+        let navBarElementsHeight = Double(UIScreen.main.bounds.height * 0.075)
+        let navBarElementY = Double(UIScreen.main.bounds.height * -0.005)
+        let fontSize = CGFloat(navBarElementsHeight * 0.3)
         let navBarWidth = Double(UIScreen.main.bounds.width)
         let iconsWidth = Double(UIScreen.main.bounds.width * 0.1)
         
@@ -170,9 +169,12 @@ class ScoutingActivity : UIViewController{
         self.navigationController?.pushViewController(main, animated: true)
     }
     
-    lazy var progressBar : UIProgressView = {
-        let progressBar = UIProgressView(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : Double(self.navBarHeight) * self.Ymultiplier * 0.875, width : Double(self.navBarWidth) * 0.96, height : Double(self.navBarHeight) * 0.25))
-           progressBar.progress = 0
+    lazy var progressBar : UISlider = {
+        let progressBar = UISlider(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : Double(self.navBarHeight) * self.Ymultiplier * 0.825, width : Double(self.navBarWidth) * 0.96, height : Double(self.navBarHeight) * 0.25))
+           progressBar.value = 0
+           progressBar.isContinuous = false
+           progressBar.addTarget(self, action: #selector(changeTimerValue(sender:)), for: .touchUpInside)
+           progressBar.addTarget(self, action: #selector(pauseTimerOnDrag(sender:)), for: .touchDown)
            return progressBar
        }()
     
@@ -283,6 +285,29 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].textColor = UIColor.red
         }
     }
+    @objc func changeTimerValue(sender : UISlider){
+        var newTime = sender.value
+        if !self.PlayButton.isHidden && self.PauseButton.isHidden{
+            self.PlayButton.isHidden = true
+            self.PauseButton.isHidden = false
+        }
+        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+        (timer) in
+        guard self.progress.isFinished == false else {
+            timer.invalidate()
+            return
+        }
+        newTime = (newTime * 16500 + 1) / 16500
+        self.totalProgress = newTime
+        self.updateTimer()
+        self.progressBar.value = self.totalProgress
+        }
+    }
+    
+    @objc func pauseTimerOnDrag(sender : UISlider){
+        self.progressBarTimer.invalidate()
+        self.totalProgress = self.progressBar.value
+    }
     
         @objc func clickHandler(sender : UIButton){
             if(sender.tag == 1){
@@ -290,6 +315,8 @@ class ScoutingActivity : UIViewController{
                 PauseButton.isHidden = false
                 PlayButton.isHidden = true
                 undoButton.isHidden = false
+                
+                self.progressBar.isEnabled = true
                 
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                 (timer) in
@@ -299,21 +326,17 @@ class ScoutingActivity : UIViewController{
                 }
                     self.progress.completedUnitCount += 1
                     self.totalProgress = Float(self.progress.fractionCompleted)
-                    
                     self.updateTimer()
-                    
-                    self.progressBar.setProgress(self.totalProgress, animated: true)
+                    self.progressBar.value = self.totalProgress
                 }
                 
             } else if (sender.tag == 2){
                 PlayButton.isHidden = false
                 PauseButton.isHidden = true
                 
-                //self.progressBarTimer.invalidate()
-                self.totalProgress = self.progressBar.progress
-                print(self.totalProgress * 165)
-                self.progressBar.setProgress(self.progressBar.progress, animated: true)
-
+                self.progressBarTimer.invalidate()
+                self.totalProgress = self.progressBar.value
+                self.progressBar.value = self.totalProgress
             } else if (sender.tag == 3){
                 PlayButton.isHidden = true
                 PauseButton.isHidden = false
@@ -324,10 +347,9 @@ class ScoutingActivity : UIViewController{
                         timer.invalidate()
                         return
                     }
-                    self.progress.completedUnitCount += 1
-                    self.totalProgress = Float(self.progress.fractionCompleted)
+                    self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
                     self.updateTimer()
-                    self.progressBar.setProgress(self.totalProgress, animated: true)
+                    self.progressBar.value = self.totalProgress
                     }
             } else if (sender.tag == 5){
                 let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
@@ -381,23 +403,28 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.index = index
         scoutingScreen.screenTitles = self.screenTitles[index]
         scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
-
+        var indicesInScreen : [Int] = []
         for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
            scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
             var typesInRow : [String] = []
             var namesInRow : [String] = []
+            
                 for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
                     typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
                     namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
                     scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
+                    
+                    indicesInScreen.append(self.itemTags)
+                    self.itemTags += 1
                    
                 }
             scoutingScreen.typeOfItemsInRow.append(typesInRow)
             scoutingScreen.nameOfItemsInRow.append(namesInRow)
+            
 
         }
         
-        
+        scoutingScreen.listOfIndices.append(contentsOf: indicesInScreen)
         
         return scoutingScreen
     }
