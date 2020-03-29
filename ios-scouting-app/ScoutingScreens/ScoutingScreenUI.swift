@@ -99,6 +99,9 @@ class ScoutingScreen : UIViewController {
                     self.notEmptyIndex += 1
                 }
 
+            } else if (self.typeOfItemsInRow[currentRow][i] == "Checkbox"){
+                scoutingRowView.addSubview(createCheckBox(x: startingX, width: itemWidth * 0.99, height: itemHeight, title:  self.nameOfItemsInRow[currentRow][i], tag: self.listOfIndices[self.itemIndex]))
+                self.itemIndex += 1
             }
             startingX += (itemWidth + spacing)
             }
@@ -162,9 +165,18 @@ class ScoutingScreen : UIViewController {
         return switchField
     }
     
-    func createCheckBox(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
-        let checkBox = UIButton(frame : CGRect(x : x, y : 0, width : width, height: height))
-        return checkBox
+    func createCheckBox(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIView{
+        let checkBoxField = UIView(frame : CGRect(x : x, y : 0, width : width, height : height))
+        checkBoxField.backgroundColor = UIColor.systemGray5
+        
+        let checkBox = CheckBox()
+        checkBox.frame = CGRect(x : (x + 0.001) * 0.2, y : height / 3, width : width * 0.2, height : height / 3)
+        checkBox.layer.borderWidth = 1
+        checkBox.layer.borderColor = UIColor.black.cgColor
+        
+        checkBoxField.addSubview(checkBox)
+        
+        return checkBoxField
     }
     
     func createMultiToggleField(x : Double, width : Double, height : Double, numberOfToggleFields : Int, toggleButtonTitle : [String], toggleFieldTitle : String, index : Int) -> UIView{

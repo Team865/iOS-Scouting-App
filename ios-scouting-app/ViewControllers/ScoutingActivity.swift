@@ -121,8 +121,8 @@ class ScoutingActivity : UIViewController{
         let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: Double(UIScreen.main.bounds.width), height : Double(UIScreen.main.bounds.height * 0.1)))
         
         let navBarElementsHeight = Double(UIScreen.main.bounds.height * 0.075)
-        let navBarElementY = Double(UIScreen.main.bounds.height * -0.005)
-        let fontSize = CGFloat(navBarElementsHeight * 0.3)
+        let navBarElementY = Double(UIScreen.main.bounds.height * -0.01)
+        let fontSize = CGFloat(navBarElementsHeight * 0.25)
         let navBarWidth = Double(UIScreen.main.bounds.width)
         let iconsWidth = Double(UIScreen.main.bounds.width * 0.1)
         
@@ -136,10 +136,10 @@ class ScoutingActivity : UIViewController{
         for i in 0..<listOfTexts.count{
             let label = self.createLabels(x: startingX + iconsWidth + listOfSpacing[i], y: navBarElementY, width: listOfLabelWidth[i], height: navBarElementsHeight, fontSize: fontSize, text : listOfTexts[i])
             label.text = listOfTexts[i]
-            view.addSubview(self.createIcon(x: startingX, y: navBarElementY, width: iconsWidth, height: navBarElementsHeight, iconName: listOfIconNames[i]))
+            view.addSubview(self.createIcon(x: startingX, y: navBarElementY * -0.5, width: iconsWidth, height: navBarElementsHeight * 0.6, iconName: listOfIconNames[i]))
             
             if(i == 3){
-                label.textColor = UIColor.systemYellow
+                label.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             }
             
             view.addSubview(label)
@@ -248,7 +248,7 @@ class ScoutingActivity : UIViewController{
             }
             
             self.listOfLabels[3].text = timeLeft
-            self.listOfLabels[3].textColor = UIColor.systemYellow
+            self.listOfLabels[3].textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             
         } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
             let time = 135 - round(165 * self.totalProgress)
