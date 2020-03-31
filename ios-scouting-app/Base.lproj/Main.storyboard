@@ -10,7 +10,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="MainController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ViewController" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -26,7 +26,7 @@
         <!--Settings View Controller-->
         <scene sceneID="ANs-TO-IQX">
             <objects>
-                <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="b9g-Wc-enz" customClass="SettingsViewController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="b9g-Wc-enz" customClass="SettingsViewController" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dzO-Dl-yeB">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -59,7 +59,7 @@
         <!--Event Selection Controller-->
         <scene sceneID="ts5-mi-bqV">
             <objects>
-                <viewController storyboardIdentifier="EventSelectionController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mhu-Ey-uhW" customClass="EventSelectionController" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EventSelectionController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mhu-Ey-uhW" customClass="EventSelectionController" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DG0-w4-IS2">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -78,22 +78,32 @@
         <!--Scouting Screen-->
         <scene sceneID="5iE-Ge-vCc">
             <objects>
-                <viewController storyboardIdentifier="ScoutingScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="yn4-Ix-GyD" customClass="ScoutingScreen" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ScoutingScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="yn4-Ix-GyD" customClass="ScoutingScreen" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="9VS-UR-dhK">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zhJ-Q1-tRJ">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="xoW-Vl-gwW"/>
                     </view>
+                    <connections>
+                        <outlet property="layoutView" destination="zhJ-Q1-tRJ" id="uPF-vv-JDe"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iEA-V4-mm3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4025" y="102"/>
+            <point key="canvasLocation" x="4024.6376811594205" y="101.78571428571428"/>
         </scene>
         <!--Scouting Screen Container-->
         <scene sceneID="SXU-5A-fb7">
             <objects>
-                <pageViewController storyboardIdentifier="ScoutingScreenContainer" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="YX2-eh-DTN" customClass="ScoutingScreenContainer" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController"/>
+                <pageViewController storyboardIdentifier="ScoutingScreenContainer" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="YX2-eh-DTN" customClass="ScoutingScreenContainer" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eay-et-OWW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4781" y="102"/>
@@ -101,17 +111,32 @@
         <!--Scouting Activity-->
         <scene sceneID="Vg4-kd-1gc">
             <objects>
-                <viewController storyboardIdentifier="ScoutingActivity" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H7w-Of-psU" customClass="ScoutingActivity" customModule="ios_scouting_app" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ScoutingActivity" useStoryboardIdentifierAsRestorationIdentifier="YES" id="H7w-Of-psU" customClass="ScoutingActivity" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uIq-Em-Tnn">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yyZ-Xm-VD4">
+                                <rect key="frame" x="9" y="55" width="396" height="847"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="bottom" secondItem="77X-RO-cav" secondAttribute="bottom" constant="40" id="KvV-Z9-fYy"/>
+                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="77X-RO-cav" secondAttribute="top" constant="11" id="onU-mT-Pxq"/>
+                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="leading" secondItem="uIq-Em-Tnn" secondAttribute="leadingMargin" constant="-11" id="vUR-iT-igp"/>
+                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="trailing" secondItem="uIq-Em-Tnn" secondAttribute="trailingMargin" constant="11" id="yky-wh-72d"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="77X-RO-cav"/>
                     </view>
+                    <connections>
+                        <outlet property="scoutingView" destination="yyZ-Xm-VD4" id="pBj-2A-d12"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Anp-UP-dSr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3314" y="102"/>
+            <point key="canvasLocation" x="3313.04347826087" y="101.78571428571428"/>
         </scene>
     </scenes>
 </document>

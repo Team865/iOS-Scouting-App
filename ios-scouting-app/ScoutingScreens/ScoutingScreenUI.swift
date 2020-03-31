@@ -13,6 +13,10 @@ class ScoutingScreen : UIViewController {
     var screenTitles : String?
     var index : Int?
     
+    
+    @IBOutlet weak var layoutView: UIView!
+    var stackView = UIStackView()
+    
     //Button controllers
     var hideStartTimer = false
     var hidePlayButton = true
@@ -23,7 +27,7 @@ class ScoutingScreen : UIViewController {
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
-    let Ymultiplier = 0.25
+    let Ymultiplier = 0.15
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     var comment = ""
@@ -68,47 +72,47 @@ class ScoutingScreen : UIViewController {
     //Another way to identify which button you are clicking is to disregard the rows and shit, just set the tags of the buttons from 0 to which ever number you can
     
     //Configure UI for scouting activity
-    func createScoutingRows(y : Double, currentRow : Int) -> UIView{
-        let rowHeight = Double(UIScreen.main.bounds.height) * 0.835 / Double(self.numberOfRows)
-        let rowWidth = self.scoutingViewWidth
+    func createScoutingStackView(){
+        view.addSubview(stackView)
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        stackView.spacing = 2.5
+        configureStackViewConstraints()
         
-        let scoutingRowView = UIView(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : y , width: rowWidth, height : rowHeight))
-        var startingX = 0.0
-        
-        let itemWidth = rowWidth / Double(self.numberOfItemsInRow[currentRow])
-        
-        let spacing = itemWidth * 0.01
-        
-        //To compress the view but keep the ratio of views, simply reduce itemHeight, and reduce spacing between items (which is found in viewDidLoad()
-        let itemHeight = rowHeight * 0.92        
-        
-        for i in 0..<self.numberOfItemsInRow[currentRow]{
-            if(self.typeOfItemsInRow[currentRow][i] == "Button"){
-                scoutingRowView.addSubview(createScoutingButton(x: startingX, width: itemWidth * 0.99, height: itemHeight, title : self.nameOfItemsInRow[currentRow][i], tag: self.listOfIndices[self.itemIndex]))
-                self.itemIndex += 1
-            } else if (self.typeOfItemsInRow[currentRow][i] == "Switch"){
-                scoutingRowView.addSubview(createScoutingSwitch(x: startingX, width: itemWidth * 0.99, height: itemHeight, title: self.nameOfItemsInRow[currentRow][i], tag : self.listOfIndices[self.itemIndex]))
-                self.itemIndex += 1
-            } else if (self.typeOfItemsInRow[currentRow][i] == "MultiToggle"){
-                if(self.notEmptyIndex < self.nameOfMultiToggleItems.count){
-                while (self.nameOfMultiToggleItems[self.notEmptyIndex].count == 0){
-                    self.notEmptyIndex += 1
-                }
-                    scoutingRowView.addSubview(createMultiToggleField(x: 0.0, width: rowWidth, height: itemHeight, numberOfToggleFields: self.nameOfMultiToggleItems[self.notEmptyIndex].count, toggleButtonTitle : self.nameOfMultiToggleItems[self.notEmptyIndex], toggleFieldTitle: self.nameOfItemsInRow[currentRow][i], index: self.listOfIndices[self.itemIndex]))
-                    self.itemIndex += 1
-                    self.notEmptyIndex += 1
-                }
-
-            } else if (self.typeOfItemsInRow[currentRow][i] == "Checkbox"){
-                scoutingRowView.addSubview(createCheckBox(x: startingX, width: itemWidth * 0.99, height: itemHeight, title:  self.nameOfItemsInRow[currentRow][i], tag: self.listOfIndices[self.itemIndex]))
-                self.itemIndex += 1
-            }
-            startingX += (itemWidth + spacing)
-            }
-        return scoutingRowView
+        for i in 0..<self.numberOfRows{
+            stackView.addArrangedSubview(createScoutingRow(numberOfItems: self.numberOfItemsInRow[i], typeOfItem: self.typeOfItemsInRow[i], titleOfItem: self.nameOfItemsInRow[i]))
+        }
     }
     
-    func createScoutingButton(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
+    func configureStackViewConstraints(){
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+               stackView.topAnchor.constraint(equalTo: self.screenTitle.bottomAnchor, constant: 5).isActive = true
+               stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
+               stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
+               stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
+    }
+    
+    func createScoutingRow(numberOfItems : Int, typeOfItem : [String], titleOfItem : [String]) -> UIStackView{
+        let scoutingRow = UIStackView()
+        
+        scoutingRow.axis = .horizontal
+        scoutingRow.distribution = .fillEqually
+        scoutingRow.spacing = 2.5
+                
+        for i in 0..<numberOfItems{
+            if(typeOfItem[i] == "Button"){
+                scoutingRow.addArrangedSubview(createScoutingButton(title: titleOfItem[i]))
+            } else if (typeOfItem[i] == "Switch"){
+                scoutingRow.addArrangedSubview(createScoutingSwitch(title: titleOfItem[i]))
+            } else if (typeOfItem[i] == "MultiToggle"){
+                scoutingRow.addArrangedSubview(createMultiToggleField(toggleFieldTitle: titleOfItem[i]))
+            }
+        }
+        
+        return scoutingRow
+    }
+    
+    func createScoutingButton(title : String) -> UIButton{
         let buttonField = Button()
 
         let titleArr = title.components(separatedBy: "_")
@@ -121,24 +125,21 @@ class ScoutingScreen : UIViewController {
                 title += titleArr[i] + " "
             }
         }
-        buttonField.frame = CGRect(x : x, y : 0, width : width, height : height)
         buttonField.setTitleColor(self.backgroundColor, for: .normal)
         buttonField.setTitle(title, for: .normal)
         buttonField.titleLabel?.numberOfLines = 0
         buttonField.contentHorizontalAlignment = .center
         buttonField.titleLabel?.textAlignment = .center
         buttonField.titleLabel?.lineBreakMode = .byWordWrapping
-        buttonField.titleLabel?.font = buttonField.titleLabel?.font.withSize(CGFloat(height * 0.125))
         buttonField.backgroundColor = UIColor.systemGray5
-        buttonField.index = tag
-        buttonField.value = 1
+//        buttonField.index = tag
+//        buttonField.value = 1
         buttonField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
         return buttonField
     }
     
-    func createScoutingSwitch(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIButton{
+    func createScoutingSwitch(title : String) -> UIButton{
         let switchField = Switch()
-        switchField.frame = CGRect(x : x, y : 0, width : width, height : height)
         switchField.setTitle("Switch", for: .normal)
         let titleArr = title.components(separatedBy: "_")
         var title = ""
@@ -156,9 +157,8 @@ class ScoutingScreen : UIViewController {
         switchField.contentHorizontalAlignment = .center
         switchField.titleLabel?.textAlignment = .center
         switchField.titleLabel?.lineBreakMode = .byWordWrapping
-        switchField.titleLabel?.font = switchField.titleLabel?.font.withSize(CGFloat(height * 0.125))
-        switchField.index = tag
-        switchField.value = 0
+//        switchField.index = tag
+//        switchField.value = 0
         switchField.setTitleColor(self.backgroundColor, for: .normal)
         switchField.backgroundColor = UIColor.systemGray5
         switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
@@ -179,53 +179,16 @@ class ScoutingScreen : UIViewController {
         return checkBoxField
     }
     
-    func createMultiToggleField(x : Double, width : Double, height : Double, numberOfToggleFields : Int, toggleButtonTitle : [String], toggleFieldTitle : String, index : Int) -> UIView{
-        let toggleHeight = height
+    func createMultiToggleField(toggleFieldTitle : String) -> UIView{
+       
+        let multiToggleField = UIView()
+        multiToggleField.backgroundColor = UIColor.systemGray5
         
-        let multiToggle = UIView(frame : CGRect(x : x, y : 0, width : width * 0.975, height : toggleHeight * 0.75))
+        let title = UILabel()
         
-        multiToggle.backgroundColor = UIColor.systemGray5
-        multiToggle.tag = index
-        let toggleFieldWidth = width * 0.975 / Double(numberOfToggleFields) * 1.027
-        var startingX = x
         
-        let fieldTitle = UILabel(frame : CGRect(x : x, y : 0, width : width, height : toggleHeight * 0.15))
         
-        let titleArr = toggleFieldTitle.components(separatedBy: "_")
-        var toggleTitle = ""
-        for u in 0..<titleArr.count{
-           toggleTitle += titleArr[u].prefix(1).uppercased() + titleArr[u].lowercased().dropFirst() + " "
-        }
-        
-        fieldTitle.text = toggleTitle
-        fieldTitle.textColor = UIColor.black
-        fieldTitle.textAlignment = .center
-        fieldTitle.backgroundColor = UIColor.systemGray5
-        multiToggle.addSubview(fieldTitle)
-        
-        var toggleList : [ToggleButton] = []
-        
-        for i in 0..<numberOfToggleFields{
-            let toggleButton = ToggleButton()
-            toggleButton.frame = CGRect(x : startingX, y : toggleHeight * 0.15, width : toggleFieldWidth, height : toggleHeight * 0.85)
-            toggleButton.setTitle(toggleButtonTitle[i], for: .normal)
-            toggleButton.setTitleColor(self.backgroundColor, for: .normal)
-            toggleButton.titleLabel?.numberOfLines = 0
-            toggleButton.contentHorizontalAlignment = .center
-            toggleButton.titleLabel?.textAlignment = .center
-            toggleButton.titleLabel?.lineBreakMode = .byWordWrapping
-            toggleButton.backgroundColor = UIColor.systemGray5
-            toggleButton.value = i
-            toggleButton.index = index
-            toggleButton.titleLabel?.font = toggleButton.titleLabel?.font.withSize(CGFloat(toggleHeight * 0.125))
-            toggleButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-            multiToggle.addSubview(toggleButton)
-            toggleList.append(toggleButton)
-            startingX += toggleFieldWidth
-        }
-        self.listOfToggleButtons.append(toggleList)
-        
-        return multiToggle
+       return multiToggleField
     }
     
     func getTimeStamp() -> Float {
@@ -238,8 +201,6 @@ class ScoutingScreen : UIViewController {
     
     @objc func collectQRCodeData(sender : AnyObject){
         if let button = sender as? Button{
-        print(button.value)
-        print(button.index!)
         print(getTimeStamp())
         }
         if let switchField = sender as? Switch{
@@ -281,7 +242,7 @@ class ScoutingScreen : UIViewController {
 
     
     lazy var screenTitle : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.navBarWidth) * 0.025 , y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.navBarWidth) * 0.5, height : Double(self.navBarHeight) * self.heightMultiplier))
+        let label = UILabel(frame : CGRect(x : Double(self.navBarWidth) * 0.05 , y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.navBarWidth) * 0.5, height : Double(self.navBarHeight) * self.heightMultiplier))
         label.font = label.font.withSize(CGFloat(self.navBarHeight * self.heightMultiplier * 0.75))
         label.textAlignment = .left
         return label
@@ -317,11 +278,6 @@ class ScoutingScreen : UIViewController {
         
         screenTitle.text = self.screenTitles
         view.addSubview(screenTitle)
-        
-        for i in 0..<self.numberOfRows{
-            view.addSubview(self.createScoutingRows(y: self.startingY, currentRow: i))
-            startingY += ((self.scoutingViewHeight) / Double(self.numberOfRows)) * 0.92
-        }
-      
+        createScoutingStackView()
     }
 }
