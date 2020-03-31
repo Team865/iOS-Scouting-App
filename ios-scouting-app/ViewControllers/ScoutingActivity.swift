@@ -17,6 +17,8 @@ class ScoutingActivity : UIViewController{
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
     
+    @IBOutlet weak var scoutingView: UIView!
+    
     let Ymultiplier = 1.325
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
@@ -51,7 +53,6 @@ class ScoutingActivity : UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(scoutingView)
         view.addSubview(StartTimerButton)
         view.addSubview(PauseButton)
         view.addSubview(PlayButton)
@@ -87,12 +88,6 @@ class ScoutingActivity : UIViewController{
     }
     
     //UI Configurations
-    lazy var scoutingView : UIView = {
-        let view = UIView(frame : CGRect(x: 0, y: Double(self.screenHeight) * 0.1, width: Double(self.screenWidth), height: Double(self.screenHeight) * 0.9))
-        
-        return view
-    }()
-    
     func createLabels(x : Double, y : Double, width : Double, height : Double, fontSize : CGFloat, text : String) -> UILabel{
         let label = UILabel(frame : CGRect(x : x, y : y, width : width, height : height))
         label.font = label.font.withSize(fontSize)
@@ -380,17 +375,27 @@ class ScoutingActivity : UIViewController{
         pageViewController.delegate = self
         pageViewController.dataSource = self
         
-        pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        
         addChild(pageViewController)
         pageViewController.didMove(toParent: self)
         
+        pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
         self.scoutingView.addSubview(pageViewController.view)
-
+        
+        let views = ["pageView": pageViewController.view!]
+        
+        self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+        
+        self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
+//        pageViewController.view.topAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+//        pageViewController.view.leadingAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
+//        pageViewController.view.trailingAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
+//        pageViewController.view.bottomAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        
         guard let startingScoutingScreen = scoutingScreenAtIndex(index : currentScreenIndex) else { return }
         
         pageViewController.setViewControllers([startingScoutingScreen], direction: .forward, animated: true)
-    }
+       }
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
         
@@ -405,7 +410,7 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
         var indicesInScreen : [Int] = []
         for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
-           scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
+scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
             var typesInRow : [String] = []
             var namesInRow : [String] = []
             
@@ -421,7 +426,6 @@ class ScoutingActivity : UIViewController{
             scoutingScreen.typeOfItemsInRow.append(typesInRow)
             scoutingScreen.nameOfItemsInRow.append(namesInRow)
             
-
         }
         
         scoutingScreen.listOfIndices.append(contentsOf: indicesInScreen)
