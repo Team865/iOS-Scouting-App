@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 class ScoutingActivity : UIViewController{
-    //var scoutingScreens = [UIPageViewController]()
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
@@ -31,11 +30,23 @@ class ScoutingActivity : UIViewController{
     var screenTitles : [String] = []
     var currentScreenIndex = 0
     var screenLayout : ScoutingScreenLayout!
+    var screenIndex = 0
+    var tempScreenIndex = 0
+    var movedForward = false
+    var movedBackwards = false
     
     var matchNumber = ""
     var teamNumber = ""
     var boardName = ""
     var timeOnStart = "015"
+    
+    //UIs
+    @IBOutlet weak var screenTitle: UILabel!
+    @IBOutlet weak var PlayButton: UIButton!
+    @IBOutlet weak var PauseButton: UIButton!
+    @IBOutlet weak var StartTimerButton: UIButton!
+    @IBOutlet weak var CommentButton: UIButton!
+    @IBOutlet weak var UndoButton: UIButton!
     
     //Button controllers
     var hideStartTimer = false
@@ -44,6 +55,7 @@ class ScoutingActivity : UIViewController{
     var hideUndoButton = true
     
     //Progress bar
+    @IBOutlet weak var progressBar: UISlider!
     var progressBarTimer : Timer!
     var totalProgress : Float = 0
     let progress = Progress(totalUnitCount: 16500)
@@ -53,23 +65,25 @@ class ScoutingActivity : UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(StartTimerButton)
-        view.addSubview(PauseButton)
-        view.addSubview(PlayButton)
-        view.addSubview(commentButton)
-        view.addSubview(undoButton)
-        view.addSubview(progressBar)
-        
-        self.progressBar.isEnabled = false
-        
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
+        	
+        StartTimerButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PauseButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PlayButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        CommentButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        UndoButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
             }
             self.configurePageViewController()
         }
+        
+        self.progressBar.isEnabled = false
+                
+        
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -85,6 +99,10 @@ class ScoutingActivity : UIViewController{
         } catch let err{
             print(err)
         }
+    }
+    
+    func setTitle(title : String){
+        self.screenTitle.text = title
     }
     
     //UI Configurations
@@ -152,79 +170,13 @@ class ScoutingActivity : UIViewController{
     }
     
     lazy var backButton : UIButton = {
-        let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 15))
-        button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
-        return button
-    }()
-    
-    @objc func clickHandler(srcObj : UIButton){
-        let mainVC = UIStoryboard.init(name: "Main", bundle: nil)
-        let main = mainVC.instantiateViewController(identifier: "MainController") as ViewController
-        self.navigationController?.pushViewController(main, animated: true)
-    }
-    
-    lazy var progressBar : UISlider = {
-        let progressBar = UISlider(frame : CGRect(x : Double(self.navBarWidth) * 0.02, y : Double(self.navBarHeight) * self.Ymultiplier * 0.825, width : Double(self.navBarWidth) * 0.96, height : Double(self.navBarHeight) * 0.25))
-           progressBar.value = 0
-           progressBar.isContinuous = false
-           progressBar.addTarget(self, action: #selector(changeTimerValue(sender:)), for: .touchUpInside)
-           progressBar.addTarget(self, action: #selector(pauseTimerOnDrag(sender:)), for: .touchDown)
-           return progressBar
+           let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 15))
+            button.tag = 6
+           button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+           return button
        }()
     
-    lazy var StartTimerButton : UIButton = {
-               let button = UIButton(type : .system)
-        button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.buttonsWidth * 2), height : Double(self.navBarHeight) * self.heightMultiplier * 0.75)
-               button.tag = 1
-               button.setTitle("Start Timer", for: .normal)
-               button.titleLabel?.font = button.titleLabel?.font.withSize(20)
-               button.setTitleColor(UIColor.white, for: .normal)
-               button.backgroundColor = UIColor.systemBlue
-               button.layer.cornerRadius = 5
-               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-              return button
-           }()
-
-           lazy var PauseButton : UIButton = {
-               let button = UIButton(type : .system)
-            button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
-               button.tag = 2
-               button.setImage(UIImage(named : "pause"), for: .normal)
-               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-            button.isHidden = true
-               return button
-           }()
-
-           lazy var PlayButton : UIButton = {
-               let button = UIButton(type : .system)
-            button.frame = CGRect(x : Double(self.navBarWidth * 0.55), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
-               button.tag = 3
-               button.setImage(UIImage(named : "play"), for: .normal)
-               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-               button.isHidden = true
-               return button
-           }()
-
-           lazy var undoButton : UIButton = {
-               let button = UIButton(type : .system)
-            button.frame = CGRect(x : Double(self.navBarWidth * 0.7), y : Double(navBarHeight) * self.Ymultiplier * 0.95 , width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
-               button.tag = 4
-               button.setImage(UIImage(named : "undo"), for: .normal)
-               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-               button.isHidden = true
-               return button
-           }()
-
-           lazy var commentButton : UIButton = {
-               let button = UIButton(type : .system)
-            button.frame = CGRect(x : Double(self.navBarWidth * 0.85), y : Double(navBarHeight) * self.Ymultiplier * 0.95, width : Double(self.buttonsWidth), height : Double(self.navBarHeight) * self.heightMultiplier)
-               button.tag = 5
-               button.setImage(UIImage(named : "comments"), for: .normal)
-               button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-               return button
-           }()
-        
     func updateTimer(){
         UserDefaults.standard.set(165 * self.totalProgress, forKey: "timeStamp")
         if(165 * self.totalProgress < 15.0){
@@ -280,36 +232,14 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].textColor = UIColor.red
         }
     }
-    @objc func changeTimerValue(sender : UISlider){
-        var newTime = sender.value
-        if !self.PlayButton.isHidden && self.PauseButton.isHidden{
-            self.PlayButton.isHidden = true
-            self.PauseButton.isHidden = false
-        }
-        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-        (timer) in
-        guard self.progress.isFinished == false else {
-            timer.invalidate()
-            return
-        }
-        newTime = (newTime * 16500 + 1) / 16500
-        self.totalProgress = newTime
-        self.updateTimer()
-        self.progressBar.value = self.totalProgress
-        }
-    }
     
-    @objc func pauseTimerOnDrag(sender : UISlider){
-        self.progressBarTimer.invalidate()
-        self.totalProgress = self.progressBar.value
-    }
     
         @objc func clickHandler(sender : UIButton){
             if(sender.tag == 1){
                 StartTimerButton.isHidden = true
                 PauseButton.isHidden = false
                 PlayButton.isHidden = true
-                undoButton.isHidden = false
+                UndoButton.isHidden = false
                 
                 self.progressBar.isEnabled = true
                 
@@ -366,6 +296,9 @@ class ScoutingActivity : UIViewController{
                 alert.addAction(cancel)
 
                 self.present(alert, animated : true, completion : nil)
+            } else if (sender.tag == 6){
+                let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "MainController") as? ViewController)!
+                self.navigationController?.pushViewController(vc, animated: true)
             }
         }
     
@@ -387,14 +320,12 @@ class ScoutingActivity : UIViewController{
         self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
         
         self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-//        pageViewController.view.topAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
-//        pageViewController.view.leadingAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
-//        pageViewController.view.trailingAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-//        pageViewController.view.bottomAnchor.constraint(equalTo: self.scoutingView.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
         
         guard let startingScoutingScreen = scoutingScreenAtIndex(index : currentScreenIndex) else { return }
         
         pageViewController.setViewControllers([startingScoutingScreen], direction: .forward, animated: true)
+        
+        self.screenTitle.text = self.screenTitles[0]
        }
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
@@ -456,7 +387,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         
         currentIndex -= 1
         
-        
         return scoutingScreenAtIndex(index: currentIndex)
     }
     
@@ -476,5 +406,10 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         currentScreenIndex = currentIndex
         
         return scoutingScreenAtIndex(index: currentIndex)
+    }
+    
+    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        let vc = pendingViewControllers[0] as! ScoutingScreen
+        self.screenTitle.text = self.screenTitles[vc.index ?? 0]
     }
 }
