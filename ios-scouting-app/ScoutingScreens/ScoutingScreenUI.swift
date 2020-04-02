@@ -13,7 +13,6 @@ class ScoutingScreen : UIViewController {
     var screenTitles : String?
     var index : Int?
     
-    
     @IBOutlet weak var layoutView: UIView!
     var stackView = UIStackView()
     
@@ -27,7 +26,7 @@ class ScoutingScreen : UIViewController {
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
-    let Ymultiplier = 0.15
+    let Ymultiplier = 0.4
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     var comment = ""
@@ -80,32 +79,38 @@ class ScoutingScreen : UIViewController {
         configureStackViewConstraints()
         
         for i in 0..<self.numberOfRows{
-            stackView.addArrangedSubview(createScoutingRow(numberOfItems: self.numberOfItemsInRow[i], typeOfItem: self.typeOfItemsInRow[i], titleOfItem: self.nameOfItemsInRow[i]))
+            stackView.addArrangedSubview(createScoutingRow(numberOfItems: self.numberOfItemsInRow[i], typeOfItem: self.typeOfItemsInRow[i], titleOfItem: self.nameOfItemsInRow[i], titleOfToggles: self.nameOfMultiToggleItems))
         }
     }
     
     func configureStackViewConstraints(){
         stackView.translatesAutoresizingMaskIntoConstraints = false
-               stackView.topAnchor.constraint(equalTo: self.screenTitle.bottomAnchor, constant: 5).isActive = true
+        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
                stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
                stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
-               stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
     
-    func createScoutingRow(numberOfItems : Int, typeOfItem : [String], titleOfItem : [String]) -> UIStackView{
+    func createScoutingRow(numberOfItems : Int, typeOfItem : [String], titleOfItem : [String], titleOfToggles : [[String]]) -> UIStackView{
         let scoutingRow = UIStackView()
         
         scoutingRow.axis = .horizontal
         scoutingRow.distribution = .fillEqually
         scoutingRow.spacing = 2.5
-                
+        
         for i in 0..<numberOfItems{
             if(typeOfItem[i] == "Button"){
                 scoutingRow.addArrangedSubview(createScoutingButton(title: titleOfItem[i]))
             } else if (typeOfItem[i] == "Switch"){
                 scoutingRow.addArrangedSubview(createScoutingSwitch(title: titleOfItem[i]))
             } else if (typeOfItem[i] == "MultiToggle"){
-                scoutingRow.addArrangedSubview(createMultiToggleField(toggleFieldTitle: titleOfItem[i]))
+                while(titleOfToggles[self.notEmptyIndex].isEmpty){
+                    self.notEmptyIndex += 1
+                }
+                scoutingRow.addArrangedSubview(createMultiToggleField(toggleFieldTitle: titleOfItem[i], nameOfToggleFields: titleOfToggles[self.notEmptyIndex]))
+                self.notEmptyIndex += 1
+            } else if (typeOfItem[i] == "Checkbox"){
+                scoutingRow.addArrangedSubview(createCheckBox())
             }
         }
         
@@ -165,28 +170,55 @@ class ScoutingScreen : UIViewController {
         return switchField
     }
     
-    func createCheckBox(x : Double, width : Double, height : Double, title : String, tag : Int) -> UIView{
-        let checkBoxField = UIView(frame : CGRect(x : x, y : 0, width : width, height : height))
+    func createCheckBox() -> UIView{
+        let checkBoxField = UIView()
         checkBoxField.backgroundColor = UIColor.systemGray5
-        
-        let checkBox = CheckBox()
-        checkBox.frame = CGRect(x : (x + 0.001) * 0.2, y : height / 3, width : width * 0.2, height : height / 3)
-        checkBox.layer.borderWidth = 1
-        checkBox.layer.borderColor = UIColor.black.cgColor
-        
-        checkBoxField.addSubview(checkBox)
         
         return checkBoxField
     }
     
-    func createMultiToggleField(toggleFieldTitle : String) -> UIView{
-       
+    func createMultiToggleField(toggleFieldTitle : String, nameOfToggleFields : [String]) -> UIView{
         let multiToggleField = UIView()
+
+        let viewHeight = Double(UIScreen.main.bounds.height) * 0.85
+        
         multiToggleField.backgroundColor = UIColor.systemGray5
         
-        let title = UILabel()
+        let titleArr = toggleFieldTitle.components(separatedBy: "_")
+        var title = ""
         
+        for i in 0..<titleArr.count{
+              title += titleArr[i].prefix(1).uppercased() + titleArr[i].lowercased().dropFirst() + " "
+           }
+        let label = UILabel()
+
+        label.frame = CGRect(x : 0.0, y : viewHeight / Double(self.numberOfRows) * 0.01, width: Double(UIScreen.main.bounds.width), height: viewHeight / Double(self.numberOfRows) * 0.22)
+        label.text = title
+        label.textAlignment = .center
+        multiToggleField.addSubview(label)
         
+        let toggleView = UIStackView()
+        toggleView.frame = CGRect(x : 0, y : viewHeight / Double(self.numberOfRows) * 0.25, width : Double(UIScreen.main.bounds.width) - 14, height : viewHeight / Double(self.numberOfRows) * 0.58)
+        
+        toggleView.axis = .horizontal
+        toggleView.spacing = 0
+        toggleView.distribution = .fillEqually
+        var listOfToggles : [ToggleButton] = []
+        
+        for i in 0..<nameOfToggleFields.count{
+            let button = ToggleButton()
+            button.setTitle(nameOfToggleFields[i], for: .normal)
+            button.titleLabel?.textAlignment = .center
+            button.setTitleColor(backgroundColor, for: .normal)
+            button.backgroundColor = UIColor.systemGray5
+            button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
+            listOfToggles.append(button)
+            toggleView.addArrangedSubview(button)
+        }
+        
+        self.listOfToggleButtons.append(listOfToggles)
+        
+        multiToggleField.addSubview(toggleView)
         
        return multiToggleField
     }
@@ -228,56 +260,40 @@ class ScoutingScreen : UIViewController {
             toggleField.backgroundColor = self.backgroundColor
             toggleField.setTitleColor(UIColor.white, for: .normal)
             
-            print(toggleField.index ?? 0)
-            print(toggleField.value ?? 0)
-            
-            let indices = [7,15]
-            //Find a way to not hard code this
-            UserDefaults.standard.set(indices, forKey: "selectedIndex")
-            UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
+//            let indices = [7,15]
+//            //Find a way to not hard code this
+//            UserDefaults.standard.set(indices, forKey: "selectedIndex")
+//            UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
             
         }
     }
-
-
-    
-    lazy var screenTitle : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.navBarWidth) * 0.05 , y : Double(self.navBarHeight) * self.Ymultiplier, width : Double(self.navBarWidth) * 0.5, height : Double(self.navBarHeight) * self.heightMultiplier))
-        label.font = label.font.withSize(CGFloat(self.navBarHeight * self.heightMultiplier * 0.75))
-        label.textAlignment = .left
-        return label
-    }()
-    
-   
     
     override func viewDidAppear(_ animated: Bool) {
-        for i in 0..<self.listOfToggleButtons.count{
-            for k in 0..<self.listOfToggleButtons[i].count{
-                listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
-                listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
-            }
-        }
-        
-        if let selectedIndex = UserDefaults.standard.object(forKey: "selectedIndex") as? [Int]{
-            if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
-                for i in 0..<self.listOfToggleButtons.count{
-                    for k in 0..<self.listOfToggleButtons[i].count{
-                        if (self.listOfToggleButtons[i][k].index == selectedIndex[0] || self.listOfToggleButtons[i][k].index == selectedIndex[1]) && self.listOfToggleButtons[i][k].value == selectedValue{
-                            self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
-                            self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
-                            
-                        }
-                    }
-                }
-            }
-        }
+//        for i in 0..<self.listOfToggleButtons.count{
+//            for k in 0..<self.listOfToggleButtons[i].count{
+//                listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
+//                listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
+//            }
+//        }
+//
+//        if let selectedIndex = UserDefaults.standard.object(forKey: "selectedIndex") as? [Int]{
+//            if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
+//                for i in 0..<self.listOfToggleButtons.count{
+//                    for k in 0..<self.listOfToggleButtons[i].count{
+//                        if (self.listOfToggleButtons[i][k].index == selectedIndex[0] || self.listOfToggleButtons[i][k].index == selectedIndex[1]) && self.listOfToggleButtons[i][k].value == selectedValue{
+//                            self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
+//                            self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        screenTitle.text = self.screenTitles
-        view.addSubview(screenTitle)
         createScoutingStackView()
+       
     }
 }
