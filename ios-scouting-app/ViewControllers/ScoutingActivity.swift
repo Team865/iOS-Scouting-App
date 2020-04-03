@@ -67,13 +67,8 @@ class ScoutingActivity : UIViewController{
         super.viewDidLoad()
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
-        	
-        StartTimerButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-        PauseButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-        PlayButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-        CommentButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-        UndoButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-        
+        configureButtons()
+        configureProgressBar()
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
@@ -82,7 +77,6 @@ class ScoutingActivity : UIViewController{
         }
         
         self.progressBar.isEnabled = false
-                
         
     }
     
@@ -106,10 +100,52 @@ class ScoutingActivity : UIViewController{
     }
     
     //UI Configurations
+    func configureButtons(){
+        StartTimerButton.layer.cornerRadius = 5
+        
+        StartTimerButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PauseButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PlayButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        CommentButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        UndoButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        
+    }
+    
+    func configureProgressBar(){
+        self.progressBar.value = 0
+        self.progressBar.tintColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        self.progressBar.addTarget(self, action: #selector(pauseTimerOnPBSelection(sender:)), for: .touchDown)
+        self.progressBar.addTarget(self, action: #selector(updateTimerOnPBDrag(sender:)), for: .touchDragInside)
+        self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
+    }
+    
+    @objc func progressBarReleased(sender : UISlider){
+        self.totalProgress = sender.value
+        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+        (timer) in
+            guard self.totalProgress <= 1 else {
+            timer.invalidate()
+            return
+        }
+            self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
+            self.updateTimer()
+            self.progressBar.value = self.totalProgress
+        }
+    }
+    
+    @objc func updateTimerOnPBDrag(sender : UISlider){
+        self.totalProgress = sender.value
+        updateTimer()
+    }
+    
+    @objc func pauseTimerOnPBSelection(sender : UISlider){
+        self.progressBarTimer.invalidate()
+    }
+    
     func createLabels(x : Double, y : Double, width : Double, height : Double, fontSize : CGFloat, text : String) -> UILabel{
         let label = UILabel(frame : CGRect(x : x, y : y, width : width, height : height))
         label.font = label.font.withSize(fontSize)
-        label.textAlignment = .center
+        label.textAlignment = .left
         
         switch (text.prefix(1)){
         case "B":
@@ -131,36 +167,26 @@ class ScoutingActivity : UIViewController{
     }
     
     func createNavBarView() -> UIView{
-        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: Double(UIScreen.main.bounds.width), height : Double(UIScreen.main.bounds.height * 0.1)))
-        
-        let navBarElementsHeight = Double(UIScreen.main.bounds.height * 0.075)
-        let navBarElementY = Double(UIScreen.main.bounds.height * -0.01)
-        let fontSize = CGFloat(navBarElementsHeight * 0.25)
-        let navBarWidth = Double(UIScreen.main.bounds.width)
-        let iconsWidth = Double(UIScreen.main.bounds.width * 0.1)
-        
-        let spacing = iconsWidth * 0.05
+        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: 308, height : 34))
+        let iconsWidth = 34.0
+        let spacing = 2.5
         var startingX = 0.0
-        
         let listOfTexts = [self.matchNumber, self.boardName, self.teamNumber, String(self.timeOnStart)]
+        let listOfLabelWidth = [24.0, 24.0, 40.0, 34.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
-        let listOfSpacing = [spacing, spacing, 0.0, spacing * 2]
-        let listOfLabelWidth = [navBarWidth * 0.1, navBarWidth * 0.08, navBarWidth * 0.1, navBarWidth * 0.1]
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + listOfSpacing[i], y: navBarElementY, width: listOfLabelWidth[i], height: navBarElementsHeight, fontSize: fontSize, text : listOfTexts[i])
+            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 16, text : listOfTexts[i])
             label.text = listOfTexts[i]
-            view.addSubview(self.createIcon(x: startingX, y: navBarElementY * -0.5, width: iconsWidth, height: navBarElementsHeight * 0.6, iconName: listOfIconNames[i]))
+            view.addSubview(self.createIcon(x: startingX, y: 0.0, width: iconsWidth, height: 34, iconName: listOfIconNames[i]))
             
             if(i == 3){
                 label.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             }
             
             view.addSubview(label)
-            startingX += iconsWidth + listOfLabelWidth[i] + listOfSpacing[i]
+            startingX += iconsWidth + listOfLabelWidth[i] + 10.0
             self.listOfLabels.append(label)
         }
-
-        
         return view
     }
     
@@ -170,10 +196,10 @@ class ScoutingActivity : UIViewController{
     }
     
     lazy var backButton : UIButton = {
-           let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 15))
+           let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 34))
             button.tag = 6
            button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
            return button
        }()
     
@@ -232,8 +258,6 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].textColor = UIColor.red
         }
     }
-    
-    
         @objc func clickHandler(sender : UIButton){
             if(sender.tag == 1){
                 StartTimerButton.isHidden = true
@@ -268,7 +292,7 @@ class ScoutingActivity : UIViewController{
                 
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                     (timer) in
-                    guard self.progress.isFinished == false else {
+                    guard self.totalProgress <= 1 else {
                         timer.invalidate()
                         return
                     }
@@ -341,7 +365,7 @@ class ScoutingActivity : UIViewController{
         scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
         var indicesInScreen : [Int] = []
         for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
-scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
+            scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
             var typesInRow : [String] = []
             var namesInRow : [String] = []
             

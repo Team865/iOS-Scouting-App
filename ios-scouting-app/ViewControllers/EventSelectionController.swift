@@ -231,7 +231,7 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
             let alert = UIAlertController(title: "Warning", message: "You will delete all data of current event, are you sure ?", preferredStyle: .alert)
                 
                 let getName = UIAlertAction(title: "OK", style: .default){
-                    [weak alert] (_) in
+                    alert in
                     self.selectedEventKey = self.listOfKeys[indexPath.row]
                     self.selectedName = self.listOfNames[indexPath.row]
                     self.performSegue(withIdentifier: "passEventKey", sender: self)

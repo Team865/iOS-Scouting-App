@@ -32,19 +32,18 @@ class SettingsCell :UITableViewCell{
     private lazy var titleLabel : UILabel = {
         let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.05), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.45)))
         label.textAlignment = .left
-        label.adjustsFontSizeToFitWidth = true
         label.isHighlighted = true
-        label.font = label.font.withSize(12)
+        label.font = label.font.withSize(18)
         return label
     }()
     
     private lazy var descriptionLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.45), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.45)))
+        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.45), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.5)))
         label.textAlignment = .left
         label.lineBreakMode = .byClipping
         label.textColor = UIColor.lightGray
         label.numberOfLines = 0
-        label.font = label.font.withSize(12)
+        label.font = label.font.withSize(13)
         return label
     }()
     

@@ -198,7 +198,7 @@ class ScoutingScreen : UIViewController {
         multiToggleField.addSubview(label)
         
         let toggleView = UIStackView()
-        toggleView.frame = CGRect(x : 0, y : viewHeight / Double(self.numberOfRows) * 0.25, width : Double(UIScreen.main.bounds.width) - 14, height : viewHeight / Double(self.numberOfRows) * 0.58)
+        toggleView.frame = CGRect(x : 0, y : viewHeight / Double(self.numberOfRows) * 0.25, width : Double(UIScreen.main.bounds.width) - 14, height : viewHeight / Double(self.numberOfRows) * 0.56)
         
         toggleView.axis = .horizontal
         toggleView.spacing = 0

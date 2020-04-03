@@ -29,7 +29,13 @@ class SettingsViewController: UIViewController {
     func createActionSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
         
-        tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: "Current Event", hideSwitch: true))
+        var selectedEvent = "None"
+        
+        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+            selectedEvent = currentEvent
+        }	
+        
+        tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
             hideSwitch : false))
         
