@@ -79,7 +79,7 @@ class ScoutingScreen : UIViewController {
         configureStackViewConstraints()
         
         for i in 0..<self.numberOfRows{
-            stackView.addArrangedSubview(createScoutingRow(numberOfItems: self.numberOfItemsInRow[i], typeOfItem: self.typeOfItemsInRow[i], titleOfItem: self.nameOfItemsInRow[i], titleOfToggles: self.nameOfMultiToggleItems))
+            stackView.addArrangedSubview(createScoutingRow(numberOfItems: self.numberOfItemsInRow[i], typeOfItem: self.typeOfItemsInRow[i], titleOfItem: self.nameOfItemsInRow[i], titleOfToggles: self.nameOfMultiToggleItems, currentRow: i))
         }
     }
     
@@ -91,7 +91,7 @@ class ScoutingScreen : UIViewController {
         stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
     
-    func createScoutingRow(numberOfItems : Int, typeOfItem : [String], titleOfItem : [String], titleOfToggles : [[String]]) -> UIStackView{
+    func createScoutingRow(numberOfItems : Int, typeOfItem : [String], titleOfItem : [String], titleOfToggles : [[String]], currentRow : Int) -> UIStackView{
         let scoutingRow = UIStackView()
         
         scoutingRow.axis = .horizontal
@@ -109,7 +109,7 @@ class ScoutingScreen : UIViewController {
                 
             } else if (typeOfItem[i] == "Switch"){
                 let switchField = Switch()
-                switchField.index = 1
+                switchField.index = self.listOfIndices[itemIndex]
                 switchField.value = 0
                 switchField.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
@@ -141,7 +141,14 @@ class ScoutingScreen : UIViewController {
                 
                 self.notEmptyIndex += 1
             } else if (typeOfItem[i] == "Checkbox"){
-                scoutingRow.addArrangedSubview(createCheckBox())
+                let checkBoxField = CheckBox()
+                let checkBoxButton = CheckBoxButton()
+                checkBoxField.title = formatTitleOfItem(string: titleOfItem[i])
+                checkBoxButton.index = self.listOfIndices[itemIndex]
+                checkBoxField.checkBox = checkBoxButton
+                checkBoxButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
+                checkBoxField.setUpCheckBox()
+                scoutingRow.addArrangedSubview(checkBoxField)
             }
             
             itemIndex += 1
@@ -180,6 +187,7 @@ class ScoutingScreen : UIViewController {
         if let button = sender as? Button{
             print(getTimeStamp())
             print(button.index ?? 0)
+            print(button.value)
         }
         if let switchField = sender as? Switch{
             if switchField.value == 0{
@@ -217,8 +225,23 @@ class ScoutingScreen : UIViewController {
             UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
             
         }
+   
+        if let checkbox = sender as? CheckBoxButton {
+            if checkbox.value == 0 {
+                checkbox.backgroundColor = self.backgroundColor
+                checkbox.value = 1
+            } else {
+                checkbox.backgroundColor = UIColor.systemGray5
+                checkbox.value = 0
+            }
+            
+            print(checkbox.value)
+            print(checkbox.index ?? 0)
+            print(getTimeStamp())
+        }
     }
     
+   
     override func viewDidAppear(_ animated: Bool) {
         for i in 0..<self.listOfToggleButtons.count{
             for k in 0..<self.listOfToggleButtons[i].count{
