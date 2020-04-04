@@ -78,6 +78,8 @@ class ScoutingActivity : UIViewController{
         
         self.progressBar.isEnabled = false
         
+        //Make sure the initial time stamp is 0 before taking any inputs
+        UserDefaults.standard.set(0.0, forKey: "timeStamp")
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -167,24 +169,24 @@ class ScoutingActivity : UIViewController{
     }
     
     func createNavBarView() -> UIView{
-        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: 308, height : 34))
+        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: 341, height : 34))
         let iconsWidth = 34.0
         let spacing = 2.5
         var startingX = 0.0
         let listOfTexts = [self.matchNumber, self.boardName, self.teamNumber, String(self.timeOnStart)]
-        let listOfLabelWidth = [24.0, 24.0, 40.0, 34.0]
+        let listOfLabelWidth = [30.0, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 16, text : listOfTexts[i])
+            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
             label.text = listOfTexts[i]
-            view.addSubview(self.createIcon(x: startingX, y: 0.0, width: iconsWidth, height: 34, iconName: listOfIconNames[i]))
+            view.addSubview(self.createIcon(x: startingX, y: 3.5, width: iconsWidth, height: 28, iconName: listOfIconNames[i]))
             
             if(i == 3){
                 label.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             }
             
             view.addSubview(label)
-            startingX += iconsWidth + listOfLabelWidth[i] + 10.0
+            startingX += iconsWidth + listOfLabelWidth[i] + spacing * 3.0
             self.listOfLabels.append(label)
         }
         return view
