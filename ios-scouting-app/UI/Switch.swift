@@ -12,4 +12,23 @@ import UIKit
 class Switch : UIButton{
     var index : Int?
     var value : Int?
+    
+    override init(frame: CGRect) {
+        super.init(frame : frame)
+        setUpSwitch()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("A NSCoder is not initialized")
+    }
+    
+    func setUpSwitch(){
+        titleLabel?.numberOfLines = 0
+        contentHorizontalAlignment = .center
+        titleLabel?.textAlignment = .center
+        titleLabel?.lineBreakMode = .byWordWrapping
+        setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+        backgroundColor = UIColor.systemGray5
+              
+    }
 }
