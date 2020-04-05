@@ -131,6 +131,12 @@ class ScoutingScreen : UIViewController {
                     toggleButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
                     toggleButton.value = k
                     toggleButton.index = self.listOfIndices[itemIndex]
+                    
+                    if(k == 2){
+                        toggleButton.setTitleColor(UIColor.white, for: .normal)
+                        toggleButton.backgroundColor = self.backgroundColor
+                    }
+                    
                     listOfToggleButtons.append(toggleButton)
                 }
                 
@@ -207,21 +213,21 @@ class ScoutingScreen : UIViewController {
         
         if let toggleField = sender as? ToggleButton{
             for i in 0..<self.listOfToggleButtons.count{
-                for k in 0..<self.listOfToggleButtons[i].count{
-                    listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
-                    listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
-                    
+                if toggleField.index == self.listOfToggleButtons[i][0].index{
+                    for k in 0..<self.listOfToggleButtons[i].count{
+                        if(toggleField.value == self.listOfToggleButtons[i][k].value){
+                            self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
+                            self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
+                        } else {
+                            self.listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
+                            self.listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
+                        }
+                    }
                 }
             }
             
-            toggleField.backgroundColor = self.backgroundColor
-            toggleField.setTitleColor(UIColor.white, for: .normal)
-            print(toggleField.index ?? 0)
-            print(toggleField.value ?? 0)
-            print(getTimeStamp())
-            let indices = [7,15]
+            
             //Find a way to not hard code this
-            UserDefaults.standard.set(indices, forKey: "selectedIndex")
             UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
             
         }
@@ -243,25 +249,16 @@ class ScoutingScreen : UIViewController {
     
    
     override func viewDidAppear(_ animated: Bool) {
-        for i in 0..<self.listOfToggleButtons.count{
-            for k in 0..<self.listOfToggleButtons[i].count{
-                listOfToggleButtons[i][k].backgroundColor = UIColor.systemGray5
-                listOfToggleButtons[i][k].setTitleColor(self.backgroundColor, for: .normal)
-            }
-        }
-
-        if let selectedIndex = UserDefaults.standard.object(forKey: "selectedIndex") as? [Int]{
             if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
                 for i in 0..<self.listOfToggleButtons.count{
                     for k in 0..<self.listOfToggleButtons[i].count{
-                        if (self.listOfToggleButtons[i][k].index == selectedIndex[0] || self.listOfToggleButtons[i][k].index == selectedIndex[1]) && self.listOfToggleButtons[i][k].value == selectedValue{
+                        if (self.listOfToggleButtons[i][k].index == 7 || self.listOfToggleButtons[i][k].index == 15) && self.listOfToggleButtons[i][k].value == selectedValue{
                             self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
                             self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
 
                         }
                     }
                 }
-            }
         }
     }
     
