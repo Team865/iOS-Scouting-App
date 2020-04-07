@@ -7,14 +7,20 @@
 //
 
 import Foundation
-class QREntry{
-    var type : String
-    var index : Int
-    var timeStamp : Float
+class Entry : ReflectedStringConvertible{
+    var match : String = ""
+    var team : Int = 1
+    var scout : String = ""
+    var board : String = ""
+    var timeStamp : Float = 00
+    var data_point : [DataPoint] = []
     
-    init(type : String, index : Int, timeStamp : Float) {
-        self.type = type
-        self.index = index
+    init(match : String, team : Int, scout : String, board : String, timeStamp : Float, data_point : [DataPoint]) {
+        self.match = match
+        self.team = team
+        self.scout = scout
+        self.board = board
         self.timeStamp = timeStamp
+        self.data_point = data_point
     }
 }

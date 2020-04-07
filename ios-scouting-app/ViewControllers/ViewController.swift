@@ -48,8 +48,6 @@ override func viewDidLoad() {
     
     self.view.addSubview(border)
     
-    
-    
     currentEventLabel = self.createCurrentEventName()
     currentEventLabel.text = self.currentEvent
     
@@ -123,6 +121,8 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
+                    UserDefaults.standard.set(self.scoutName, forKey: "scout")
+                    UserDefaults.standard.set(self.eventKey, forKey: "match")
                 }
             }
         }
@@ -290,7 +290,6 @@ override func viewDidLoad() {
     
     
     func getTBAJson(completed : @escaping () -> ()){
-        print(self.eventKey)
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + self.eventKey + "/matches/simple")!
         var request = URLRequest(url: url)
         //Remember to remove keys before committing
@@ -418,6 +417,9 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         self.listOfSelectedTeams.removeAll()
+        
+        
+
         self.navigationController?.pushViewController(scoutingVC, animated: true)
         
     }

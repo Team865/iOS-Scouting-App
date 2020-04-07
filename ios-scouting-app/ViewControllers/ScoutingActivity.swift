@@ -40,6 +40,7 @@ class ScoutingActivity : UIViewController{
     var boardName = ""
     var timeOnStart = "015"
     
+    var dataPoints = [DataPoint]()
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
     @IBOutlet weak var PlayButton: UIButton!
@@ -73,6 +74,7 @@ class ScoutingActivity : UIViewController{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
             }
+            self.screenTitles.append("QR Code")
             self.configurePageViewController()
         }
         
@@ -80,6 +82,7 @@ class ScoutingActivity : UIViewController{
         
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
+        
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -121,12 +124,21 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
     }
     
+    func encodeDataWhenTimerisOver(){
+        if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
+            let entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: [])
+            print(entry)
+            print(self.dataPoints)
+        }
+    }
+    
     @objc func progressBarReleased(sender : UISlider){
         self.totalProgress = sender.value
         self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
         (timer) in
             guard self.totalProgress <= 1 else {
             timer.invalidate()
+            self.encodeDataWhenTimerisOver()
             return
         }
             self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
@@ -273,6 +285,7 @@ class ScoutingActivity : UIViewController{
                 (timer) in
                 guard self.progress.isFinished == false else {
                     timer.invalidate()
+                    self.encodeDataWhenTimerisOver()
                     return
                 }
                     self.progress.completedUnitCount += 1
@@ -296,6 +309,7 @@ class ScoutingActivity : UIViewController{
                     (timer) in
                     guard self.totalProgress <= 1 else {
                         timer.invalidate()
+                        self.encodeDataWhenTimerisOver()
                         return
                     }
                     self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
@@ -355,38 +369,44 @@ class ScoutingActivity : UIViewController{
        }
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
-        
+       guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
+       scoutingScreen.index = index
+
         if index >= self.screenTitles.count || self.screenTitles.count == 0 {
             return nil
         }
         
-        guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
-        
-        scoutingScreen.index = index
-        scoutingScreen.screenTitles = self.screenTitles[index]
-        scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
-        var indicesInScreen : [Int] = []
-        for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
-            scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
-            var typesInRow : [String] = []
-            var namesInRow : [String] = []
+        if (index <= 2){
+            if(index == 0){
+                self.itemTags = 0
+            }
             
-                for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
-                    typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
-                    namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
-                    scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
-                    
-                    indicesInScreen.append(self.itemTags)
-                    self.itemTags += 1
-                   
-                }
-            scoutingScreen.typeOfItemsInRow.append(typesInRow)
-            scoutingScreen.nameOfItemsInRow.append(namesInRow)
-            
+                 scoutingScreen.screenTitles = self.screenTitles[index]
+                 scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
+                 var indicesInScreen : [Int] = []
+                 for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
+                     scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
+                     var typesInRow : [String] = []
+                     var namesInRow : [String] = []
+                     
+                         for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
+                             typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
+                             namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
+                             scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
+                             
+                             indicesInScreen.append(self.itemTags)
+                             self.itemTags += 1
+                            
+                         }
+                     scoutingScreen.typeOfItemsInRow.append(typesInRow)
+                     scoutingScreen.nameOfItemsInRow.append(namesInRow)
+                     
+                 }
+                 
+                 scoutingScreen.listOfIndices.append(contentsOf: indicesInScreen)
         }
         
-        scoutingScreen.listOfIndices.append(contentsOf: indicesInScreen)
-        
+     
         return scoutingScreen
     }
 }
@@ -435,7 +455,11 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        let vc = pendingViewControllers[0] as! ScoutingScreen
-        self.screenTitle.text = self.screenTitles[vc.index ?? 0]
+        let vc = pendingViewControllers[0] as? ScoutingScreen
+        if (vc?.index == 4){
+            self.screenTitle.text = self.screenTitles[3]
+        } else {
+        self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
+        }
     }
 }
