@@ -12,6 +12,7 @@ class ScoutingScreen : UIViewController {
 
     var screenTitles : String?
     var index : Int?
+    var selectedScreen = 0
     
     @IBOutlet weak var layoutView: UIView!
     var stackView = UIStackView()
@@ -43,7 +44,7 @@ class ScoutingScreen : UIViewController {
     var notEmptyIndex = 0
     
     var itemIndex = 0
-    var listOfIndices : [Int] = []
+    var listOfIndices : [[Int]] = []
     var numberOfRows = 0
     
     let backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
@@ -54,6 +55,8 @@ class ScoutingScreen : UIViewController {
     //Current multiplier is height multiplier + Y multiplier (0.25 + 0.6)
     var startingY = Double(UIScreen.main.bounds.height * 0.1) * 0.825
     
+    //Indices
+    var test = [[9,1,1,1], [10,2,2,2], [11,3,3,3]]
     
     //QRCode entries
     var QRCode = UIImageView()
@@ -114,18 +117,18 @@ class ScoutingScreen : UIViewController {
         for i in 0..<numberOfItems{
             if(typeOfItem[i] == "Button"){
                 let button = Button()
-                button.index = self.listOfIndices[itemIndex]
+                button.tag = self.listOfIndices[index ?? 0][itemIndex]
                 button.value = 1
                 button.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
                 scoutingRow.addArrangedSubview(button)
             } else if (typeOfItem[i] == "Switch"){
                 let switchField = Switch()
-                switchField.index = self.listOfIndices[itemIndex]
+                switchField.tag = self.test[index ?? 0][0]
                 switchField.value = 0
                 switchField.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-                switchField.index = self.listOfIndices[itemIndex]
+                switchField.index = self.listOfIndices[index ?? 0][itemIndex]
                 scoutingRow.addArrangedSubview(switchField)
             } else if (typeOfItem[i] == "MultiToggle"){
                 while(titleOfToggles[self.notEmptyIndex].isEmpty){
@@ -146,7 +149,7 @@ class ScoutingScreen : UIViewController {
                     }
                     
                     toggleButton.value = k
-                    toggleButton.index = self.listOfIndices[itemIndex]
+                    toggleButton.tag = self.listOfIndices[index ?? 0][itemIndex]
                     listOfToggleButtons.append(toggleButton)
                 
                 }
@@ -161,7 +164,7 @@ class ScoutingScreen : UIViewController {
                 let checkBoxField = CheckBox()
                 let checkBoxButton = CheckBoxButton()
                 checkBoxField.title = formatTitleOfItem(string: titleOfItem[i])
-                checkBoxButton.index = self.listOfIndices[itemIndex]
+                checkBoxButton.tag = self.listOfIndices[index ?? 0][itemIndex]
                 checkBoxField.checkBox = checkBoxButton
                 checkBoxButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
                 checkBoxField.setUpCheckBox()
@@ -203,24 +206,28 @@ class ScoutingScreen : UIViewController {
     @objc func collectQRCodeData(sender : AnyObject){
         if let button = sender as? Button{
             //let datapoint = DataPoint.init(type_index: button.index ?? 0, value: button.value, time: getTimeStamp())
+            print(button.tag)
             }
         if let switchField = sender as? Switch{
             if switchField.value == 0{
                 switchField.backgroundColor = self.backgroundColor
                 switchField.setTitleColor(UIColor.white, for: .normal)
                 switchField.value = 1
+                print(switchField.tag)
                 
             } else {
                 switchField.backgroundColor = UIColor.systemGray5
                 switchField.setTitleColor(self.backgroundColor, for: .normal)
                 switchField.value = 0
                 
+                print(switchField.tag)
+
             }
         }
         
         if let toggleField = sender as? ToggleButton{
             for i in 0..<self.listOfToggleButtons.count{
-                if toggleField.index == self.listOfToggleButtons[i][0].index{
+                if toggleField.tag == self.listOfToggleButtons[i][0].tag{
                     for k in 0..<self.listOfToggleButtons[i].count{
                         if(toggleField.value == self.listOfToggleButtons[i][k].value){
                             self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
@@ -232,7 +239,7 @@ class ScoutingScreen : UIViewController {
                     }
                 }
             }
-            print(toggleField.index ?? 0)
+            print(toggleField.tag)
             UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
             
         }
@@ -247,8 +254,8 @@ class ScoutingScreen : UIViewController {
             }
             
             print(checkbox.value)
-            print(checkbox.index ?? 0)
-            print(getTimeStamp())
+            print(checkbox.tag)
+            //print(getTimeStamp())
         }
     }
     
@@ -258,7 +265,7 @@ class ScoutingScreen : UIViewController {
             if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
                 for i in 0..<self.listOfToggleButtons.count{
                     for k in 0..<self.listOfToggleButtons[i].count{
-                        if (self.listOfToggleButtons[i][k].index == 7 || self.listOfToggleButtons[i][k].index == 15) {
+                        if (self.listOfToggleButtons[i][k].tag == 7 || self.listOfToggleButtons[i][k].tag == 15) {
                             if self.listOfToggleButtons[i][k].value == selectedValue{
                             self.listOfToggleButtons[i][k].backgroundColor = self.backgroundColor
                             self.listOfToggleButtons[i][k].setTitleColor(UIColor.white, for: .normal)
@@ -276,10 +283,9 @@ class ScoutingScreen : UIViewController {
         super.viewDidLoad()
         if self.index ?? 0 <= 2 {
             createScoutingStackView()
+            //print(self.test[index ?? 0])
         } else {
             createQRCode()
         }
-        print(self.index ?? 0)
-
     }
 }

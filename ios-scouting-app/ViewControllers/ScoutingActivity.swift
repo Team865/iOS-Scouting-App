@@ -26,6 +26,7 @@ class ScoutingActivity : UIViewController{
     var listOfLabels : [UILabel] = []
     var navBarView : UIView!
     var itemTags = 0
+    var listOfTags : [[Int]] = []
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
     var currentScreenIndex = 0
@@ -70,10 +71,23 @@ class ScoutingActivity : UIViewController{
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
+        
+        var itemIndex = 0
+        
         getLayoutForScreen{
             for i in 0..<self.screenLayout.robot_scout.screens.count{
+                var indices : [Int] = []
                 self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
+                for k in 0..<self.screenLayout.robot_scout.screens[i].layout.count{
+                    for _ in 0..<self.screenLayout.robot_scout.screens[i].layout[k].count{
+                        indices.append(itemIndex)
+                        itemIndex += 1
+                    }
+                }
+                self.listOfTags.append(indices)
             }
+            
+            print(self.listOfTags)
             self.screenTitles.append("QR Code")
             self.configurePageViewController()
         }
@@ -370,7 +384,7 @@ class ScoutingActivity : UIViewController{
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
        guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
-       scoutingScreen.index = index
+        scoutingScreen.index = index
 
         if index >= self.screenTitles.count || self.screenTitles.count == 0 {
             return nil
@@ -380,7 +394,7 @@ class ScoutingActivity : UIViewController{
             if(index == 0){
                 self.itemTags = 0
             }
-            
+              
                  scoutingScreen.screenTitles = self.screenTitles[index]
                  scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
                  var indicesInScreen : [Int] = []
@@ -388,12 +402,10 @@ class ScoutingActivity : UIViewController{
                      scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
                      var typesInRow : [String] = []
                      var namesInRow : [String] = []
-                     
                          for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
                              typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
                              namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
                              scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
-                             
                              indicesInScreen.append(self.itemTags)
                              self.itemTags += 1
                             
@@ -403,7 +415,7 @@ class ScoutingActivity : UIViewController{
                      
                  }
                  
-                 scoutingScreen.listOfIndices.append(contentsOf: indicesInScreen)
+            scoutingScreen.listOfIndices.append(contentsOf: self.listOfTags)
         }
         
      
@@ -461,5 +473,7 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         } else {
         self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
         }
+        
+        
     }
 }
