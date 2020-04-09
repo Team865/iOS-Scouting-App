@@ -10,8 +10,7 @@ import Foundation
 import UIKit
 
 class Switch : UIButton{
-    var index : Int?
-    var value : Int?
+    var value = 0
     
     override init(frame: CGRect) {
         super.init(frame : frame)

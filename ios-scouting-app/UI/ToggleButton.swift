@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 class ToggleButton : UIButton {
-    var value : Int?
-    var index : Int?
+    var value = 0
     
     override init(frame: CGRect) {
         super.init(frame : frame)

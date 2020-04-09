@@ -87,7 +87,6 @@ class ScoutingActivity : UIViewController{
                 self.listOfTags.append(indices)
             }
             
-            print(self.listOfTags)
             self.screenTitles.append("QR Code")
             self.configurePageViewController()
         }
@@ -140,9 +139,17 @@ class ScoutingActivity : UIViewController{
     
     func encodeDataWhenTimerisOver(){
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            let entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: [])
+            if let listOfIndices = UserDefaults.standard.object(forKey: "indices") as? [Int]{
+                           if let listOfValues = UserDefaults.standard.object(forKey: "values") as? [Int] {
+                               if let listOfTimeStamps = UserDefaults.standard.object(forKey: "timeStamps") as? [Float]{
+                                for i in 0..<listOfIndices.count{
+                                    dataPoints.append(DataPoint.init(type_index: listOfIndices[i], value: listOfValues[i], time: listOfTimeStamps[i]))
+                                }
+                        }
+                }
+            }
+            let entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: dataPoints)
             print(entry)
-            print(self.dataPoints)
         }
     }
     

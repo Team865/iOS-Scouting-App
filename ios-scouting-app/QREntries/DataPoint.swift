@@ -7,10 +7,10 @@
 //
 
 import Foundation
-class DataPoint{
-    var type_index : Int?
-    var value : Int?
-    var time : Float?
+class DataPoint : ReflectedStringConvertible{
+    var type_index = 0
+    var value = 0
+    var time : Float = 0.0
     
     init(type_index : Int, value : Int, time : Float) {
         self.type_index = type_index

@@ -64,8 +64,11 @@ class ScoutingScreen : UIViewController {
     var colorChanged = false
     var counter : [Int]  = []
     var states : [Bool] = []
-    var timeStamp : Float = 0
     var listOfToggleButtons : [[ToggleButton]] = []
+    
+    var listOfTypeIndices : [Int] = []
+    var listOfValues : [Int] = []
+    var listOfTimeStamps : [Float] = []
     
     //Timer elements
     var timer : Timer!
@@ -128,7 +131,6 @@ class ScoutingScreen : UIViewController {
                 switchField.value = 0
                 switchField.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-                switchField.index = self.listOfIndices[index ?? 0][itemIndex]
                 scoutingRow.addArrangedSubview(switchField)
             } else if (typeOfItem[i] == "MultiToggle"){
                 while(titleOfToggles[self.notEmptyIndex].isEmpty){
@@ -203,24 +205,32 @@ class ScoutingScreen : UIViewController {
         return itemStamp
     }
     
+    func collectData(typeIndex : Int, value : Int, timeStamp : Float){
+        self.listOfTypeIndices.append(typeIndex)
+        self.listOfValues.append(value)
+        self.listOfTimeStamps.append(timeStamp)
+        
+        UserDefaults.standard.set(listOfTypeIndices, forKey: "indices")
+        UserDefaults.standard.set(listOfValues, forKey: "values")
+        UserDefaults.standard.set(listOfTimeStamps, forKey: "timeStamps")
+    }
+    
     @objc func collectQRCodeData(sender : AnyObject){
         if let button = sender as? Button{
-            //let datapoint = DataPoint.init(type_index: button.index ?? 0, value: button.value, time: getTimeStamp())
-            print(button.tag)
-            }
+            collectData(typeIndex: button.tag, value: button.value, timeStamp: getTimeStamp())
+        }
         if let switchField = sender as? Switch{
             if switchField.value == 0{
                 switchField.backgroundColor = self.backgroundColor
                 switchField.setTitleColor(UIColor.white, for: .normal)
                 switchField.value = 1
-                print(switchField.tag)
+                collectData(typeIndex: switchField.tag, value: switchField.value, timeStamp: getTimeStamp())
                 
             } else {
                 switchField.backgroundColor = UIColor.systemGray5
                 switchField.setTitleColor(self.backgroundColor, for: .normal)
                 switchField.value = 0
-                
-                print(switchField.tag)
+                collectData(typeIndex: switchField.tag, value: switchField.value, timeStamp: getTimeStamp())
 
             }
         }
@@ -239,8 +249,8 @@ class ScoutingScreen : UIViewController {
                     }
                 }
             }
-            print(toggleField.tag)
-            UserDefaults.standard.set(toggleField.value, forKey: "selectedValue")
+            UserDefaults.standard.set(toggleField.value, forKey: "selectedToggleFieldValue")
+            collectData(typeIndex: toggleField.tag, value: toggleField.value, timeStamp: getTimeStamp())
             
         }
    
@@ -248,21 +258,21 @@ class ScoutingScreen : UIViewController {
             if checkbox.value == 0 {
                 checkbox.backgroundColor = self.backgroundColor
                 checkbox.value = 1
+                collectData(typeIndex: checkbox.tag, value: checkbox.value, timeStamp: getTimeStamp())
             } else {
                 checkbox.backgroundColor = UIColor.systemGray5
                 checkbox.value = 0
+                collectData(typeIndex: checkbox.tag, value: checkbox.value, timeStamp: getTimeStamp())
             }
             
-            print(checkbox.value)
-            print(checkbox.tag)
-            //print(getTimeStamp())
+          
         }
     }
     
    
     override func viewDidAppear(_ animated: Bool) {
             //find a way to not hard code this
-            if let selectedValue = UserDefaults.standard.object(forKey: "selectedValue") as? Int{
+            if let selectedValue = UserDefaults.standard.object(forKey: "selectedToggleFieldValue") as? Int{
                 for i in 0..<self.listOfToggleButtons.count{
                     for k in 0..<self.listOfToggleButtons[i].count{
                         if (self.listOfToggleButtons[i][k].tag == 7 || self.listOfToggleButtons[i][k].tag == 15) {
@@ -283,7 +293,15 @@ class ScoutingScreen : UIViewController {
         super.viewDidLoad()
         if self.index ?? 0 <= 2 {
             createScoutingStackView()
-            //print(self.test[index ?? 0])
+            if let listOfIndices = UserDefaults.standard.object(forKey: "indices") as? [Int]{
+                if let listOfValues = UserDefaults.standard.object(forKey: "values") as? [Int] {
+                    if let listOfTimeStamps = UserDefaults.standard.object(forKey: "timeStamps") as? [Float]{
+                        self.listOfTypeIndices = listOfIndices
+                        self.listOfValues = listOfValues
+                        self.listOfTimeStamps = listOfTimeStamps
+                    }
+                }
+            }
         } else {
             createQRCode()
         }
