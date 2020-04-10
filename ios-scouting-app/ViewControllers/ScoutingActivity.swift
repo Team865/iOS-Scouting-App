@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+var DataPoints = [DataPoint]()
+var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: 123424, data_point: [])
 class ScoutingActivity : UIViewController{
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
@@ -41,7 +43,6 @@ class ScoutingActivity : UIViewController{
     var boardName = ""
     var timeOnStart = "015"
     
-    var dataPoints = [DataPoint]()
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
     @IBOutlet weak var PlayButton: UIButton!
@@ -92,10 +93,8 @@ class ScoutingActivity : UIViewController{
         }
         
         self.progressBar.isEnabled = false
-        
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
-        
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -137,19 +136,11 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
     }
     
-    func encodeDataWhenTimerisOver(){
+    func encodeData(dataPoints : [DataPoint]){
+        DataPoints.append(contentsOf: dataPoints)
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            if let listOfIndices = UserDefaults.standard.object(forKey: "indices") as? [Int]{
-                           if let listOfValues = UserDefaults.standard.object(forKey: "values") as? [Int] {
-                               if let listOfTimeStamps = UserDefaults.standard.object(forKey: "timeStamps") as? [Float]{
-                                for i in 0..<listOfIndices.count{
-                                    dataPoints.append(DataPoint.init(type_index: listOfIndices[i], value: listOfValues[i], time: listOfTimeStamps[i]))
-                                }
-                        }
-                }
-            }
-            let entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: dataPoints)
-            print(entry)
+            entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: DataPoints)
+            //print(entry)
         }
     }
     
@@ -159,7 +150,6 @@ class ScoutingActivity : UIViewController{
         (timer) in
             guard self.totalProgress <= 1 else {
             timer.invalidate()
-            self.encodeDataWhenTimerisOver()
             return
         }
             self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
@@ -306,7 +296,6 @@ class ScoutingActivity : UIViewController{
                 (timer) in
                 guard self.progress.isFinished == false else {
                     timer.invalidate()
-                    self.encodeDataWhenTimerisOver()
                     return
                 }
                     self.progress.completedUnitCount += 1
@@ -330,7 +319,6 @@ class ScoutingActivity : UIViewController{
                     (timer) in
                     guard self.totalProgress <= 1 else {
                         timer.invalidate()
-                        self.encodeDataWhenTimerisOver()
                         return
                     }
                     self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
@@ -386,7 +374,7 @@ class ScoutingActivity : UIViewController{
         
         pageViewController.setViewControllers([startingScoutingScreen], direction: .forward, animated: true)
         
-        self.screenTitle.text = self.screenTitles[0]
+        self.screenTitle.text = self.screenTitles[currentScreenIndex]
        }
     
     func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
@@ -398,10 +386,6 @@ class ScoutingActivity : UIViewController{
         }
         
         if (index <= 2){
-            if(index == 0){
-                self.itemTags = 0
-            }
-              
                  scoutingScreen.screenTitles = self.screenTitles[index]
                  scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
                  var indicesInScreen : [Int] = []
@@ -475,12 +459,22 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
     
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         let vc = pendingViewControllers[0] as? ScoutingScreen
-        if (vc?.index == 4){
+        if (vc?.index == 3){
             self.screenTitle.text = self.screenTitles[3]
+            print("o")
+            print(entry)
         } else {
         self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
         }
-        
-        
     }
 }
+
+//            if let listOfIndices = UserDefaults.standard.object(forKey: "indices") as? [Int]{
+//                           if let listOfValues = UserDefaults.standard.object(forKey: "values") as? [Int] {
+//                               if let listOfTimeStamps = UserDefaults.standard.object(forKey: "timeStamps") as? [Float]{
+//                                for i in 0..<listOfIndices.count{
+//                                    dataPoints.append(DataPoint.init(type_index: listOfIndices[i], value: listOfValues[i], time: listOfTimeStamps[i]))
+//                                }
+//                        }
+//                }
+//            }

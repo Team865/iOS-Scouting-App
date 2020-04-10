@@ -60,34 +60,35 @@ class ScoutingScreen : UIViewController {
     
     //QRCode entries
     var QRCode = UIImageView()
-    
     var colorChanged = false
     var counter : [Int]  = []
     var states : [Bool] = []
     var listOfToggleButtons : [[ToggleButton]] = []
     
+    let sa = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "ScoutingActivity") as! ScoutingActivity
+    
     var listOfTypeIndices : [Int] = []
     var listOfValues : [Int] = []
     var listOfTimeStamps : [Float] = []
+    
+    var dataPoints = [DataPoint]()
     
     //Timer elements
     var timer : Timer!
     let progress = Progress(totalUnitCount: 16500)
     let progressBar = UIProgressView()
     //UIs classes
-    
-    //Another way to identify which button you are clicking is to disregard the rows and shit, just set the tags of the buttons from 0 to which ever number you can
-    
     //Configure QR Code
     func createQRCode(){
         view.addSubview(QRCode)
-        QRCode.image = UIImage(named: "yu")
+        QRCode.image = UIImage(named: "jerry")
         
         QRCode.translatesAutoresizingMaskIntoConstraints = false
         QRCode.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
         QRCode.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
         QRCode.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0).isActive = true
         QRCode.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -250).isActive = true
+        
     }
     
     //Configure UI for scouting activity
@@ -189,14 +190,6 @@ class ScoutingScreen : UIViewController {
         return title
     }
     
-    
-    func createCheckBox() -> UIView{
-        let checkBoxField = UIView()
-        checkBoxField.backgroundColor = UIColor.systemGray5
-        
-        return checkBoxField
-    }
-    
     func getTimeStamp() -> Float {
         var itemStamp : Float = 0
         if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
@@ -205,14 +198,10 @@ class ScoutingScreen : UIViewController {
         return itemStamp
     }
     
+    
     func collectData(typeIndex : Int, value : Int, timeStamp : Float){
-        self.listOfTypeIndices.append(typeIndex)
-        self.listOfValues.append(value)
-        self.listOfTimeStamps.append(timeStamp)
-        
-        UserDefaults.standard.set(listOfTypeIndices, forKey: "indices")
-        UserDefaults.standard.set(listOfValues, forKey: "values")
-        UserDefaults.standard.set(listOfTimeStamps, forKey: "timeStamps")
+        self.dataPoints.append(DataPoint.init(type_index: typeIndex, value: value, time: timeStamp))
+        sa.encodeData(dataPoints : self.dataPoints)
     }
     
     @objc func collectQRCodeData(sender : AnyObject){
