@@ -140,7 +140,7 @@ class ScoutingActivity : UIViewController{
         DataPoints.append(contentsOf: dataPoints)
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
             entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: DataPoints)
-            //print(entry)
+            
         }
     }
     
@@ -325,7 +325,12 @@ class ScoutingActivity : UIViewController{
                     self.updateTimer()
                     self.progressBar.value = self.totalProgress
                     }
-            } else if (sender.tag == 5){
+                
+                
+            } else if (sender.tag == 4){
+                DataPoints.remove(at: DataPoints.count - 1)
+            }
+            else if (sender.tag == 5){
                 let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
 
                 alert.addTextField{
@@ -397,15 +402,13 @@ class ScoutingActivity : UIViewController{
                              typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
                              namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
                              scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
+                             scoutingScreen.listOfDefaultChoices.append(self.screenLayout.robot_scout.screens[index].layout[i][k].default_choice ?? 0)
                              indicesInScreen.append(self.itemTags)
                              self.itemTags += 1
-                            
                          }
                      scoutingScreen.typeOfItemsInRow.append(typesInRow)
                      scoutingScreen.nameOfItemsInRow.append(namesInRow)
-                     
                  }
-                 
             scoutingScreen.listOfIndices.append(contentsOf: self.listOfTags)
         }
         
@@ -461,7 +464,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         let vc = pendingViewControllers[0] as? ScoutingScreen
         if (vc?.index == 3){
             self.screenTitle.text = self.screenTitles[3]
-            print("o")
             print(entry)
         } else {
         self.screenTitle.text = self.screenTitles[vc?.index ?? 0]

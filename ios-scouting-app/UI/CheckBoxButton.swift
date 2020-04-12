@@ -22,7 +22,7 @@ class CheckBoxButton : UIButton {
     }
     
     func setUpCheckBoxButton(){
-        frame = CGRect(x : Double(UIScreen.main.bounds.width) * 0.05, y : 0, width : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235, height : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235)
+        frame = CGRect(x : Double(UIScreen.main.bounds.width) * 0.09, y : 0, width : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235, height : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235)
         layer.borderColor = UIColor.black.cgColor
         layer.borderWidth = 2
     }

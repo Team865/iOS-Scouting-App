@@ -26,6 +26,7 @@ struct screens : Decodable{
 struct layout : Decodable {
    var name : String
    var type : String
-    var choices : [String]?
+   var choices : [String]?
+    var default_choice : Int?
 }
 

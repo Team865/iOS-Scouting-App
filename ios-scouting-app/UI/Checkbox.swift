@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 class CheckBox : UIStackView{
     var title : String?
-    var checkBox = UIButton()
+    var checkBox = CheckBoxButton()
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -24,7 +24,6 @@ class CheckBox : UIStackView{
         axis = .vertical
         spacing = 0
        
-        print(self.bounds.height)
         
         for i in 0..<3{
            if(i == 1){
@@ -39,7 +38,13 @@ class CheckBox : UIStackView{
                 views.backgroundColor = UIColor.systemGray5
                 if (k == 1){
                     let label = UILabel()
-                    label.frame = CGRect(x : Double(UIScreen.main.bounds.width) * 0.05 + Double(UIScreen.main.bounds.height) * 0.85 * 0.0235 + 5, y : 0, width : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235 * 10, height : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235)
+                    var multiplier = 0.05
+                    if(title?.components(separatedBy: " ").count ?? 0 >= 3){
+                        multiplier *= 1.5
+                    } else {
+                        multiplier *= 2
+                    }
+                    label.frame = CGRect(x : Double(UIScreen.main.bounds.height) * 0.85 * multiplier, y : 0, width : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235 * 10, height : Double(UIScreen.main.bounds.height) * 0.85 * 0.0235)
                     label.text = title
                     label.textAlignment = .left
                     label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
