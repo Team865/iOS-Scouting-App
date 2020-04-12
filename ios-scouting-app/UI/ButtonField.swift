@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 class ButtonField : UIView{
+    var button = Button()
     
     override init (frame : CGRect){
         super.init(frame : frame)
@@ -20,15 +21,22 @@ class ButtonField : UIView{
     }
     
     func setUpButtonField(){
-        let button = UIButton()
-        button.backgroundColor = UIColor.blue
+        let counter = UILabel()
+        counter.text = "0"
         backgroundColor = UIColor.systemGray5
-        
         addSubview(button)
+        addSubview(counter)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0).isActive = true
         button.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0).isActive = true
         button.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = true
         button.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
+        
+        counter.translatesAutoresizingMaskIntoConstraints = false
+        counter.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0.25).isActive = true
+        counter.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0.25).isActive = true
+        counter.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = false
+        counter.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
     }
 }

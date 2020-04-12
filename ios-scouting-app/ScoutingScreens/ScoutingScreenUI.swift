@@ -123,13 +123,15 @@ class ScoutingScreen : UIViewController {
         scoutingRow.spacing = 2.5
         for i in 0..<numberOfItems{
             if(typeOfItem[i] == "Button"){
-                let button = ButtonField()
-//                button.tag = self.listOfIndices[index ?? 0][itemIndex]
-//                button.value = 1
-//                button.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
-//                button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
-                scoutingRow.addArrangedSubview(button)
-                button.setUpButtonField()
+                let button = Button()
+                let buttonField = ButtonField()
+                button.tag = self.listOfIndices[index ?? 0][itemIndex]
+                button.value = 1
+                button.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
+                button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
+                scoutingRow.addArrangedSubview(buttonField)
+                buttonField.button = button
+                buttonField.setUpButtonField()
             } else if (typeOfItem[i] == "Switch"){
                 let switchField = Switch()
                 switchField.tag = self.test[index ?? 0][0]
