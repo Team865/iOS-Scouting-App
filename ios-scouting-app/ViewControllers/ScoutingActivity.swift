@@ -464,7 +464,6 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         let vc = pendingViewControllers[0] as? ScoutingScreen
         if (vc?.index == 3){
             self.screenTitle.text = self.screenTitles[3]
-            print(entry)
         } else {
         self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
         }

@@ -9,7 +9,8 @@
 import UIKit
 
 var selectedValue = 2
-
+var listOfCounters : [Int : Int] = [:]
+var test = 0
 class ScoutingScreen : UIViewController {
 
     var screenTitles : String?
@@ -49,7 +50,7 @@ class ScoutingScreen : UIViewController {
     var itemIndex = 0
     var listOfIndices : [[Int]] = []
     var numberOfRows = 0
-    
+    var counterPointer = 0
     let backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
     
     let scoutingViewHeight = Double(UIScreen.main.bounds.height) * 0.85
@@ -59,7 +60,6 @@ class ScoutingScreen : UIViewController {
     var startingY = Double(UIScreen.main.bounds.height * 0.1) * 0.825
     
     //Indices
-    var test = [[9,1,1,1], [10,2,2,2], [11,3,3,3]]
     
     //QRCode entries
     var QRCode = UIImageView()
@@ -67,9 +67,8 @@ class ScoutingScreen : UIViewController {
     var counter : [Int]  = []
     var states : [Bool] = []
     var listOfToggleButtons : [[ToggleButton]] = []
-    
-    let sa = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "ScoutingActivity") as! ScoutingActivity
-    
+    var listOfButtonFields : [ButtonField] = []
+    var numberOfButtonsOnScreen = 0
     var listOfTypeIndices : [Int] = []
     var listOfValues : [Int] = []
     var listOfTimeStamps : [Float] = []
@@ -81,6 +80,7 @@ class ScoutingScreen : UIViewController {
     let progress = Progress(totalUnitCount: 16500)
     let progressBar = UIProgressView()
     //UIs classes
+    
     //Configure QR Code
     func createQRCode(){
         view.addSubview(QRCode)
@@ -126,15 +126,23 @@ class ScoutingScreen : UIViewController {
                 let button = Button()
                 let buttonField = ButtonField()
                 button.tag = self.listOfIndices[index ?? 0][itemIndex]
+                buttonField.tag = self.listOfIndices[index ?? 0][itemIndex]
                 button.value = 1
                 button.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 button.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
                 scoutingRow.addArrangedSubview(buttonField)
                 buttonField.button = button
+                self.listOfButtonFields.append(buttonField)
+                //Find a way to dynamically get the number of buttons on the screen
+                if(listOfCounters.count == 12){
+                    buttonField.counter = listOfCounters[button.tag]!
+                } else {
+                    listOfCounters[button.tag] = 0
+                }
                 buttonField.setUpButtonField()
             } else if (typeOfItem[i] == "Switch"){
                 let switchField = Switch()
-                switchField.tag = self.test[index ?? 0][0]
+                switchField.tag = self.listOfIndices[index ?? 0][itemIndex]
                 switchField.value = 0
                 switchField.setTitle(formatTitleOfItem(string: titleOfItem[i]), for: .normal)
                 switchField.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
@@ -206,14 +214,22 @@ class ScoutingScreen : UIViewController {
     
     
     func collectData(typeIndex : Int, value : Int, timeStamp : Float){
+        let sa = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "ScoutingActivity") as! ScoutingActivity
         self.dataPoints.append(DataPoint.init(type_index: typeIndex, value: value, time: timeStamp))
         sa.encodeData(dataPoints : self.dataPoints)
     }
     
     @objc func collectQRCodeData(sender : AnyObject){
-//        if let button = sender as? Button{
-//            collectData(typeIndex: button.tag, value: button.value, timeStamp: getTimeStamp())
-//        }
+        if let button = sender as? Button{
+            collectData(typeIndex: button.tag, value: button.value, timeStamp: getTimeStamp())
+            for i in 0..<self.listOfButtonFields.count{
+                if(listOfButtonFields[i].tag == button.tag){
+                    listOfCounters[button.tag]! += 1
+                    listOfButtonFields[i].counter = listOfCounters[button.tag]!
+                    listOfButtonFields[i].setUpButtonField()
+                }
+            }
+        }
         if let switchField = sender as? Switch{
             if switchField.value == 0{
                 switchField.backgroundColor = self.backgroundColor
@@ -247,10 +263,9 @@ class ScoutingScreen : UIViewController {
 
             if (toggleField.tag == 7 || toggleField.tag == 15){
                 selectedValue = toggleField.value
-                }
+            }
             collectData(typeIndex: toggleField.tag, value: toggleField.value, timeStamp: getTimeStamp())
-            
-        }
+            }
    
         if let checkbox = sender as? CheckBoxButton {
             if checkbox.value == 0 {
@@ -290,6 +305,7 @@ class ScoutingScreen : UIViewController {
         super.viewDidLoad()
         if self.index ?? 0 <= 2 {
             createScoutingStackView()
+
         } else {
             createQRCode()
         }
