@@ -26,8 +26,13 @@ class Switch : UIButton{
         contentHorizontalAlignment = .center
         titleLabel?.textAlignment = .center
         titleLabel?.lineBreakMode = .byWordWrapping
+        
+        if (value == 0){
         setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         backgroundColor = UIColor.systemGray5
-              
+        } else {
+            setTitleColor(UIColor.white, for: .normal)
+            backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        }
     }
 }

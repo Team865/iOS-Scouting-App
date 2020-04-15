@@ -328,6 +328,8 @@ class ScoutingActivity : UIViewController{
                 
                 
             } else if (sender.tag == 4){
+                let scoutingScreen = UIStoryboard(name : "Main", bundle : nil).instantiateViewController(identifier: "ScoutingScreen") as? ScoutingScreen
+                scoutingScreen?.undoCollecteData(dataPoint: DataPoints[DataPoints.count - 1])
                 DataPoints.remove(at: DataPoints.count - 1)
             }
             else if (sender.tag == 5){
@@ -470,12 +472,3 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
     }
 }
 
-//            if let listOfIndices = UserDefaults.standard.object(forKey: "indices") as? [Int]{
-//                           if let listOfValues = UserDefaults.standard.object(forKey: "values") as? [Int] {
-//                               if let listOfTimeStamps = UserDefaults.standard.object(forKey: "timeStamps") as? [Float]{
-//                                for i in 0..<listOfIndices.count{
-//                                    dataPoints.append(DataPoint.init(type_index: listOfIndices[i], value: listOfValues[i], time: listOfTimeStamps[i]))
-//                                }
-//                        }
-//                }
-//            }

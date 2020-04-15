@@ -14,6 +14,9 @@ class MultiToggleField : UIView{
     var title : String?
     var numberOfRows : Int?
     var listOfToggles : [ToggleButton] = []
+    
+    //We know that the default value is 2, but we need to be able to change this dynamically
+    var value = 2
     override init(frame: CGRect) {
         super.init(frame : frame)
         setUpToggleField()
@@ -40,6 +43,11 @@ class MultiToggleField : UIView{
         toggleView.distribution = .fillEqually
         
         for i in 0..<self.listOfToggles.count{
+            if (i == value){
+                listOfToggles[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                listOfToggles[i].setTitleColor(UIColor.white, for: .normal)
+            }
+            
             toggleView.addArrangedSubview(listOfToggles[i])
         }
         
