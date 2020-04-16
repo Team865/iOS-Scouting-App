@@ -329,8 +329,10 @@ class ScoutingActivity : UIViewController{
                 
             } else if (sender.tag == 4){
                 let scoutingScreen = UIStoryboard(name : "Main", bundle : nil).instantiateViewController(identifier: "ScoutingScreen") as? ScoutingScreen
+                if (DataPoints.count > 0){
                 scoutingScreen?.undoCollecteData(dataPoint: DataPoints[DataPoints.count - 1])
                 DataPoints.remove(at: DataPoints.count - 1)
+                }
             }
             else if (sender.tag == 5){
                 let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)

@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-class CheckBox : UIView{
+class CheckBoxField : UIView{
     var title : String?
     var checkBox = CheckBoxButton()
     override init(frame: CGRect) {
@@ -30,17 +30,14 @@ class CheckBox : UIView{
         addSubview(checkBox)
         
         checkBox.translatesAutoresizingMaskIntoConstraints = false
-        checkBox.topAnchor.constraint(equalTo: self.topAnchor, constant: 40).isActive = true
-        checkBox.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 25).isActive = true
-        checkBox.trailingAnchor.constraint(equalTo: label.leadingAnchor, constant: 20).isActive = true
-        checkBox.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -40).isActive = true
+        checkBox.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 5).isActive = true
+        checkBox.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 1.5).isActive = true
+        checkBox.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.topAnchor.constraint(equalTo: self.topAnchor, constant: 40).isActive = true
-        label.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: 20).isActive = true
-        label.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -25).isActive = true
-        label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -40).isActive = true
-        
+        label.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 6).isActive = true
+        label.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 5.5).isActive = true
+            
     }
     }
 
