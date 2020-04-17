@@ -9,8 +9,12 @@
 import Foundation
 import UIKit
 
-var DataPoints = [DataPoint]()
-var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: 123424, data_point: [])
+//Remove or keep, you decide
+public var DataPoints = [DataPoint]()
+var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
+
+private var selectedTeam = 0
+private var selectedBoard = ""
 class ScoutingActivity : UIViewController{
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
@@ -91,8 +95,10 @@ class ScoutingActivity : UIViewController{
             self.screenTitles.append("QR Code")
             self.configurePageViewController()
         }
-        
         self.progressBar.isEnabled = false
+        
+        selectedTeam = Int(self.teamNumber) ?? 0
+        selectedBoard = self.boardName
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
     }
@@ -110,10 +116,6 @@ class ScoutingActivity : UIViewController{
         } catch let err{
             print(err)
         }
-    }
-    
-    func setTitle(title : String){
-        self.screenTitle.text = title
     }
     
     //UI Configurations
@@ -139,7 +141,7 @@ class ScoutingActivity : UIViewController{
     func encodeData(dataPoints : [DataPoint]){
         DataPoints.append(contentsOf: dataPoints)
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            entry = Entry.init(match: eventKey , team: Int(self.teamNumber) ?? 0, scout: scoutName, board: self.boardName, timeStamp: 4509956, data_point: DataPoints)
+            entry = Entry.init(match: eventKey , team: selectedTeam, scout: scoutName, board: selectedBoard, timeStamp: Float(Date().timeIntervalSince1970), data_point: DataPoints)
             
         }
     }
@@ -468,6 +470,7 @@ extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerD
         let vc = pendingViewControllers[0] as? ScoutingScreen
         if (vc?.index == 3){
             self.screenTitle.text = self.screenTitles[3]
+            print(entry)
         } else {
         self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
         }

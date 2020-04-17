@@ -54,6 +54,13 @@ override func viewDidLoad() {
     self.view.addSubview(currentEventLabel)
     configureTableView()
     
+    listOfCounters.removeAll()
+    listOfSwitchValues.removeAll()
+    listOfCounters.removeAll()
+    listOfToggleFieldValues.removeAll()
+    listOfCheckBoxValues.removeAll()
+    undoValueTag = 0
+    DataPoints.removeAll()
 }
     //Load data from core
     override func viewDidAppear(_ animated: Bool) {

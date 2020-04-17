@@ -10,15 +10,14 @@ import UIKit
 
 private var selectedValue = 2
 private var lastSelectedValue = 0
-private var listOfCounters : [Int : Int] = [:]
-private var listOfSwitchValues : [Int : Int] = [:]
-private var listOfToggleFieldValues : [Int : Int] = [:]
-private var listOfCheckBoxValues : [Int : Int] = [:]
-private var undoValueTag = 0
+public var undoValueTag = 0
+public var listOfCounters : [Int : Int] = [:]
+public var listOfSwitchValues : [Int : Int] = [:]
+public var listOfToggleFieldValues : [Int : Int] = [:]
+public var listOfCheckBoxValues : [Int : Int] = [:]
 
-private var listOfToggleFields : [[ToggleButton]] = []
-private var listOfButtonFields : [ButtonField] = []
-private var listOfItemsOnScreen : [UIView] = []
+var listOfToggleFields : [[ToggleButton]] = []
+var listOfButtonFields : [ButtonField] = []
 class ScoutingScreen : UIViewController {
 
     var screenTitles : String?
@@ -63,14 +62,6 @@ class ScoutingScreen : UIViewController {
     var counterPointer = 0
     let backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
     
-    let scoutingViewHeight = Double(UIScreen.main.bounds.height) * 0.85
-    let scoutingViewWidth = Double(UIScreen.main.bounds.width) * 0.96
-    
-    //Current multiplier is height multiplier + Y multiplier (0.25 + 0.6)
-    var startingY = Double(UIScreen.main.bounds.height * 0.1) * 0.825
-    
-    //Indices
-    
     //QRCode entries
     var QRCode = UIImageView()
     var colorChanged = false
@@ -80,7 +71,6 @@ class ScoutingScreen : UIViewController {
     var listOfTypeIndices : [Int] = []
     var listOfValues : [Int] = []
     var listOfTimeStamps : [Float] = []
-    
     
     //Timer elements
     var timer : Timer!
@@ -188,7 +178,6 @@ class ScoutingScreen : UIViewController {
                     listOfToggleFieldValues[multiToggleField.tag] = 2
                     listOfToggleFields.append(listOfToggleButtons)
                 }
-                
                 multiToggleField.listOfToggles.append(contentsOf: listOfToggleButtons)
                 multiToggleField.setUpToggleField()
                 scoutingRow.addArrangedSubview(multiToggleField)
@@ -203,9 +192,7 @@ class ScoutingScreen : UIViewController {
                 scoutingRow.addArrangedSubview(checkBoxField)
                 checkBoxButton.addTarget(self, action: #selector(collectQRCodeData(sender:)), for: .touchUpInside)
                 checkBoxField.setUpCheckBox()
-                
 	            }
-            
             itemIndex += 1
         }
         
@@ -233,6 +220,13 @@ class ScoutingScreen : UIViewController {
     func undoCollecteData(dataPoint : DataPoint){
         undoValueTag = dataPoint.type_index
         
+        for i in 0..<listOfButtonFields.count{
+            if (listOfButtonFields[i].tag == undoValueTag){
+                listOfCounters[undoValueTag]! -= 1
+                listOfButtonFields[i].counter = listOfCounters[undoValueTag]!
+                listOfButtonFields[i].setUpButtonField()
+            }
+        }
     }
     
     func collectData(typeIndex : Int, value : Int, timeStamp : Float){
@@ -327,10 +321,18 @@ class ScoutingScreen : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if(listOfCounters.count == 0){
+            listOfButtonFields.removeAll()
+            listOfToggleFields.removeAll()
+        }
+        
         if self.index ?? 0 <= 2 {
             createScoutingStackView()
+            
         } else {
             createQRCode()
         }
+        print("")
     }
 }

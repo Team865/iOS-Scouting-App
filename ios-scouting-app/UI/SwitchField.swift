@@ -11,14 +11,14 @@ import UIKit
 class SwitchField : UIView {
     var switchButton = Switch()
     var title : String?
+    var value = 0
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
     func setUpSwitchField(){
-        
         addSubview(switchButton)
-        
+        switchButton.value = value
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         switchButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
         switchButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true

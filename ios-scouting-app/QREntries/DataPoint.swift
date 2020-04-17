@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class DataPoint : ReflectedStringConvertible{
+public class DataPoint : ReflectedStringConvertible{
     var type_index = 0
     var value = 0
     var time : Float = 0.0
