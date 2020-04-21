@@ -10,11 +10,9 @@ import Foundation
 import UIKit
 
 class MultiToggleField : UIView{
-    let viewHeight = Double(UIScreen.main.bounds.height) * 0.85
     var title : String?
-    var numberOfRows : Int?
-    var listOfToggles : [ToggleButton] = []
-    
+    var numberOfButtons = 0
+    var listOfToggleTitles : [String] = []
     //We know that the default value is 2, but we need to be able to change this dynamically
     var value = 2
     override init(frame: CGRect) {
@@ -28,29 +26,40 @@ class MultiToggleField : UIView{
     
     func setUpToggleField(){
         backgroundColor = UIColor.systemGray5
+        
         let label = UILabel()
-
-        label.frame = CGRect(x : 0.0, y : self.viewHeight / Double(self.numberOfRows ?? 1) * 0.01, width: Double(UIScreen.main.bounds.width), height: self.viewHeight / Double(self.numberOfRows ?? 1) * 0.22)
-        label.text = self.title
-        label.textAlignment = .center
-        addSubview(label)
+        let toggleButtons = UIStackView()
         
-        let toggleView = UIStackView()
-        toggleView.frame = CGRect(x : 0, y : viewHeight / Double(self.numberOfRows ?? 1) * 0.25, width : Double(UIScreen.main.bounds.width) - 14, height : viewHeight / Double(self.numberOfRows ?? 1) * 0.56)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3).isActive = true
+        label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        toggleView.axis = .horizontal
-        toggleView.spacing = 0
-        toggleView.distribution = .fillEqually
+        toggleButtons.axis = .horizontal
+        toggleButtons.distribution = .fillEqually
+        toggleButtons.spacing = 0
         
-        for i in 0..<self.listOfToggles.count{
+        toggleButtons.translatesAutoresizingMaskIntoConstraints = false
+        toggleButtons.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
+        toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        
+        for i in 0..<numberOfButtons{
+            let toggleButton = UIButton()
             if (i == value){
-                listOfToggles[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                listOfToggles[i].setTitleColor(UIColor.white, for: .normal)
+            toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            toggleButton.titleLabel?.textColor = UIColor.systemGray5
+            } else {
+                toggleButton.backgroundColor = UIColor.systemGray5
+                toggleButton.titleLabel?.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             }
-            
-            toggleView.addArrangedSubview(listOfToggles[i])
+            toggleButton.setTitle(listOfToggleTitles[i], for: .normal)
+            toggleButton.titleLabel?.textAlignment = .center
         }
         
-        addSubview(toggleView)
+        addSubview(label)
+        addSubview(toggleButtons)
     }
+    
+   
 }

@@ -10,9 +10,11 @@ import Foundation
 import UIKit
 class CheckBoxField : UIView{
     var title : String?
-    var checkBox = CheckBoxButton()
+    var checkBox = UIButton()
+    let label = UILabel()
     override init(frame: CGRect) {
         super.init(frame : frame)
+        setUpCheckBox()
     }
     
     required init(coder: NSCoder) {
@@ -20,24 +22,20 @@ class CheckBoxField : UIView{
     }
     
     func setUpCheckBox() {
-        let label = UILabel()
+        backgroundColor = UIColor.systemGray5
+        
         label.text = title
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left
         backgroundColor = UIColor.systemGray5
+        
+        checkBox.layer.borderColor = UIColor.black.cgColor
+        checkBox.layer.borderWidth = 2
+        
         addSubview(label)
         addSubview(checkBox)
         
-        checkBox.translatesAutoresizingMaskIntoConstraints = false
-        checkBox.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 5).isActive = true
-        checkBox.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 1.5).isActive = true
-        checkBox.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -50).isActive = true
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 6).isActive = true
-        label.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 5.5).isActive = true
-            
     }
-    }
+}
 

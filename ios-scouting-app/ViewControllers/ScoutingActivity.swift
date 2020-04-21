@@ -12,6 +12,7 @@ import UIKit
 //Remove or keep, you decide
 public var DataPoints = [DataPoint]()
 var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
+var screenLayout : ScoutingScreenLayout!
 
 private var selectedTeam = 0
 private var selectedBoard = ""
@@ -21,8 +22,6 @@ class ScoutingActivity : UIViewController{
     
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
-    
-    @IBOutlet weak var scoutingView: UIView!
     
     let Ymultiplier = 1.325
     let heightMultiplier = 0.6
@@ -36,7 +35,6 @@ class ScoutingActivity : UIViewController{
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
     var currentScreenIndex = 0
-    var screenLayout : ScoutingScreenLayout!
     var screenIndex = 0
     var tempScreenIndex = 0
     var movedForward = false
@@ -54,6 +52,7 @@ class ScoutingActivity : UIViewController{
     @IBOutlet weak var StartTimerButton: UIButton!
     @IBOutlet weak var CommentButton: UIButton!
     @IBOutlet weak var UndoButton: UIButton!
+    @IBOutlet weak var scoutingView: UICollectionView!
     
     //Button controllers
     var hideStartTimer = false
@@ -70,44 +69,85 @@ class ScoutingActivity : UIViewController{
     var names : [String] = []
     var types : [String] = []
     
+    var colorTest : [UIColor] = [UIColor.red, UIColor.blue, UIColor.yellow, UIColor.green]
+    var listOfScoutingScreens : [UIStackView] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
-        
         var itemIndex = 0
         
         getLayoutForScreen{
-            for i in 0..<self.screenLayout.robot_scout.screens.count{
+            self.scoutingView.dataSource = self
+            self.scoutingView.delegate = self
+            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+            
+            for i in 0..<screenLayout.robot_scout.screens.count{
                 var indices : [Int] = []
-                self.screenTitles.append(self.screenLayout.robot_scout.screens[i].title)
-                for k in 0..<self.screenLayout.robot_scout.screens[i].layout.count{
-                    for _ in 0..<self.screenLayout.robot_scout.screens[i].layout[k].count{
+                self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
+                let verticalStackView = self.setUpScoutingScreen()
+                for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
+                    let horizontalStackView = UIStackView()
+                    horizontalStackView.axis = .horizontal
+                    horizontalStackView.spacing = 2.5
+                    horizontalStackView.distribution = .fillEqually
+                    for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
+                        let type = screenLayout.robot_scout.screens[i].layout[k][j].type
+                        let name = screenLayout.robot_scout.screens[i].layout[k][j].name
+                        if(type == "Button"){
+                            let buttonField = ButtonField()
+                            buttonField.buttonTitle = name
+                            horizontalStackView.addArrangedSubview(buttonField)
+                            buttonField.setUpButtonField()
+                        } else {
+                            let emptyField = CheckBoxField()
+                            horizontalStackView.addArrangedSubview(emptyField)
+                            emptyField.setUpCheckBox()
+                        }
+                        
                         indices.append(itemIndex)
                         itemIndex += 1
                     }
+                    verticalStackView.addArrangedSubview(horizontalStackView)
                 }
                 self.listOfTags.append(indices)
+                self.listOfScoutingScreens.append(verticalStackView)
             }
             
             self.screenTitles.append("QR Code")
-            self.configurePageViewController()
+           
         }
-        self.progressBar.isEnabled = false
         
+        screenTitle.text = "Auto"
+        scoutingView.isPagingEnabled = true
+        self.progressBar.isEnabled = false
         selectedTeam = Int(self.teamNumber) ?? 0
         selectedBoard = self.boardName
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
     }
     
+    func setUpScoutingScreen() -> UIStackView {
+        let view = UIStackView()
+        view.distribution = .fillEqually
+        view.axis = .vertical
+        view.spacing = 2.5
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.topAnchor.constraint(equalTo: scoutingView.topAnchor).isActive = true
+        view.leadingAnchor.constraint(equalTo: scoutingView.leadingAnchor).isActive = true
+        view.trailingAnchor.constraint(equalTo: scoutingView.trailingAnchor).isActive = true
+        view.bottomAnchor.constraint(equalTo: scoutingView.bottomAnchor).isActive = true
+        return view
+    }
+    
     func getLayoutForScreen(completed : @escaping () -> ()){
         do {
             let url = Bundle.main.url(forResource: "layout", withExtension: "json")
             let jsonData = try Data(contentsOf : url!)
-            self.screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
+            screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
             
             DispatchQueue.main.async{
                 completed()
@@ -330,11 +370,7 @@ class ScoutingActivity : UIViewController{
                 
                 
             } else if (sender.tag == 4){
-                let scoutingScreen = UIStoryboard(name : "Main", bundle : nil).instantiateViewController(identifier: "ScoutingScreen") as? ScoutingScreen
-                if (DataPoints.count > 0){
-                scoutingScreen?.undoCollecteData(dataPoint: DataPoints[DataPoints.count - 1])
-                DataPoints.remove(at: DataPoints.count - 1)
-                }
+               
             }
             else if (sender.tag == 5){
                 let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
@@ -361,119 +397,34 @@ class ScoutingActivity : UIViewController{
                 self.navigationController?.pushViewController(vc, animated: true)
             }
         }
-    
-    func configurePageViewController(){
-        guard let pageViewController = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreenContainer.self)) as? ScoutingScreenContainer else { return }
-        
-        pageViewController.delegate = self
-        pageViewController.dataSource = self
-        
-        addChild(pageViewController)
-        pageViewController.didMove(toParent: self)
-        
-        pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        
-        self.scoutingView.addSubview(pageViewController.view)
-        
-        let views = ["pageView": pageViewController.view!]
-        
-        self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-        
-        self.scoutingView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[pageView]-0-|", options: NSLayoutConstraint.FormatOptions(rawValue: 0), metrics: nil, views: views))
-        
-        guard let startingScoutingScreen = scoutingScreenAtIndex(index : currentScreenIndex) else { return }
-        
-        pageViewController.setViewControllers([startingScoutingScreen], direction: .forward, animated: true)
-        
-        self.screenTitle.text = self.screenTitles[currentScreenIndex]
-       }
-    
-    func scoutingScreenAtIndex(index : Int) -> ScoutingScreen?{
-       guard let scoutingScreen = UIStoryboard(name : "Main", bundle: nil).instantiateViewController(withIdentifier: String(describing : ScoutingScreen.self)) as? ScoutingScreen else { return nil }
-        scoutingScreen.index = index
-
-        if index >= self.screenTitles.count || self.screenTitles.count == 0 {
-            return nil
-        }
-        
-        if (index <= 2){
-                 scoutingScreen.screenTitles = self.screenTitles[index]
-                 scoutingScreen.numberOfRows = self.screenLayout.robot_scout.screens[index].layout.count
-                 var indicesInScreen : [Int] = []
-                 for i in 0..<self.screenLayout.robot_scout.screens[index].layout.count{
-                     scoutingScreen.numberOfItemsInRow.append(self.screenLayout.robot_scout.screens[index].layout[i].count)
-                     var typesInRow : [String] = []
-                     var namesInRow : [String] = []
-                         for k in 0..<self.screenLayout.robot_scout.screens[index].layout[i].count{
-                             typesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].type)
-                             namesInRow.append(self.screenLayout.robot_scout.screens[index].layout[i][k].name)
-                             scoutingScreen.nameOfMultiToggleItems.append(self.screenLayout.robot_scout.screens[index].layout[i][k].choices ?? [])
-                             scoutingScreen.listOfDefaultChoices.append(self.screenLayout.robot_scout.screens[index].layout[i][k].default_choice ?? 0)
-                             indicesInScreen.append(self.itemTags)
-                             self.itemTags += 1
-                         }
-                     scoutingScreen.typeOfItemsInRow.append(typesInRow)
-                     scoutingScreen.nameOfItemsInRow.append(namesInRow)
-                 }
-            scoutingScreen.listOfIndices.append(contentsOf: self.listOfTags)
-        }
-        
-     
-        return scoutingScreen
-    }
 }
 
-extension ScoutingActivity : UIPageViewControllerDelegate, UIPageViewControllerDataSource{
-    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
-        return currentScreenIndex
-    }
-
-    func presentationCount(for pageViewController: UIPageViewController) -> Int {
-        return screenTitles.count
-    }
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let scoutingScreen = viewController as? ScoutingScreen
-        
-        guard var currentIndex = scoutingScreen?.index else {
-            return nil
-        }
-        
-        currentScreenIndex = currentIndex
-        if (currentIndex == 0){
-            return nil
-        }
-        
-        currentIndex -= 1
-        
-        return scoutingScreenAtIndex(index: currentIndex)
+extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
     
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let scoutingScreen = viewController as? ScoutingScreen
-        
-        guard var currentIndex = scoutingScreen?.index else {
-            return nil
-        }
-        
-        if currentIndex == self.screenTitles.count{
-            return nil
-        }
-        
-        currentIndex += 1
-        
-        currentScreenIndex = currentIndex
-        
-        return scoutingScreenAtIndex(index: currentIndex)
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width : collectionView.frame.width, height : collectionView.frame.height)
     }
     
-    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        let vc = pendingViewControllers[0] as? ScoutingScreen
-        if (vc?.index == 3){
-            self.screenTitle.text = self.screenTitles[3]
-            print(entry)
-        } else {
-        self.screenTitle.text = self.screenTitles[vc?.index ?? 0]
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
+        cell?.setUpScoutingScreen()
+        if (indexPath.item <= 2){
+        cell?.containerView.addSubview(self.listOfScoutingScreens[indexPath.item])
         }
+        return cell!
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let visibleRect = CGRect(origin: scoutingView.contentOffset, size: scoutingView.bounds.size)
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        let visibleIndexPath = scoutingView.indexPathForItem(at: visiblePoint)
+        screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
     }
 }
-

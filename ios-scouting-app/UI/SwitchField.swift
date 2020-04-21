@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 class SwitchField : UIView {
-    var switchButton = Switch()
+    var switchButton = UIButton()
     var title : String?
     var value = 0
     override init(frame: CGRect) {
@@ -18,7 +18,20 @@ class SwitchField : UIView {
     
     func setUpSwitchField(){
         addSubview(switchButton)
-        switchButton.value = value
+
+        switchButton.titleLabel?.numberOfLines = 0
+        switchButton.contentHorizontalAlignment = .center
+        switchButton.titleLabel?.textAlignment = .center
+        switchButton.titleLabel?.lineBreakMode = .byWordWrapping
+        
+        if (value == 0){
+            switchButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+        backgroundColor = UIColor.systemGray5
+        } else {
+            switchButton.setTitleColor(UIColor.white, for: .normal)
+            backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        }
+
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         switchButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
         switchButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true

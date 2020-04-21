@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DYA-Ua-JQs">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -75,44 +76,6 @@
             </objects>
             <point key="canvasLocation" x="2619" y="102"/>
         </scene>
-        <!--Scouting Screen-->
-        <scene sceneID="5iE-Ge-vCc">
-            <objects>
-                <viewController storyboardIdentifier="ScoutingScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="yn4-Ix-GyD" customClass="ScoutingScreen" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="9VS-UR-dhK">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oA7-Iw-5tz">
-                                <rect key="frame" x="20" y="44" width="374" height="852"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="oA7-Iw-5tz" firstAttribute="trailing" secondItem="9VS-UR-dhK" secondAttribute="trailingMargin" id="8HZ-B0-WZo"/>
-                            <constraint firstAttribute="bottom" secondItem="oA7-Iw-5tz" secondAttribute="bottom" id="GZy-r7-lLZ"/>
-                            <constraint firstItem="oA7-Iw-5tz" firstAttribute="leading" secondItem="9VS-UR-dhK" secondAttribute="leadingMargin" id="hvV-mE-gZz"/>
-                            <constraint firstItem="oA7-Iw-5tz" firstAttribute="top" secondItem="xoW-Vl-gwW" secondAttribute="top" id="wmo-C2-YUU"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="xoW-Vl-gwW"/>
-                    </view>
-                    <connections>
-                        <outlet property="layoutView" destination="oA7-Iw-5tz" id="0aW-rO-YxS"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iEA-V4-mm3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4023.188405797102" y="101.11607142857143"/>
-        </scene>
-        <!--Scouting Screen Container-->
-        <scene sceneID="SXU-5A-fb7">
-            <objects>
-                <pageViewController storyboardIdentifier="ScoutingScreenContainer" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="YX2-eh-DTN" customClass="ScoutingScreenContainer" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Eay-et-OWW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4781" y="102"/>
-        </scene>
         <!--Scouting Activity-->
         <scene sceneID="Vg4-kd-1gc">
             <objects>
@@ -124,10 +87,6 @@
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="HAC-lc-cSr">
                                 <rect key="frame" x="14" y="53" width="388" height="31"/>
                             </slider>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yyZ-Xm-VD4">
-                                <rect key="frame" x="7" y="144" width="400" height="752"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                            </view>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UNB-RI-zP9">
                                 <rect key="frame" x="264" y="91" width="42" height="44"/>
                                 <constraints>
@@ -145,7 +104,7 @@
                                 <state key="normal" image="undo"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZH-Ic-fVA">
-                                <rect key="frame" x="16" y="91" width="197" height="45"/>
+                                <rect key="frame" x="16" y="91" width="197" height="37"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="31"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -180,23 +139,51 @@
                                     <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 </state>
                             </button>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6gL-2M-TTf">
+                                <rect key="frame" x="0.0" y="152" width="414" height="710"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VNH-1x-Ldg">
+                                    <size key="itemSize" width="414" height="711"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="scoutingCell" reuseIdentifier="scoutingCell" id="rXX-65-z5e" customClass="ScoutingScreenCell" customModule="Scouting" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="-0.66666666666666663" width="414" height="711"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Sxc-Tq-Pbh">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="711"/>
+                                        </collectionViewCellContentView>
+                                        <constraints>
+                                            <constraint firstAttribute="trailingMargin" secondItem="Sxc-Tq-Pbh" secondAttribute="trailing" constant="-8" id="794-oF-oih"/>
+                                            <constraint firstItem="Sxc-Tq-Pbh" firstAttribute="leading" secondItem="rXX-65-z5e" secondAttribute="leadingMargin" constant="-8" id="b8e-6O-AIm"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="Sxc-Tq-Pbh" secondAttribute="bottom" constant="-8" id="gk5-gp-39T"/>
+                                            <constraint firstItem="Sxc-Tq-Pbh" firstAttribute="top" secondItem="rXX-65-z5e" secondAttribute="topMargin" constant="-8" id="w97-Dp-eHL"/>
+                                        </constraints>
+                                        <size key="customSize" width="414" height="711"/>
+                                        <connections>
+                                            <outlet property="contentView" destination="Sxc-Tq-Pbh" id="tV4-e1-Rex"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="UNB-RI-zP9" firstAttribute="leading" secondItem="GZH-Ic-fVA" secondAttribute="trailing" constant="51" id="0Ix-si-liq"/>
                             <constraint firstItem="XhF-SD-dQ3" firstAttribute="leading" secondItem="UNB-RI-zP9" secondAttribute="trailing" constant="6" id="28r-Zp-mRs"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="Oes-iK-mMA" secondAttribute="bottom" constant="10" id="3N2-cL-PeC"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="bottom" secondItem="77X-RO-cav" secondAttribute="bottom" constant="34" id="96Z-WL-3H4"/>
+                            <constraint firstItem="6gL-2M-TTf" firstAttribute="leading" secondItem="77X-RO-cav" secondAttribute="leading" id="5at-fe-scc"/>
                             <constraint firstItem="HAC-lc-cSr" firstAttribute="leading" secondItem="77X-RO-cav" secondAttribute="leading" constant="16" id="9ce-fw-YBr"/>
                             <constraint firstItem="GZH-Ic-fVA" firstAttribute="leading" secondItem="77X-RO-cav" secondAttribute="leading" constant="16" id="9zg-tu-ag1"/>
                             <constraint firstItem="77X-RO-cav" firstAttribute="trailing" secondItem="Oes-iK-mMA" secondAttribute="trailing" constant="14" id="AXO-Br-Fjy"/>
                             <constraint firstItem="GZH-Ic-fVA" firstAttribute="top" secondItem="HAC-lc-cSr" secondAttribute="bottom" constant="8" id="AfE-0S-Bwt"/>
+                            <constraint firstItem="6gL-2M-TTf" firstAttribute="centerX" secondItem="uIq-Em-Tnn" secondAttribute="centerX" id="B2i-eI-o7C"/>
                             <constraint firstItem="8rh-Mz-qAK" firstAttribute="top" secondItem="HAC-lc-cSr" secondAttribute="bottom" constant="8" id="E10-CE-yG1"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="UNB-RI-zP9" secondAttribute="bottom" constant="9" id="E8y-07-XmY"/>
                             <constraint firstItem="UNB-RI-zP9" firstAttribute="leading" secondItem="GZH-Ic-fVA" secondAttribute="trailing" constant="51" id="FhE-j4-OMb"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="leading" secondItem="HAC-lc-cSr" secondAttribute="leading" constant="-9" id="GUk-Rr-LKp"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="6gL-2M-TTf" secondAttribute="bottom" id="GXp-1B-qff"/>
                             <constraint firstItem="HAC-lc-cSr" firstAttribute="top" secondItem="77X-RO-cav" secondAttribute="top" constant="9" id="Hcr-tx-7BO"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="XhF-SD-dQ3" secondAttribute="bottom" constant="10" id="Hqb-ZL-cyO"/>
+                            <constraint firstItem="UNB-RI-zP9" firstAttribute="top" secondItem="8rh-Mz-qAK" secondAttribute="top" id="IUU-Zs-8fb"/>
                             <constraint firstItem="XhF-SD-dQ3" firstAttribute="leading" secondItem="UNB-RI-zP9" secondAttribute="trailing" constant="6" id="NIW-of-ifT"/>
                             <constraint firstItem="Oes-iK-mMA" firstAttribute="top" secondItem="HAC-lc-cSr" secondAttribute="bottom" constant="8" id="PwJ-k5-Gsy"/>
                             <constraint firstItem="8rh-Mz-qAK" firstAttribute="leading" secondItem="GZH-Ic-fVA" secondAttribute="trailing" constant="50" id="S6z-WQ-S4o"/>
@@ -207,11 +194,8 @@
                             <constraint firstItem="y3E-hr-SGf" firstAttribute="top" secondItem="HAC-lc-cSr" secondAttribute="bottom" constant="8" id="Yf4-Ct-k3I"/>
                             <constraint firstItem="XhF-SD-dQ3" firstAttribute="top" secondItem="HAC-lc-cSr" secondAttribute="bottom" constant="8" id="Zsw-c2-3Jl"/>
                             <constraint firstItem="y3E-hr-SGf" firstAttribute="leading" secondItem="GZH-Ic-fVA" secondAttribute="trailing" constant="49" id="bqO-Zh-eQM"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="8rh-Mz-qAK" secondAttribute="bottom" constant="10" id="dba-hE-uo6"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="y3E-hr-SGf" secondAttribute="bottom" constant="8" id="eBW-He-GU3"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="top" secondItem="GZH-Ic-fVA" secondAttribute="bottom" constant="8" id="flS-c1-NYb"/>
                             <constraint firstItem="Oes-iK-mMA" firstAttribute="leading" secondItem="XhF-SD-dQ3" secondAttribute="trailing" constant="4" id="kOp-97-sQj"/>
-                            <constraint firstItem="yyZ-Xm-VD4" firstAttribute="trailing" secondItem="HAC-lc-cSr" secondAttribute="trailing" constant="7" id="yud-6v-bjf"/>
+                            <constraint firstItem="6gL-2M-TTf" firstAttribute="top" secondItem="UNB-RI-zP9" secondAttribute="bottom" constant="17" id="rV3-FL-vht"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="77X-RO-cav"/>
                     </view>
@@ -222,7 +206,7 @@
                         <outlet property="StartTimerButton" destination="y3E-hr-SGf" id="6Q3-46-8Sc"/>
                         <outlet property="UndoButton" destination="XhF-SD-dQ3" id="Npa-vB-ba7"/>
                         <outlet property="progressBar" destination="HAC-lc-cSr" id="siz-Ng-17o"/>
-                        <outlet property="scoutingView" destination="yyZ-Xm-VD4" id="pBj-2A-d12"/>
+                        <outlet property="scoutingView" destination="6gL-2M-TTf" id="EmT-2i-l4I"/>
                         <outlet property="screenTitle" destination="GZH-Ic-fVA" id="NIV-p6-PMn"/>
                     </connections>
                 </viewController>
