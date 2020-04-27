@@ -17,7 +17,6 @@ class MultiToggleField : UIView{
     var value = 2
     override init(frame: CGRect) {
         super.init(frame : frame)
-        setUpToggleField()
     }
     
     required init?(coder: NSCoder) {
@@ -31,18 +30,18 @@ class MultiToggleField : UIView{
         let toggleButtons = UIStackView()
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3).isActive = true
-        label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        label.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3).isActive = true
+        label.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         
         toggleButtons.axis = .horizontal
         toggleButtons.distribution = .fillEqually
         toggleButtons.spacing = 0
         
         toggleButtons.translatesAutoresizingMaskIntoConstraints = false
-        toggleButtons.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
-        toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        toggleButtons.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        toggleButtons.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.7).isActive = true
+        toggleButtons.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
         
         for i in 0..<numberOfButtons{
             let toggleButton = UIButton()
