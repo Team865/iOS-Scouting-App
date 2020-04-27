@@ -69,57 +69,51 @@ class ScoutingActivity : UIViewController{
     var names : [String] = []
     var types : [String] = []
     
-    var colorTest : [UIColor] = [UIColor.red, UIColor.blue, UIColor.yellow, UIColor.green]
-    var listOfScoutingScreens : [UIStackView] = []
+    //ScoutingScreen variables
+    var listOfItemsType : [[[String]]] = []
+    var listOfItemsName : [[[String]]] = []
+    var QRImageCellID = "QRImageCell"
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
+        
+        
         var itemIndex = 0
         
         getLayoutForScreen{
-            self.scoutingView.dataSource = self
-            self.scoutingView.delegate = self
-            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-            
             for i in 0..<screenLayout.robot_scout.screens.count{
                 var indices : [Int] = []
+                var items : [[String]] = []
+                var names : [[String]] = []
                 self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
-                let verticalStackView = self.setUpScoutingScreen()
                 for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
-                    let horizontalStackView = UIStackView()
-                    horizontalStackView.axis = .horizontal
-                    horizontalStackView.spacing = 2.5
-                    horizontalStackView.distribution = .fillEqually
+                    var itemsInRow : [String] = []
+                    var namesInRow : [String] = []
                     for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
                         let type = screenLayout.robot_scout.screens[i].layout[k][j].type
                         let name = screenLayout.robot_scout.screens[i].layout[k][j].name
-                        if(type == "Button"){
-                            let buttonField = ButtonField()
-                            buttonField.buttonTitle = name
-                            horizontalStackView.addArrangedSubview(buttonField)
-                            buttonField.setUpButtonField()
-                        } else {
-                            let emptyField = CheckBoxField()
-                            horizontalStackView.addArrangedSubview(emptyField)
-                            emptyField.setUpCheckBox()
-                        }
-                        
+                        itemsInRow.append(type)
+                        namesInRow.append(name)
                         indices.append(itemIndex)
                         itemIndex += 1
                     }
-                    verticalStackView.addArrangedSubview(horizontalStackView)
+                    items.append(itemsInRow)
+                    names.append(namesInRow)
                 }
                 self.listOfTags.append(indices)
-                self.listOfScoutingScreens.append(verticalStackView)
+                self.listOfItemsType.append(items)
+                self.listOfItemsName.append(names)
             }
-            
+            print(self.listOfItemsType)
             self.screenTitles.append("QR Code")
-           
+            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+            self.scoutingView.register(QRImage.self, forCellWithReuseIdentifier: self.QRImageCellID)
+            self.scoutingView.dataSource = self
+            self.scoutingView.delegate = self
         }
-        
         screenTitle.text = "Auto"
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
@@ -127,20 +121,6 @@ class ScoutingActivity : UIViewController{
         selectedBoard = self.boardName
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
-    }
-    
-    func setUpScoutingScreen() -> UIStackView {
-        let view = UIStackView()
-        view.distribution = .fillEqually
-        view.axis = .vertical
-        view.spacing = 2.5
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.topAnchor.constraint(equalTo: scoutingView.topAnchor).isActive = true
-        view.leadingAnchor.constraint(equalTo: scoutingView.leadingAnchor).isActive = true
-        view.trailingAnchor.constraint(equalTo: scoutingView.trailingAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: scoutingView.bottomAnchor).isActive = true
-        return view
     }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
@@ -405,7 +385,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width : collectionView.frame.width, height : collectionView.frame.height)
+        return CGSize(width : collectionView.bounds.width, height : collectionView.bounds.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -413,12 +393,17 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
-        cell?.setUpScoutingScreen()
-        if (indexPath.item <= 2){
-        cell?.containerView.addSubview(self.listOfScoutingScreens[indexPath.item])
+        if (indexPath.row != 3){
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
+            cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
+            cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
+            cell?.setUpScoutingScreen()
+            return cell!
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImage
+            return cell!
         }
-        return cell!
+       
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

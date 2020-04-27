@@ -9,9 +9,13 @@
 import Foundation
 import UIKit
 
+var first = true
+
 class ScoutingScreenCell : UICollectionViewCell {
-    let containerView = UIView()
+    var reusing = false
     var index = 0
+    var listOfItemsType : [[String]] = []
+    var listOfItemsName : [[String]] = []
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -20,17 +24,69 @@ class ScoutingScreenCell : UICollectionViewCell {
        super.init(coder: aDecoder)
     }
     
-    func setUpScoutingScreen(){
-        addSubview(containerView)
-        configrueView()
+    override func prepareForReuse() {
+        reusing = true
     }
     
-    func configrueView(){
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
-        containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+    func formatTitleOfItem(string : String) -> String{
+        let titleArr = string.components(separatedBy: "_")
+        var title = ""
         
+        for i in 0..<titleArr.count{
+            title += titleArr[i].prefix(1).uppercased() + titleArr[i].lowercased().dropFirst() + " "
+        }
+        return title
+    }
+    
+    func setUpScoutingScreen(){
+        if(!reusing){
+        let scoutingView = UIStackView()
+        contentView.addSubview(scoutingView)
+        contentView.backgroundColor = UIColor.white
+        scoutingView.axis = .vertical
+        scoutingView.distribution = .fillEqually
+        scoutingView.spacing = 2.5
+            scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
+            
+        for i in 0..<self.listOfItemsType.count{
+            let scoutingRow = UIStackView()
+            scoutingRow.axis = .horizontal
+            scoutingRow.distribution = .fillEqually
+            scoutingRow.spacing = 2.5
+            for k in 0..<self.listOfItemsType[i].count{
+                let itemName = formatTitleOfItem(string: self.listOfItemsName[i][k])
+                if (self.listOfItemsType[i][k] == "Button"){
+                    let button = ButtonField()
+                    scoutingRow.addArrangedSubview(button)
+                    button.buttonTitle = itemName
+                    button.setUpButtonField()
+                }
+                if (self.listOfItemsType[i][k] == "MultiToggle"){
+                    let view = UIView()
+                    view.backgroundColor = UIColor.systemGray5
+                    scoutingRow.addArrangedSubview(view)
+//                    let toggle = MultiToggleField()
+//                    scoutingRow.addArrangedSubview(toggle)
+//                    toggle.numberOfButtons = 4
+//                    toggle.setUpToggleField()
+                }
+                if(self.listOfItemsType[i][k] == "Switch"){
+                    let switchField = SwitchField()
+                    scoutingRow.addArrangedSubview(switchField)
+                    switchField.title = itemName
+                    switchField.value = 0
+                    switchField.setUpSwitchField()
+                }
+                if(self.listOfItemsType[i][k] == "Checkbox"){
+                    let checkBox = CheckBoxField()
+                    scoutingRow.addArrangedSubview(checkBox)
+                    checkBox.title = itemName
+                    checkBox.value = 0
+                    checkBox.setUpCheckBox()
+                }
+            }
+            scoutingView.addArrangedSubview(scoutingRow)
+            }
+        }
     }
 }

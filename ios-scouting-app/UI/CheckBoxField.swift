@@ -10,11 +10,11 @@ import Foundation
 import UIKit
 class CheckBoxField : UIView{
     var title : String?
+    var value : Int?
     var checkBox = UIButton()
     let label = UILabel()
     override init(frame: CGRect) {
         super.init(frame : frame)
-        setUpCheckBox()
     }
     
     required init(coder: NSCoder) {

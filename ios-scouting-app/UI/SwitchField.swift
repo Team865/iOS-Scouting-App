@@ -18,7 +18,7 @@ class SwitchField : UIView {
     
     func setUpSwitchField(){
         addSubview(switchButton)
-
+        switchButton.setTitle(self.title, for: .normal)
         switchButton.titleLabel?.numberOfLines = 0
         switchButton.contentHorizontalAlignment = .center
         switchButton.titleLabel?.textAlignment = .center
