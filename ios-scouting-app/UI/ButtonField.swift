@@ -10,10 +10,14 @@ import Foundation
 import UIKit
 
 class ButtonField : UIView{
-    var button = Button()
+    let counterField = UILabel()
+    var button = UIButton()
+    var value = 1
     var counter = 0
+    var buttonTitle = ""
     override init (frame : CGRect){
         super.init(frame : frame)
+
     }
     
     required init?(coder: NSCoder) {
@@ -21,11 +25,19 @@ class ButtonField : UIView{
     }
     
     func setUpButtonField(){
-        let counter = UILabel()
-        counter.text = String(self.counter)
+        counterField.text = String(self.counter)
         backgroundColor = UIColor.systemGray5
         addSubview(button)
-        addSubview(counter)
+        addSubview(counterField)
+        
+        button.setTitle(self.buttonTitle, for: .normal)
+        button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+        button.titleLabel?.numberOfLines = 0
+        button.contentHorizontalAlignment = .center
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
+        backgroundColor = UIColor.systemGray5
         
         button.translatesAutoresizingMaskIntoConstraints = false
         button.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0).isActive = true
@@ -33,10 +45,15 @@ class ButtonField : UIView{
         button.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = true
         button.bottomAnchor.constraint(equalToSystemSpacingBelow: self.bottomAnchor, multiplier: 0).isActive = true
         
-        counter.translatesAutoresizingMaskIntoConstraints = false
-        counter.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0.5).isActive = true
-        counter.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0.5).isActive = true
-        counter.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = false
-        counter.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
+        counterField.translatesAutoresizingMaskIntoConstraints = false
+        counterField.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0.5).isActive = true
+        counterField.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0.5).isActive = true
+        counterField.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = false
+        counterField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
+    }
+    
+    @objc func updateCounter(sender : UIButton){
+        counter += 1
+        counterField.text = String(counter)
     }
 }
