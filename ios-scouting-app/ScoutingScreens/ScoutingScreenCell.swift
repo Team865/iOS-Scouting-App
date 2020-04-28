@@ -48,7 +48,6 @@ class ScoutingScreenCell : UICollectionViewCell {
         scoutingView.distribution = .fillEqually
         scoutingView.spacing = 2.5
         scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
-            
         for i in 0..<self.listOfItemsType.count{
             let scoutingRow = UIStackView()
             scoutingRow.axis = .horizontal
