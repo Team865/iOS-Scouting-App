@@ -9,7 +9,21 @@
 import Foundation
 import UIKit
 
-class MultiToggleField : UIView{
+class ToggleButton : UIButton{
+    var value = 0
+    
+    override init(frame: CGRect) {
+        super.init(frame : frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+}
+
+public class MultiToggleField : UIView{
     var title : String?
     var numberOfButtons = 0
     var listOfToggleTitles : [String] = []
@@ -38,6 +52,7 @@ class MultiToggleField : UIView{
         label.topAnchor.constraint(equalTo: topAnchor).isActive = true
         label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         label.textAlignment = .center
+        label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         label.text = self.title
         
         toggleButtons.axis = .horizontal
@@ -51,9 +66,12 @@ class MultiToggleField : UIView{
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
                 
         for i in 0..<numberOfButtons{
-            let toggleButton = UIButton()
+            let toggleButton = ToggleButton()
             toggleButton.setTitle(self.listOfToggleTitles[i], for: .normal)
             toggleButton.titleLabel?.textAlignment = .center
+            toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
+            toggleButton.tag = self.tag
+            toggleButton.value = i
             if (i == value){
             toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 toggleButton.setTitleColor(UIColor.white, for: .normal)
@@ -64,9 +82,20 @@ class MultiToggleField : UIView{
             
             toggleButtons.addArrangedSubview(toggleButton)
         }
-        
-        
     }
     
+    @objc func getSelectedToggleButton(sender : ToggleButton){
+        print(sender.tag)
+        self.value = sender.value
+        setUpToggleField()
+        
+        if (sender.tag == 15){
+            identicalToggles[0].value = sender.value
+            identicalToggles[0].setUpToggleField()
+        } else if (sender.tag == 7){
+            identicalToggles[1].value = sender.value
+            identicalToggles[1].setUpToggleField()
+        }
+    }
    
 }
