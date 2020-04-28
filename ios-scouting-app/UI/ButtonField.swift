@@ -36,6 +36,7 @@ class ButtonField : UIView{
         button.contentHorizontalAlignment = .center
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
         backgroundColor = UIColor.systemGray5
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -49,5 +50,10 @@ class ButtonField : UIView{
         counterField.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0.5).isActive = true
         counterField.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = false
         counterField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
+    }
+    
+    @objc func updateCounter(sender : UIButton){
+        counter += 1
+        counterField.text = String(counter)
     }
 }

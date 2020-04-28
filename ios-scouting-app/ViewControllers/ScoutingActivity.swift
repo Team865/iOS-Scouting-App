@@ -113,7 +113,6 @@ class ScoutingActivity : UIViewController{
                 self.listOfItemsName.append(names)
                 self.listOfToggleTitles.append(choices)
             }
-            print(self.listOfToggleTitles)
             self.screenTitles.append("QR Code")
             self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
             self.scoutingView.register(QRImage.self, forCellWithReuseIdentifier: self.QRImageCellID)
