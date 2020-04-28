@@ -29,10 +29,16 @@ class MultiToggleField : UIView{
         let label = UILabel()
         let toggleButtons = UIStackView()
         
+        addSubview(label)
+        addSubview(toggleButtons)
+        
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        label.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3).isActive = true
-        label.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3) .isActive = true
+        label.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        label.textAlignment = .center
+        label.text = self.title
         
         toggleButtons.axis = .horizontal
         toggleButtons.distribution = .fillEqually
@@ -40,24 +46,26 @@ class MultiToggleField : UIView{
         
         toggleButtons.translatesAutoresizingMaskIntoConstraints = false
         toggleButtons.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        toggleButtons.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.7).isActive = true
-        toggleButtons.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-        
+        toggleButtons.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
+        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
+        toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+                
         for i in 0..<numberOfButtons{
             let toggleButton = UIButton()
+            toggleButton.setTitle(self.listOfToggleTitles[i], for: .normal)
+            toggleButton.titleLabel?.textAlignment = .center
             if (i == value){
             toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-            toggleButton.titleLabel?.textColor = UIColor.systemGray5
+                toggleButton.setTitleColor(UIColor.white, for: .normal)
             } else {
                 toggleButton.backgroundColor = UIColor.systemGray5
-                toggleButton.titleLabel?.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                toggleButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             }
-            toggleButton.setTitle(listOfToggleTitles[i], for: .normal)
-            toggleButton.titleLabel?.textAlignment = .center
+            
+            toggleButtons.addArrangedSubview(toggleButton)
         }
         
-        addSubview(label)
-        addSubview(toggleButtons)
+        
     }
     
    

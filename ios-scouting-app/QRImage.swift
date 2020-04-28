@@ -12,7 +12,20 @@ class QRImage : UICollectionViewCell{
     
     override init(frame: CGRect) {
         super.init(frame : frame)
-        backgroundColor = UIColor.black
+        setUpQRImage()
+    }
+    
+    func setUpQRImage(){
+        let image = UIImageView()
+        let view = UIView()
+        view.backgroundColor = UIColor.red
+        view.frame = CGRect(x : 2.5, y : self.bounds.height / 1.5 + 10, width: self.bounds.width - 5, height :  self.bounds.height / 4)
+        
+        image.image = UIImage(named: "jerry")
+        image.frame = CGRect(x : 2.5, y : 0, width: self.bounds.width - 5, height: self.bounds.height / 1.5)
+        
+        addSubview(image)
+        addSubview(view)
     }
     
     required init?(coder: NSCoder) {

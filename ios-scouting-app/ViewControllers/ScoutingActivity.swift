@@ -72,6 +72,7 @@ class ScoutingActivity : UIViewController{
     //ScoutingScreen variables
     var listOfItemsType : [[[String]]] = []
     var listOfItemsName : [[[String]]] = []
+    var listOfToggleTitles : [[[[String]]]] = []
     var QRImageCellID = "QRImageCell"
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +81,6 @@ class ScoutingActivity : UIViewController{
         configureButtons()
         configureProgressBar()
         
-        
         var itemIndex = 0
         
         getLayoutForScreen{
@@ -88,26 +88,32 @@ class ScoutingActivity : UIViewController{
                 var indices : [Int] = []
                 var items : [[String]] = []
                 var names : [[String]] = []
+                var choices : [[[String]]] = []
                 self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
                 for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
                     var itemsInRow : [String] = []
                     var namesInRow : [String] = []
+                    var choicesInRow : [[String]] = []
                     for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
                         let type = screenLayout.robot_scout.screens[i].layout[k][j].type
                         let name = screenLayout.robot_scout.screens[i].layout[k][j].name
+                        let choice = screenLayout.robot_scout.screens[i].layout[k][j].choices ?? []
                         itemsInRow.append(type)
                         namesInRow.append(name)
+                        choicesInRow.append(choice)
                         indices.append(itemIndex)
                         itemIndex += 1
                     }
                     items.append(itemsInRow)
                     names.append(namesInRow)
+                    choices.append(choicesInRow)
                 }
                 self.listOfTags.append(indices)
                 self.listOfItemsType.append(items)
                 self.listOfItemsName.append(names)
+                self.listOfToggleTitles.append(choices)
             }
-            print(self.listOfItemsType)
+            print(self.listOfToggleTitles)
             self.screenTitles.append("QR Code")
             self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
             self.scoutingView.register(QRImage.self, forCellWithReuseIdentifier: self.QRImageCellID)
@@ -397,6 +403,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
             cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
             cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
+            cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
             cell?.setUpScoutingScreen()
             return cell!
         } else {
