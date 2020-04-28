@@ -31,7 +31,6 @@ class ScoutingActivity : UIViewController{
     var listOfLabels : [UILabel] = []
     var navBarView : UIView!
     var itemTags = 0
-    var listOfTags : [[Int]] = []
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
     var currentScreenIndex = 0
@@ -70,6 +69,7 @@ class ScoutingActivity : UIViewController{
     var types : [String] = []
     
     //ScoutingScreen variables
+    var listOfTags : [[[Int]]] = []
     var listOfItemsType : [[[String]]] = []
     var listOfItemsName : [[[String]]] = []
     var listOfToggleTitles : [[[[String]]]] = []
@@ -85,12 +85,13 @@ class ScoutingActivity : UIViewController{
         
         getLayoutForScreen{
             for i in 0..<screenLayout.robot_scout.screens.count{
-                var indices : [Int] = []
+                var indices : [[Int]] = []
                 var items : [[String]] = []
                 var names : [[String]] = []
                 var choices : [[[String]]] = []
                 self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
                 for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
+                    var tagsInRow : [Int] = []
                     var itemsInRow : [String] = []
                     var namesInRow : [String] = []
                     var choicesInRow : [[String]] = []
@@ -101,12 +102,13 @@ class ScoutingActivity : UIViewController{
                         itemsInRow.append(type)
                         namesInRow.append(name)
                         choicesInRow.append(choice)
-                        indices.append(itemIndex)
+                        tagsInRow.append(itemIndex)
                         itemIndex += 1
                     }
                     items.append(itemsInRow)
                     names.append(namesInRow)
                     choices.append(choicesInRow)
+                    indices.append(tagsInRow)
                 }
                 self.listOfTags.append(indices)
                 self.listOfItemsType.append(items)
@@ -124,6 +126,7 @@ class ScoutingActivity : UIViewController{
         self.progressBar.isEnabled = false
         selectedTeam = Int(self.teamNumber) ?? 0
         selectedBoard = self.boardName
+        
         //Make sure the initial time stamp is 0 before taking any inputs
         UserDefaults.standard.set(0.0, forKey: "timeStamp")
     }
@@ -403,6 +406,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
             cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
             cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
+            cell?.listOfItemsTag = self.listOfTags[indexPath.row]
             cell?.setUpScoutingScreen()
             return cell!
         } else {

@@ -23,7 +23,7 @@ class SwitchField : UIView {
         switchButton.contentHorizontalAlignment = .center
         switchButton.titleLabel?.textAlignment = .center
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
-        
+        switchButton.addTarget(self, action: #selector(activateSwitch(sender:)), for: .touchUpInside)
         if (value == 0){
             switchButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         backgroundColor = UIColor.systemGray5
@@ -45,5 +45,15 @@ class SwitchField : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    @objc func activateSwitch(sender : UIButton){
+        if(self.value == 0){
+            sender.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            sender.setTitleColor(UIColor.white, for: .normal)
+            self.value = 1
+        } else if (self.value == 1){
+            sender.backgroundColor = UIColor.systemGray5
+            sender.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+            self.value = 0
+        }
+    }
 }

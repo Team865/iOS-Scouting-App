@@ -10,13 +10,14 @@ import Foundation
 import UIKit
 
 var first = true
-
+public var identicalToggles : [MultiToggleField] = []
 class ScoutingScreenCell : UICollectionViewCell {
     var reusing = false
     var index = 0
     var listOfItemsType : [[String]] = []
     var listOfItemsName : [[String]] = []
     var listOfToggleTitles : [[[String]]] = []
+    var listOfItemsTag : [[Int]] = []
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -55,10 +56,12 @@ class ScoutingScreenCell : UICollectionViewCell {
             scoutingRow.spacing = 2.5
             for k in 0..<self.listOfItemsType[i].count{
                 let itemName = formatTitleOfItem(string: self.listOfItemsName[i][k])
+                let itemTag = self.listOfItemsTag[i][k]
                 if (self.listOfItemsType[i][k] == "Button"){
                     let button = ButtonField()
                     scoutingRow.addArrangedSubview(button)
                     button.buttonTitle = itemName
+                    button.tag = itemTag
                     button.setUpButtonField()
                 }
                 if (self.listOfItemsType[i][k] == "MultiToggle"){
@@ -67,13 +70,20 @@ class ScoutingScreenCell : UICollectionViewCell {
                     toggle.numberOfButtons = self.listOfToggleTitles[i][k].count
                     toggle.listOfToggleTitles = self.listOfToggleTitles[i][k]
                     toggle.title = itemName
+                    toggle.tag = itemTag
                     toggle.setUpToggleField()
+                    
+                    if identicalToggles.count < 2{
+                        identicalToggles.append(toggle)
+                    }
+                    
                 }
                 if(self.listOfItemsType[i][k] == "Switch"){
                     let switchField = SwitchField()
                     scoutingRow.addArrangedSubview(switchField)
                     switchField.title = itemName
                     switchField.value = 0
+                    switchField.tag = itemTag
                     switchField.setUpSwitchField()
                 }
                 if(self.listOfItemsType[i][k] == "Checkbox"){
@@ -81,6 +91,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     scoutingRow.addArrangedSubview(checkBox)
                     checkBox.title = itemName
                     checkBox.value = 0
+                    checkBox.tag = itemTag
                     checkBox.setUpCheckBox()
                 }
             }
