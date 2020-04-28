@@ -16,6 +16,7 @@ class ScoutingScreenCell : UICollectionViewCell {
     var index = 0
     var listOfItemsType : [[String]] = []
     var listOfItemsName : [[String]] = []
+    var listOfToggleTitles : [[[String]]] = []
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -46,7 +47,7 @@ class ScoutingScreenCell : UICollectionViewCell {
         scoutingView.axis = .vertical
         scoutingView.distribution = .fillEqually
         scoutingView.spacing = 2.5
-            scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
+        scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
             
         for i in 0..<self.listOfItemsType.count{
             let scoutingRow = UIStackView()
@@ -62,13 +63,12 @@ class ScoutingScreenCell : UICollectionViewCell {
                     button.setUpButtonField()
                 }
                 if (self.listOfItemsType[i][k] == "MultiToggle"){
-                    let view = UIView()
-                    view.backgroundColor = UIColor.systemGray5
-                    scoutingRow.addArrangedSubview(view)
-//                    let toggle = MultiToggleField()
-//                    scoutingRow.addArrangedSubview(toggle)
-//                    toggle.numberOfButtons = 4
-//                    toggle.setUpToggleField()
+                    let toggle = MultiToggleField()
+                    scoutingRow.addArrangedSubview(toggle)
+                    toggle.numberOfButtons = self.listOfToggleTitles[i][k].count
+                    toggle.listOfToggleTitles = self.listOfToggleTitles[i][k]
+                    toggle.title = itemName
+                    toggle.setUpToggleField()
                 }
                 if(self.listOfItemsType[i][k] == "Switch"){
                     let switchField = SwitchField()
