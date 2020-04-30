@@ -37,6 +37,7 @@ class ButtonField : UIView{
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
+        button.tag = self.tag
         backgroundColor = UIColor.systemGray5
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +54,15 @@ class ButtonField : UIView{
     }
     
     @objc func updateCounter(sender : UIButton){
+        let scoutingActivity = ScoutingActivity()
+        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
+        
         counter += 1
         counterField.text = String(counter)
+        
+        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
+            dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
+            scoutingActivity.encodeData(dataPoint : dataPoint)
+        }
     }
 }

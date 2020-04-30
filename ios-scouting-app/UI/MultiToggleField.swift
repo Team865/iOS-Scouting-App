@@ -85,9 +85,15 @@ public class MultiToggleField : UIView{
     }
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
-        print(sender.tag)
+        let scoutingActivity = ScoutingActivity()
+        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
         self.value = sender.value
         setUpToggleField()
+        
+        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
+            dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
+            scoutingActivity.encodeData(dataPoint : dataPoint)
+        }
         
         if (sender.tag == 15){
             identicalToggles[0].value = sender.value
@@ -96,6 +102,8 @@ public class MultiToggleField : UIView{
             identicalToggles[1].value = sender.value
             identicalToggles[1].setUpToggleField()
         }
+        
+        
     }
    
 }

@@ -117,7 +117,7 @@ class ScoutingActivity : UIViewController{
             }
             self.screenTitles.append("QR Code")
             self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-            self.scoutingView.register(QRImage.self, forCellWithReuseIdentifier: self.QRImageCellID)
+            self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
             self.scoutingView.dataSource = self
             self.scoutingView.delegate = self
         }
@@ -166,11 +166,11 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
     }
     
-    func encodeData(dataPoints : [DataPoint]){
-        DataPoints.append(contentsOf: dataPoints)
+    func encodeData(dataPoint : DataPoint){
+        DataPoints.append(dataPoint)
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
             entry = Entry.init(match: eventKey , team: selectedTeam, scout: scoutName, board: selectedBoard, timeStamp: Float(Date().timeIntervalSince1970), data_point: DataPoints)
-            
+            print(entry)
         }
     }
     
@@ -410,7 +410,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.setUpScoutingScreen()
             return cell!
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImage
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
             return cell!
         }
        

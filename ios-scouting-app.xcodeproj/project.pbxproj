@@ -22,7 +22,8 @@
 		25B23D0C243FCA470065E7BB /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B23D0B243FCA470065E7BB /* Encoder.swift */; };
 		25B23D0E24429D360065E7BB /* ButtonField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B23D0D24429D360065E7BB /* ButtonField.swift */; };
 		25C21E7F244EE9DB00070D16 /* ScoutingScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */; };
-		25C21E81245693ED00070D16 /* QRImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E80245693ED00070D16 /* QRImage.swift */; };
+		25C21E81245693ED00070D16 /* QRImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E80245693ED00070D16 /* QRImageCell.swift */; };
+		25C21E832458901C00070D16 /* QRCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E822458901C00070D16 /* QRCodeGenerator.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
@@ -56,7 +57,8 @@
 		25B23D0B243FCA470065E7BB /* Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoder.swift; sourceTree = "<group>"; };
 		25B23D0D24429D360065E7BB /* ButtonField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonField.swift; sourceTree = "<group>"; };
 		25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingScreenCell.swift; sourceTree = "<group>"; };
-		25C21E80245693ED00070D16 /* QRImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRImage.swift; sourceTree = "<group>"; };
+		25C21E80245693ED00070D16 /* QRImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRImageCell.swift; sourceTree = "<group>"; };
+		25C21E822458901C00070D16 /* QRCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeGenerator.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				254B4E1B243A78EA002B6239 /* DataPoint.swift */,
 				25689EFB243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift */,
 				25B23D0B243FCA470065E7BB /* Encoder.swift */,
+				25C21E822458901C00070D16 /* QRCodeGenerator.swift */,
 			);
 			path = QREntries;
 			sourceTree = "<group>";
@@ -122,6 +125,7 @@
 		258A91C5242AB13400901361 /* ScoutingScreens */ = {
 			isa = PBXGroup;
 			children = (
+				25C21E80245693ED00070D16 /* QRImageCell.swift */,
 				251EF5D02429D16E006536F1 /* ScoutingScreenJSONLayout.swift */,
 				25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */,
 			);
@@ -208,7 +212,6 @@
 				25F35CD12400E60800CAA81D /* Info.plist */,
 				25F96486242104F10095A6DF /* tbaKey.swift */,
 				251EF5D52429D612006536F1 /* layout.json */,
-				25C21E80245693ED00070D16 /* QRImage.swift */,
 			);
 			path = "ios-scouting-app";
 			sourceTree = "<group>";
@@ -295,7 +298,7 @@
 				25322E0C24309F930089AEA6 /* CheckBoxField.swift in Sources */,
 				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
-				25C21E81245693ED00070D16 /* QRImage.swift in Sources */,
+				25C21E81245693ED00070D16 /* QRImageCell.swift in Sources */,
 				25689EFC243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
@@ -310,6 +313,7 @@
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
 				25F96487242104F10095A6DF /* tbaKey.swift in Sources */,
 				25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */,
+				25C21E832458901C00070D16 /* QRCodeGenerator.swift in Sources */,
 				25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

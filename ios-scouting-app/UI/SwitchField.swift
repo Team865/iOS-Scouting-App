@@ -23,6 +23,7 @@ class SwitchField : UIView {
         switchButton.contentHorizontalAlignment = .center
         switchButton.titleLabel?.textAlignment = .center
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
+        switchButton.tag = self.tag
         switchButton.addTarget(self, action: #selector(activateSwitch(sender:)), for: .touchUpInside)
         if (value == 0){
             switchButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
@@ -46,6 +47,9 @@ class SwitchField : UIView {
     }
     
     @objc func activateSwitch(sender : UIButton){
+        let scoutingActivity = ScoutingActivity()
+        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
+               
         if(self.value == 0){
             sender.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             sender.setTitleColor(UIColor.white, for: .normal)
@@ -54,6 +58,11 @@ class SwitchField : UIView {
             sender.backgroundColor = UIColor.systemGray5
             sender.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             self.value = 0
+        }
+     
+        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
+            dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
+            scoutingActivity.encodeData(dataPoint : dataPoint)
         }
     }
 }
