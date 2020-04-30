@@ -36,6 +36,7 @@ class CheckBoxField : UIView{
         checkBox.layer.borderColor = UIColor.black.cgColor
         checkBox.layer.borderWidth = 2
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
+        checkBox.tag = self.tag
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
@@ -52,6 +53,8 @@ class CheckBoxField : UIView{
     }
     
     @objc func activateCheckBox(sender : UIButton){
+        let scoutingActivity = ScoutingActivity()
+        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
         if (self.value == 0){
             checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             self.value = 1
@@ -59,6 +62,11 @@ class CheckBoxField : UIView{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
+        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
+            dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
+            scoutingActivity.encodeData(dataPoint : dataPoint)
+        }
+        
     }
 }
 

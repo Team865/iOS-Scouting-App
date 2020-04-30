@@ -8,20 +8,21 @@
 
 import Foundation
 import UIKit
-class QRImage : UICollectionViewCell{
+class QRImageCell : UICollectionViewCell{
+    let image = UIImageView()
+    let view = UILabel()
+    var qrCodeGenerator = QRCodeGenerator()
     
     override init(frame: CGRect) {
         super.init(frame : frame)
-        setUpQRImage()
     }
     
     func setUpQRImage(){
-        let image = UIImageView()
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        view.frame = CGRect(x : 2.5, y : self.bounds.height / 1.5 + 10, width: self.bounds.width - 5, height :  self.bounds.height / 4)
+        view.frame = CGRect(x : 2.5, y : self.bounds.height / 1.5 + 10, width: self.bounds.width - 5, height :  self.bounds.height / 5)
+        view.textAlignment = .center
+        let qrCode = self.qrCodeGenerator.generateQRCode(from: encodedData)
         
-        image.image = UIImage(named: "jerry")
+        image.image = qrCode
         image.frame = CGRect(x : 2.5, y : 0, width: self.bounds.width - 5, height: self.bounds.height / 1.5)
         
         addSubview(image)

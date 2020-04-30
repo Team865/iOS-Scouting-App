@@ -55,6 +55,7 @@ override func viewDidLoad() {
     configureTableView()
     
     DataPoints.removeAll()
+    encodedData = ""
 }
     //Load data from core
     override func viewDidAppear(_ animated: Bool) {
@@ -419,8 +420,6 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         self.listOfSelectedTeams.removeAll()
         
-        
-
         self.navigationController?.pushViewController(scoutingVC, animated: true)
         
     }
