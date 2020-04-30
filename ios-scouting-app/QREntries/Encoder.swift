@@ -14,32 +14,32 @@ import Foundation
  * bit 7-10: value
  * bit 11-24: time
  */
-var data = ""
+public var encodedData = ""
 
-class Encoder {
+public class Encoder {
     
 func require(format : Bool, integer : Int) -> Bool{
         if !(integer < 0 || integer > 63) {
-            return true
-        } else {
             return false
+        } else {
+            return true
         }
     }
     
 func dataPointToString(dp: DataPoint) {
     let intTime = Int(dp.time * 100)
-
+    
     let a = dp.type_index
     let b = (dp.value << 2) | ((intTime & (0b11 << 12)) >> 12)
     let c = (intTime & (0b111111 << 6)) >> 6
     let d = intTime & 0b111111
 
-    data += String(toBase64(i: a))
-    data += String(toBase64(i: b))
-    data += String(toBase64(i: c))
-    data += String(toBase64(i: d))
+    encodedData += String(toBase64(i: a))
+    encodedData += String(toBase64(i: b))
+    encodedData += String(toBase64(i: c))
+    encodedData += String(toBase64(i: d))
 }
-
+    
 func fromBase64(ch: Int) -> Int {
     var valueToReturn = 0
     if (ch == Character("/").asciiValue ?? 0){
@@ -53,7 +53,7 @@ func fromBase64(ch: Int) -> Int {
     } else if (ch >= 97 && ch <= 122){
         valueToReturn = ch - 71
     } else {
-        
+        valueToReturn = -1
     }
     return valueToReturn
 }

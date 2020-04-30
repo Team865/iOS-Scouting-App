@@ -74,6 +74,7 @@ class ScoutingActivity : UIViewController{
     var listOfItemsName : [[[String]]] = []
     var listOfToggleTitles : [[[[String]]]] = []
     var QRImageCellID = "QRImageCell"
+    var QRImageCellMade : [QRImageCell] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navBarView = self.createNavBarView()
@@ -169,8 +170,9 @@ class ScoutingActivity : UIViewController{
     func encodeData(dataPoint : DataPoint){
         DataPoints.append(dataPoint)
         if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            entry = Entry.init(match: eventKey , team: selectedTeam, scout: scoutName, board: selectedBoard, timeStamp: Float(Date().timeIntervalSince1970), data_point: DataPoints)
-            print(entry)
+            let encoder = Encoder()
+//            print(dataPoint.value << 2 | ((Int(dataPoint.time) & (0b11 << 12)) >> 12))
+            encoder.dataPointToString(dp: dataPoint)
         }
     }
     
@@ -252,9 +254,9 @@ class ScoutingActivity : UIViewController{
     
     lazy var backButton : UIButton = {
            let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 34))
-            button.tag = 6
+           button.tag = 6
            button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
-            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+           button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
            return button
        }()
     
@@ -410,8 +412,14 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.setUpScoutingScreen()
             return cell!
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
-            return cell!
+            let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
+            QRcell?.setUpQRImage()
+            if (QRImageCellMade.count < 1){
+                QRImageCellMade.append(QRcell!)
+            }
+            
+            
+            return QRcell!
         }
        
     }
@@ -420,6 +428,11 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         let visibleRect = CGRect(origin: scoutingView.contentOffset, size: scoutingView.bounds.size)
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         let visibleIndexPath = scoutingView.indexPathForItem(at: visiblePoint)
+        if (visibleIndexPath?[1] ?? 0 == 3){
+            if (QRImageCellMade.count == 1){
+                QRImageCellMade[0].setUpQRImage()
+            }
+        }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
     }
 }
