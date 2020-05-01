@@ -62,11 +62,8 @@ class CheckBoxField : UIView{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
-        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
             dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
             scoutingActivity.encodeData(dataPoint : dataPoint)
-        }
-        
     }
 }
 
