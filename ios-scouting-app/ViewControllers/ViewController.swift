@@ -56,6 +56,7 @@ override func viewDidLoad() {
     
     DataPoints.removeAll()
     encodedData = ""
+    encodedDataPoints = ""
 }
     //Load data from core
     override func viewDidAppear(_ animated: Bool) {
@@ -124,7 +125,7 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
-                    UserDefaults.standard.set(self.eventKey, forKey: "match")
+                    UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
                 }
             }
         }
@@ -413,9 +414,10 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
         
-        scoutingVC.teamNumber = self.listOfSelectedTeams[indexPath.row]
-        scoutingVC.matchNumber = "M" + String(indexPath.row + 1)
-        scoutingVC.boardName = self.selectedBoard
+        teamNumber = self.listOfSelectedTeams[indexPath.row]
+        matchNumber = "M" + String(indexPath.row + 1)
+        separatedMatchNumber = String(indexPath.row + 1)
+        boardName = self.selectedBoard
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         self.listOfSelectedTeams.removeAll()

@@ -13,9 +13,17 @@ import UIKit
 public var DataPoints = [DataPoint]()
 var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
 var screenLayout : ScoutingScreenLayout!
-
+public var timeStamp : Float = 0
+var matchNumber = ""
+var teamNumber = ""
+var boardName = ""
+var timeOnStart = "015"
+var separatedMatchNumber = ""
 private var selectedTeam = 0
 private var selectedBoard = ""
+private var selectedKey = ""
+private var selectedScout = ""
+private var comment = ""
 class ScoutingActivity : UIViewController{
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
@@ -26,7 +34,6 @@ class ScoutingActivity : UIViewController{
     let Ymultiplier = 1.325
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
-    var comment = ""
     
     var listOfLabels : [UILabel] = []
     var navBarView : UIView!
@@ -38,11 +45,6 @@ class ScoutingActivity : UIViewController{
     var tempScreenIndex = 0
     var movedForward = false
     var movedBackwards = false
-    
-    var matchNumber = ""
-    var teamNumber = ""
-    var boardName = ""
-    var timeOnStart = "015"
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -125,12 +127,35 @@ class ScoutingActivity : UIViewController{
         screenTitle.text = "Auto"
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
-        selectedTeam = Int(self.teamNumber) ?? 0
-        selectedBoard = self.boardName
+        selectedTeam = Int(teamNumber) ?? 0
+        selectedBoard = boardName
+        
+        if let eventKey = UserDefaults.standard.object(forKey: "eventKey") as? String{
+           if let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
+                selectedKey = eventKey
+                selectedScout = scoutName
+                encodedData = updateEncodedData()
+            } else {
+                print("Data Stinks")
+            }
+        }
+        
         
         //Make sure the initial time stamp is 0 before taking any inputs
-        UserDefaults.standard.set(0.0, forKey: "timeStamp")
+        timeStamp = 0
     }
+    
+    func updateEncodedData() -> String{
+          let data = (selectedKey + "_" + separatedMatchNumber + ":" + teamNumber + ":" + selectedScout + ":" + boardName + ":" + String(format:"%02X", Int(NSDate().timeIntervalSince1970)) + ":" + encodedDataPoints +  ":" + comment)
+          return data
+      }
+      
+      func encodeData(dataPoint : DataPoint){
+          DataPoints.append(dataPoint)
+          let encoder = Encoder()
+          encoder.dataPointToString(dp: dataPoint)
+          encodedData = updateEncodedData()
+      }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
         do {
@@ -165,15 +190,6 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(pauseTimerOnPBSelection(sender:)), for: .touchDown)
         self.progressBar.addTarget(self, action: #selector(updateTimerOnPBDrag(sender:)), for: .touchDragInside)
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
-    }
-    
-    func encodeData(dataPoint : DataPoint){
-        DataPoints.append(dataPoint)
-        if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            let encoder = Encoder()
-//            print(dataPoint.value << 2 | ((Int(dataPoint.time) & (0b11 << 12)) >> 12))
-            encoder.dataPointToString(dp: dataPoint)
-        }
     }
     
     @objc func progressBarReleased(sender : UISlider){
@@ -228,7 +244,7 @@ class ScoutingActivity : UIViewController{
         let iconsWidth = 34.0
         let spacing = 2.5
         var startingX = 0.0
-        let listOfTexts = [self.matchNumber, self.boardName, self.teamNumber, String(self.timeOnStart)]
+        let listOfTexts = [matchNumber, boardName, teamNumber, String(timeOnStart)]
         let listOfLabelWidth = [30.0, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
@@ -261,7 +277,7 @@ class ScoutingActivity : UIViewController{
        }()
     
     func updateTimer(){
-        UserDefaults.standard.set(165 * self.totalProgress, forKey: "timeStamp")
+        timeStamp = 165 * self.totalProgress
         if(165 * self.totalProgress < 15.0){
             let time = 15 - round(165 * self.totalProgress)
             var timeLeft = String(time)
@@ -315,6 +331,7 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].textColor = UIColor.red
         }
     }
+    
         @objc func clickHandler(sender : UIButton){
             if(sender.tag == 1){
                 StartTimerButton.isHidden = true
@@ -367,13 +384,13 @@ class ScoutingActivity : UIViewController{
 
                 alert.addTextField{
                     (UITextField) in UITextField.placeholder = "Enter comment"
-                    UITextField.text = self.comment
+                    UITextField.text = comment
                 }
 
                 let getComment = UIAlertAction(title: "OK", style: .default){
                     [weak alert] (_) in
                     let textField = alert?.textFields![0]
-                    self.comment = textField!.text!
+                    comment = textField!.text ?? ""
                 }
 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)

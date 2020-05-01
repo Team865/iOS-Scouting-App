@@ -60,9 +60,8 @@ class ButtonField : UIView{
         counter += 1
         counterField.text = String(counter)
         
-        if let timeStamp = UserDefaults.standard.object(forKey: "timeStamp") as? Float{
-            dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
-            scoutingActivity.encodeData(dataPoint : dataPoint)
-        }
+        dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
+        scoutingActivity.encodeData(dataPoint : dataPoint)
+        
     }
 }
