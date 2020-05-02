@@ -69,14 +69,17 @@ class SettingsViewController: UIViewController {
            if(indexPath.section == 0){
             if(indexPath.row == 0){
                 let eventSelection = UIStoryboard(name : "Main", bundle: nil)
-                
                 guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
                     EventSelectionController else { return }
                 
                 self.navigationController?.pushViewController(eventSelectionVC, animated: true)
             }
-            
-           }
+           } else if (indexPath.section == 1){
+            if (indexPath.row == 1){
+                guard let url = URL(string: "https://github.com/Team865/iOS-Scouting-App") else { return }
+                UIApplication.shared.open(url)
+            }
+        }
        }
 
 }

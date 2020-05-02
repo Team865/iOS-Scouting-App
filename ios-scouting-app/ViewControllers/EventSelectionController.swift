@@ -33,22 +33,13 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     let viewController = ViewController()
     
     override func viewDidLoad() {
-           super.viewDidLoad()
+        super.viewDidLoad()
         
-        yearText = self.yearTextField
-        teamText = self.teamTextField
-        
-        yearText.delegate = self
-        teamText.delegate = self
-        
+        configureInputFields()
         configureTableView()
         setUpNavigationBar()
-        setUpView(team : self.teamText, year : self.yearText)
-
-       }
-    
-    //Load data from cache
-    override func viewDidAppear(_ animated: Bool) {
+        
+        //Load data from cache
         if let eventKeys = UserDefaults.standard.object(forKey: "EventKeys") as? [String]{
             self.listOfKeys = eventKeys
         }
@@ -58,13 +49,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
             self.listOfNames = eventName
             self.eventTable.reloadData()
         }
-        
-        //Save the input year and the team number
-//        if let year = UserDefaults.standard.object(forKey: "year") as? Int, let teamNumber = UserDefaults.standard.object(forKey: "teamNumber") as? String{
-//            self.yearText.text = String(year)
-//            self.teamText.text = teamNumber
-//        }
-    }
+       }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         yearText.resignFirstResponder()
@@ -86,11 +71,6 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         return true
     }
     //UI Configurations
-    private func setUpView(team : UITextField, year : UITextField){
-        view.addSubview(team)
-        view.addSubview(year)
-    }
-    
     private func configureTableView() {
         eventTable = UITableView()
         eventTable.delegate = self
@@ -100,49 +80,108 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         eventTable.register(EventCells.self, forCellReuseIdentifier: "EventCells")
         view.addSubview(eventTable)
         
-        eventTable.frame = CGRect(x: 0, y: Double(self.screenHeight * 0.15), width: Double(UIScreen.main.bounds.width), height: Double(self.screenHeight * 0.85))
+        eventTable.translatesAutoresizingMaskIntoConstraints = false
+        eventTable.topAnchor.constraint(equalTo: yearText.bottomAnchor).isActive = true
+        eventTable.leadingAnchor.constraint(equalTo : self.view.leadingAnchor).isActive = true
+        eventTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        eventTable.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
         eventTable.tableFooterView = UIView()
     }
     
-    lazy var yearTextField : UITextField = {
-        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
-    textField.placeholder = "Year"
-    textField.textAlignment = .center
+    private func configureInputFields(){
+        yearText = UITextField()
+        teamText = UITextField()
         
-        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(self.screenHeight * 0.13)))
-    image.image = UIImage(named : "calendar")
+        yearText.delegate = self
+        teamText.delegate = self
+        
+        yearText.placeholder = "Year"
+        yearText.textAlignment = .center
+        
+        teamText.placeholder = "Team (e.g 865)"
+        teamText.textAlignment = .center
+        
+        let calendar = UIImageView()
+        calendar.image = UIImage(named: "calendar")
+        
+        let teams = UIImageView()
+        teams.image = UIImage(named : "team")
+        
+        yearText.leftViewMode = .always
+        yearText.leftView = calendar
+        
+        teamText.leftViewMode = .always
+        teamText.leftView = teams
+        
+        view.addSubview(yearText)
+        view.addSubview(teamText)
+        
+        yearText.translatesAutoresizingMaskIntoConstraints = false
+        yearText.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        yearText.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: UIScreen.main.bounds.width * 0.05).isActive = true
+        yearText.trailingAnchor.constraint(equalTo: self.view.centerXAnchor, constant: -5).isActive = true
+        yearText.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
+        
+        teamText.translatesAutoresizingMaskIntoConstraints = false
+        teamText.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        teamText.leadingAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 5).isActive = true
+        teamText.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
+        teamText.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
     
-    let bottomLine = CALayer()
-        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
-    bottomLine.backgroundColor = UIColor.black.cgColor
-    textField.borderStyle = .none
-    textField.layer.addSublayer(bottomLine)
+        let bottomLine = CALayer()
+        bottomLine.backgroundColor = UIColor.black.cgColor
+        bottomLine.frame = CGRect(x : 0, y : UIScreen.main.bounds.height * 0.045, width : UIScreen.main.bounds.width * 0.45 - 10, height : 1)
+        yearText.borderStyle = .none
+        yearText.layer.addSublayer(bottomLine)
         
-    textField.font = textField.font?.withSize(15)
-    textField.leftViewMode = UITextField.ViewMode.always
-    textField.leftView = image
-    return textField
-    }()
+        let bottomLine2 = CALayer()
+        bottomLine2.backgroundColor = UIColor.black.cgColor
+        bottomLine2.frame = CGRect(x : 0, y : UIScreen.main.bounds.height * 0.045, width : UIScreen.main.bounds.width * 0.45, height : 1)
+        teamText.borderStyle = .none
+        teamText.layer.addSublayer(bottomLine2)
+
+    }
     
-    lazy var teamTextField : UITextField = {
-        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06), width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
-    textField.placeholder = "Team (e.g 865)"
-    textField.textAlignment = .center
-        
-        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(screenWidth * 0.40)))
-    image.image = UIImage(named : "team")
-    
-    let bottomLine = CALayer()
-        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
-    bottomLine.backgroundColor = UIColor.black.cgColor
-    textField.borderStyle = .none
-    textField.layer.addSublayer(bottomLine)
-        
-    textField.font = textField.font?.withSize(15)
-    textField.leftViewMode = UITextField.ViewMode.always
-    textField.leftView = image
-    return textField
-    }()
+//    lazy var yearTextField : UITextField = {
+//        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
+//    textField.placeholder = "Year"
+//    textField.textAlignment = .center
+//
+//        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(self.screenHeight * 0.13)))
+//    image.image = UIImage(named : "calendar")
+//
+//    let bottomLine = CALayer()
+//    bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
+//    bottomLine.backgroundColor = UIColor.black.cgColor
+//    textField.borderStyle = .none
+//    textField.layer.addSublayer(bottomLine)
+//
+//    textField.font = textField.font?.withSize(15)
+//    textField.leftViewMode = UITextField.ViewMode.always
+//    textField.leftView = image
+//    return textField
+//    }()
+//
+//    lazy var teamTextField : UITextField = {
+//        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06), width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
+//    textField.placeholder = "Team (e.g 865)"
+//    textField.textAlignment = .center
+//
+//        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(screenWidth * 0.40)))
+//    image.image = UIImage(named : "team")
+//
+//    let bottomLine = CALayer()
+//        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
+//    bottomLine.backgroundColor = UIColor.black.cgColor
+//    textField.borderStyle = .none
+//    textField.layer.addSublayer(bottomLine)
+//
+//    textField.font = textField.font?.withSize(15)
+//    textField.leftViewMode = UITextField.ViewMode.always
+//    textField.leftView = image
+//    return textField
+//    }()
     
     private func loadEventListFromCore(name : [String], info : [String]) -> [Events]{
         var tempEvent : [Events] = []

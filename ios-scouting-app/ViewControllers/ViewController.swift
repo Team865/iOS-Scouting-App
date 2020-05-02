@@ -48,8 +48,8 @@ override func viewDidLoad() {
     
     self.view.addSubview(border)
     
-    currentEventLabel = self.createCurrentEventName()
-    currentEventLabel.text = self.currentEvent
+    self.configureEventNameLabel()
+    self.configureTableView()
     
     self.view.addSubview(currentEventLabel)
     configureTableView()
@@ -57,33 +57,34 @@ override func viewDidLoad() {
     DataPoints.removeAll()
     encodedData = ""
     encodedDataPoints = ""
+    
+    //Load data from cache
+    if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
+                       if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
+                           if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [String]{
+                               if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
+                                       self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName)
+                                           self.matchTable.reloadData()
+                           }
+                       }
+                   }
+               }
+           if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+               self.currentEventLabel.text = currentEvent
+           }
+           
+           if let selectedBoard = UserDefaults.standard.object(forKey: "Board") as? String, let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+               self.selectedBoard = selectedBoard
+               self.scoutName = scoutName
+               self.updateBoard(board: selectedBoard, scout: scoutName)
+               self.matchTable.reloadData()
+           }
+           if let selectedTeams = UserDefaults.standard.object(forKey: "SelectedTeams") as? [String]{
+               self.listOfSelectedTeams = selectedTeams
+           }
 }
-    //Load data from core
-    override func viewDidAppear(_ animated: Bool) {
-            if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
-                    if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
-                        if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [String]{
-                            if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
-                                    self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName)
-                                        self.matchTable.reloadData()
-                        }
-                    }
-                }
-            }
-        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
-            self.currentEventLabel.text = currentEvent
-        }
-        
-        if let selectedBoard = UserDefaults.standard.object(forKey: "Board") as? String, let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
-            self.selectedBoard = selectedBoard
-            self.scoutName = scoutName
-            self.updateBoard(board: selectedBoard, scout: scoutName)
-            self.matchTable.reloadData()
-        }
-        if let selectedTeams = UserDefaults.standard.object(forKey: "SelectedTeams") as? [String]{
-            self.listOfSelectedTeams = selectedTeams
-        }
-    }
+    
+    
     //Segue to update board
     //https://stackoverflow.com/questions/25921623/how-to-reload-tableview-from-another-view-controller-in-swift
     @IBAction func unwindToViewControllerA(segue: UIStoryboardSegue) {
@@ -212,24 +213,46 @@ override func viewDidLoad() {
         scoutName.text = scout
         self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
+    
     //UI Configurations
     private func configureTableView(){
-           matchTable = UITableView()
-           matchTable.delegate = self
-           matchTable.dataSource = self
-           matchTable.rowHeight = UIScreen.main.bounds.height * 0.08
+        let borderView = UIView()
+        borderView.backgroundColor = UIColor.gray
+        
+        matchTable = UITableView()
+        matchTable.delegate = self
+        matchTable.dataSource = self
+        matchTable.rowHeight = UIScreen.main.bounds.height * 0.08
+        matchTable.register(matchScheduleCells.self, forCellReuseIdentifier: "matchScheduleCells")
            
-           matchTable.register(matchScheduleCells.self, forCellReuseIdentifier: "matchScheduleCells")
-           view.addSubview(matchTable)
-            matchTable.frame = CGRect(x: 0, y: UIScreen.main.bounds.height * 0.17, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.83)
-           matchTable.tableFooterView = UIView()
+        view.addSubview(matchTable)
+        view.addSubview(borderView)
+        
+        borderView.translatesAutoresizingMaskIntoConstraints = false
+        borderView.topAnchor.constraint(equalTo: currentEventLabel.bottomAnchor, constant: 1).isActive = true
+        borderView.leadingAnchor.constraint(equalTo : self.view.leadingAnchor).isActive = true
+        borderView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        borderView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.0005).isActive = true
+        
+        matchTable.translatesAutoresizingMaskIntoConstraints = false
+        matchTable.topAnchor.constraint(equalTo: borderView.bottomAnchor, constant: 1).isActive = true
+        matchTable.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        matchTable.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        matchTable.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        matchTable.tableFooterView = UIView()
        }
     
-    private func createCurrentEventName() -> UILabel{
-        let label = UILabel(frame: CGRect(x : Double(UIScreen.main.bounds.width * 0.05), y: Double(UIScreen.main.bounds.height * 0.075), width: Double(UIScreen.main.bounds.width * 0.9), height: Double(UIScreen.main.bounds.height * 0.12)))
-        label.textAlignment = .center
-        label.textColor = UIColor.systemBlue
-        return label
+    private func configureEventNameLabel(){
+        currentEventLabel = UILabel()
+        currentEventLabel.textColor = UIColor.blue
+        currentEventLabel.textAlignment = .center
+        self.view.addSubview(currentEventLabel)
+        
+        currentEventLabel.translatesAutoresizingMaskIntoConstraints = false
+        currentEventLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
+        currentEventLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: UIScreen.main.bounds.width * 0.05).isActive = true
+        currentEventLabel.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.9).isActive = true
+        currentEventLabel.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
     }
     
     private func createSelectBoardButton() -> UIButton{
