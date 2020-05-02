@@ -11,11 +11,22 @@ import UIKit
 
 //Remove or keep, you decide
 public var DataPoints = [DataPoint]()
+public var listOfButtonsOnScreen : [UIButton] = []
+public var listOfSwitchesOnScreen : [UIButton] = []
+public var listOfCheckBoxesOnScreen : [UILabel] = []
 var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
 var screenLayout : ScoutingScreenLayout!
-
+public var timeStamp : Float = 0
+var matchNumber = ""
+var teamNumber = ""
+var boardName = ""
+var timeOnStart = "015"
+var separatedMatchNumber = ""
 private var selectedTeam = 0
 private var selectedBoard = ""
+private var selectedKey = ""
+private var selectedScout = ""
+private var comment = ""
 class ScoutingActivity : UIViewController{
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
@@ -26,12 +37,10 @@ class ScoutingActivity : UIViewController{
     let Ymultiplier = 1.325
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
-    var comment = ""
     
     var listOfLabels : [UILabel] = []
     var navBarView : UIView!
     var itemTags = 0
-    var listOfTags : [[Int]] = []
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
     var currentScreenIndex = 0
@@ -39,11 +48,6 @@ class ScoutingActivity : UIViewController{
     var tempScreenIndex = 0
     var movedForward = false
     var movedBackwards = false
-    
-    var matchNumber = ""
-    var teamNumber = ""
-    var boardName = ""
-    var timeOnStart = "015"
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -69,79 +73,92 @@ class ScoutingActivity : UIViewController{
     var names : [String] = []
     var types : [String] = []
     
-    var colorTest : [UIColor] = [UIColor.red, UIColor.blue, UIColor.yellow, UIColor.green]
-    var listOfScoutingScreens : [UIStackView] = []
+    //ScoutingScreen variables
+    var listOfTags : [[[Int]]] = []
+    var listOfItemsType : [[[String]]] = []
+    var listOfItemsName : [[[String]]] = []
+    var listOfToggleTitles : [[[[String]]]] = []
+    var QRImageCellID = "QRImageCell"
+    var QRImageCellMade : [QRImageCell] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navBarView = self.createNavBarView()
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
+        
         var itemIndex = 0
         
         getLayoutForScreen{
-            self.scoutingView.dataSource = self
-            self.scoutingView.delegate = self
-            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-            
             for i in 0..<screenLayout.robot_scout.screens.count{
-                var indices : [Int] = []
+                var indices : [[Int]] = []
+                var items : [[String]] = []
+                var names : [[String]] = []
+                var choices : [[[String]]] = []
                 self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
-                let verticalStackView = self.setUpScoutingScreen()
                 for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
-                    let horizontalStackView = UIStackView()
-                    horizontalStackView.axis = .horizontal
-                    horizontalStackView.spacing = 2.5
-                    horizontalStackView.distribution = .fillEqually
+                    var tagsInRow : [Int] = []
+                    var itemsInRow : [String] = []
+                    var namesInRow : [String] = []
+                    var choicesInRow : [[String]] = []
                     for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
                         let type = screenLayout.robot_scout.screens[i].layout[k][j].type
                         let name = screenLayout.robot_scout.screens[i].layout[k][j].name
-                        if(type == "Button"){
-                            let buttonField = ButtonField()
-                            buttonField.buttonTitle = name
-                            horizontalStackView.addArrangedSubview(buttonField)
-                            buttonField.setUpButtonField()
-                        } else {
-                            let emptyField = CheckBoxField()
-                            horizontalStackView.addArrangedSubview(emptyField)
-                            emptyField.setUpCheckBox()
-                        }
-                        
-                        indices.append(itemIndex)
+                        let choice = screenLayout.robot_scout.screens[i].layout[k][j].choices ?? []
+                        itemsInRow.append(type)
+                        namesInRow.append(name)
+                        choicesInRow.append(choice)
+                        tagsInRow.append(itemIndex)
                         itemIndex += 1
                     }
-                    verticalStackView.addArrangedSubview(horizontalStackView)
+                    items.append(itemsInRow)
+                    names.append(namesInRow)
+                    choices.append(choicesInRow)
+                    indices.append(tagsInRow)
                 }
                 self.listOfTags.append(indices)
-                self.listOfScoutingScreens.append(verticalStackView)
+                self.listOfItemsType.append(items)
+                self.listOfItemsName.append(names)
+                self.listOfToggleTitles.append(choices)
             }
-            
             self.screenTitles.append("QR Code")
-           
+            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+            self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
+            self.scoutingView.dataSource = self
+            self.scoutingView.delegate = self
         }
-        
         screenTitle.text = "Auto"
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
-        selectedTeam = Int(self.teamNumber) ?? 0
-        selectedBoard = self.boardName
+        selectedTeam = Int(teamNumber) ?? 0
+        selectedBoard = boardName
+        
+        if let eventKey = UserDefaults.standard.object(forKey: "eventKey") as? String{
+           if let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
+                selectedKey = eventKey
+                selectedScout = scoutName
+                encodedData = updateEncodedData()
+            } else {
+                print("Data Stinks")
+            }
+        }
+        
+        
         //Make sure the initial time stamp is 0 before taking any inputs
-        UserDefaults.standard.set(0.0, forKey: "timeStamp")
+        timeStamp = 0
     }
     
-    func setUpScoutingScreen() -> UIStackView {
-        let view = UIStackView()
-        view.distribution = .fillEqually
-        view.axis = .vertical
-        view.spacing = 2.5
-        
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.topAnchor.constraint(equalTo: scoutingView.topAnchor).isActive = true
-        view.leadingAnchor.constraint(equalTo: scoutingView.leadingAnchor).isActive = true
-        view.trailingAnchor.constraint(equalTo: scoutingView.trailingAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: scoutingView.bottomAnchor).isActive = true
-        return view
-    }
+    func updateEncodedData() -> String{
+          let data = (selectedKey + "_" + separatedMatchNumber + ":" + teamNumber + ":" + selectedScout + ":" + boardName + ":" + String(format:"%02X", Int(NSDate().timeIntervalSince1970)) + ":" + encodedDataPoints +  ":" + comment)
+          return data
+      }
+      
+      func encodeData(dataPoint : DataPoint){
+          DataPoints.append(dataPoint)
+          let encoder = Encoder()
+          encoder.dataPointToString(dp: dataPoint)
+          encodedData = updateEncodedData()
+      }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
         do {
@@ -178,26 +195,8 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
     }
     
-    func encodeData(dataPoints : [DataPoint]){
-        DataPoints.append(contentsOf: dataPoints)
-        if let eventKey = UserDefaults.standard.object(forKey: "match") as? String, let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
-            entry = Entry.init(match: eventKey , team: selectedTeam, scout: scoutName, board: selectedBoard, timeStamp: Float(Date().timeIntervalSince1970), data_point: DataPoints)
-            
-        }
-    }
-    
     @objc func progressBarReleased(sender : UISlider){
         self.totalProgress = sender.value
-        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-        (timer) in
-            guard self.totalProgress <= 1 else {
-            timer.invalidate()
-            return
-        }
-            self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
-            self.updateTimer()
-            self.progressBar.value = self.totalProgress
-        }
     }
     
     @objc func updateTimerOnPBDrag(sender : UISlider){
@@ -238,7 +237,7 @@ class ScoutingActivity : UIViewController{
         let iconsWidth = 34.0
         let spacing = 2.5
         var startingX = 0.0
-        let listOfTexts = [self.matchNumber, self.boardName, self.teamNumber, String(self.timeOnStart)]
+        let listOfTexts = [matchNumber, boardName, teamNumber, String(timeOnStart)]
         let listOfLabelWidth = [30.0, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
@@ -264,14 +263,14 @@ class ScoutingActivity : UIViewController{
     
     lazy var backButton : UIButton = {
            let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 34))
-            button.tag = 6
+           button.tag = 6
            button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
-            button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+           button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
            return button
        }()
     
     func updateTimer(){
-        UserDefaults.standard.set(165 * self.totalProgress, forKey: "timeStamp")
+        timeStamp = 165 * self.totalProgress
         if(165 * self.totalProgress < 15.0){
             let time = 15 - round(165 * self.totalProgress)
             var timeLeft = String(time)
@@ -325,14 +324,13 @@ class ScoutingActivity : UIViewController{
             self.listOfLabels[3].textColor = UIColor.red
         }
     }
+    
         @objc func clickHandler(sender : UIButton){
             if(sender.tag == 1){
                 StartTimerButton.isHidden = true
                 PauseButton.isHidden = false
                 PlayButton.isHidden = true
                 UndoButton.isHidden = false
-                
-                self.progressBar.isEnabled = true
                 
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                 (timer) in
@@ -346,9 +344,25 @@ class ScoutingActivity : UIViewController{
                     self.progressBar.value = self.totalProgress
                 }
                 
+                for i in 0..<listOfButtonsOnScreen.count{
+                    listOfButtonsOnScreen[i].isEnabled = true
+                    listOfButtonsOnScreen[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+                }
+                
+                for i in 0..<listOfSwitchesOnScreen.count{
+                    listOfSwitchesOnScreen[i].isEnabled = true
+                    listOfSwitchesOnScreen[i].setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
+                }
+                
+                for i in 0..<listOfCheckBoxesOnScreen.count{
+                    listOfCheckBoxesOnScreen[i].textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                }
+                
             } else if (sender.tag == 2){
                 PlayButton.isHidden = false
                 PauseButton.isHidden = true
+                
+                self.progressBar.isEnabled = true
                 
                 self.progressBarTimer.invalidate()
                 self.totalProgress = self.progressBar.value
@@ -356,6 +370,8 @@ class ScoutingActivity : UIViewController{
             } else if (sender.tag == 3){
                 PlayButton.isHidden = true
                 PauseButton.isHidden = false
+                
+                self.progressBar.isEnabled = false
                 
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                     (timer) in
@@ -377,13 +393,13 @@ class ScoutingActivity : UIViewController{
 
                 alert.addTextField{
                     (UITextField) in UITextField.placeholder = "Enter comment"
-                    UITextField.text = self.comment
+                    UITextField.text = comment
                 }
 
                 let getComment = UIAlertAction(title: "OK", style: .default){
                     [weak alert] (_) in
                     let textField = alert?.textFields![0]
-                    self.comment = textField!.text!
+                    comment = textField!.text ?? ""
                 }
 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
@@ -405,7 +421,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width : collectionView.frame.width, height : collectionView.frame.height)
+        return CGSize(width : collectionView.bounds.width, height : collectionView.bounds.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -413,18 +429,36 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
-        cell?.setUpScoutingScreen()
-        if (indexPath.item <= 2){
-        cell?.containerView.addSubview(self.listOfScoutingScreens[indexPath.item])
+        if (indexPath.row != 3){
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
+            cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
+            cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
+            cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
+            cell?.listOfItemsTag = self.listOfTags[indexPath.row]
+            cell?.setUpScoutingScreen()
+            return cell!
+        } else {
+            let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
+            QRcell?.setUpQRImage()
+            if (QRImageCellMade.count < 1){
+                QRImageCellMade.append(QRcell!)
+            }
+            
+            
+            return QRcell!
         }
-        return cell!
+       
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let visibleRect = CGRect(origin: scoutingView.contentOffset, size: scoutingView.bounds.size)
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         let visibleIndexPath = scoutingView.indexPathForItem(at: visiblePoint)
+        if (visibleIndexPath?[1] ?? 0 == 3){
+            if (QRImageCellMade.count == 1){
+                QRImageCellMade[0].setUpQRImage()
+            }
+        }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
     }
 }

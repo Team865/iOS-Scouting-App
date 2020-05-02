@@ -15,14 +15,16 @@
 		254B4E1C243A78EA002B6239 /* DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254B4E1B243A78EA002B6239 /* DataPoint.swift */; };
 		2553B83224481A7E0093C481 /* SwitchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2553B83124481A7E0093C481 /* SwitchField.swift */; };
 		25619D662438C7BE0057BC76 /* MultiToggleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25619D652438C7BE0057BC76 /* MultiToggleField.swift */; };
-		25689EFC243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25689EFB243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift */; };
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */; };
 		25B23D0C243FCA470065E7BB /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B23D0B243FCA470065E7BB /* Encoder.swift */; };
 		25B23D0E24429D360065E7BB /* ButtonField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B23D0D24429D360065E7BB /* ButtonField.swift */; };
 		25C21E7F244EE9DB00070D16 /* ScoutingScreenCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */; };
+		25C21E81245693ED00070D16 /* QRImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E80245693ED00070D16 /* QRImageCell.swift */; };
+		25C21E832458901C00070D16 /* QRCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E822458901C00070D16 /* QRCodeGenerator.swift */; };
 		25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* matchSchedule.swift */; };
+		25D4C53F245C39C70062D363 /* EncoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D4C53E245C39C70062D363 /* EncoderTest.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
 		25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56B241F63780034432A /* EventSelectionController.swift */; };
@@ -38,6 +40,16 @@
 		25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F9648824237AE90095A6DF /* matchScheduleCells.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		25D4C541245C39C80062D363 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25F35CB82400E60600CAA81D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 25F35CBF2400E60600CAA81D;
+			remoteInfo = Scouting;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		251EF5CB24282855006536F1 /* ScoutingActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingActivity.swift; sourceTree = "<group>"; };
 		251EF5D02429D16E006536F1 /* ScoutingScreenJSONLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoutingScreenJSONLayout.swift; path = "ios-scouting-app/ScoutingScreens/ScoutingScreenJSONLayout.swift"; sourceTree = SOURCE_ROOT; };
@@ -48,14 +60,18 @@
 		2553B83124481A7E0093C481 /* SwitchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchField.swift; sourceTree = "<group>"; };
 		25619D652438C7BE0057BC76 /* MultiToggleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiToggleField.swift; sourceTree = "<group>"; };
 		25619D6D243924680057BC76 /* ScoutingDebug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; name = ScoutingDebug.entitlements; path = ../../../.Trash/ScoutingDebug.entitlements; sourceTree = "<group>"; };
-		25689EFB243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStringConvertibleProtocol.swift; sourceTree = "<group>"; };
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonMatchScheduleStructure.swift; sourceTree = "<group>"; };
 		25B23D0B243FCA470065E7BB /* Encoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encoder.swift; sourceTree = "<group>"; };
 		25B23D0D24429D360065E7BB /* ButtonField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonField.swift; sourceTree = "<group>"; };
 		25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoutingScreenCell.swift; sourceTree = "<group>"; };
+		25C21E80245693ED00070D16 /* QRImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRImageCell.swift; sourceTree = "<group>"; };
+		25C21E822458901C00070D16 /* QRCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeGenerator.swift; sourceTree = "<group>"; };
 		25CEF679240338B900034E12 /* matchSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = matchSchedule.swift; sourceTree = "<group>"; };
+		25D4C53C245C39C70062D363 /* EncoderTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EncoderTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		25D4C53E245C39C70062D363 /* EncoderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderTest.swift; sourceTree = "<group>"; };
+		25D4C540245C39C70062D363 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
@@ -74,6 +90,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		25D4C539245C39C70062D363 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		25F35CBD2400E60600CAA81D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -84,7 +107,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		253343AD242C0B62000E6409 /* UI */ = {
+		253343AD242C0B62000E6409 /* ScoutingUI */ = {
 			isa = PBXGroup;
 			children = (
 				25322E0B24309F930089AEA6 /* CheckBoxField.swift */,
@@ -92,7 +115,7 @@
 				25B23D0D24429D360065E7BB /* ButtonField.swift */,
 				2553B83124481A7E0093C481 /* SwitchField.swift */,
 			);
-			path = UI;
+			path = ScoutingUI;
 			sourceTree = "<group>";
 		};
 		253343B0242C720C000E6409 /* QREntries */ = {
@@ -100,8 +123,8 @@
 			children = (
 				253343B1242C7228000E6409 /* QREntry.swift */,
 				254B4E1B243A78EA002B6239 /* DataPoint.swift */,
-				25689EFB243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift */,
 				25B23D0B243FCA470065E7BB /* Encoder.swift */,
+				25C21E822458901C00070D16 /* QRCodeGenerator.swift */,
 			);
 			path = QREntries;
 			sourceTree = "<group>";
@@ -110,9 +133,9 @@
 			isa = PBXGroup;
 			children = (
 				25F35CC72400E60600CAA81D /* ViewController.swift */,
+				251EF5CB24282855006536F1 /* ScoutingActivity.swift */,
 				2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */,
 				25E0F56B241F63780034432A /* EventSelectionController.swift */,
-				251EF5CB24282855006536F1 /* ScoutingActivity.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -120,6 +143,7 @@
 		258A91C5242AB13400901361 /* ScoutingScreens */ = {
 			isa = PBXGroup;
 			children = (
+				25C21E80245693ED00070D16 /* QRImageCell.swift */,
 				251EF5D02429D16E006536F1 /* ScoutingScreenJSONLayout.swift */,
 				25C21E7E244EE9DB00070D16 /* ScoutingScreenCell.swift */,
 			);
@@ -172,11 +196,21 @@
 			path = tba;
 			sourceTree = "<group>";
 		};
+		25D4C53D245C39C70062D363 /* EncoderTest */ = {
+			isa = PBXGroup;
+			children = (
+				25D4C53E245C39C70062D363 /* EncoderTest.swift */,
+				25D4C540245C39C70062D363 /* Info.plist */,
+			);
+			path = EncoderTest;
+			sourceTree = "<group>";
+		};
 		25F35CB72400E60600CAA81D = {
 			isa = PBXGroup;
 			children = (
 				25619D6D243924680057BC76 /* ScoutingDebug.entitlements */,
 				25F35CC22400E60600CAA81D /* ios-scouting-app */,
+				25D4C53D245C39C70062D363 /* EncoderTest */,
 				25F35CC12400E60600CAA81D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -185,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				25F35CC02400E60600CAA81D /* Scouting.app */,
+				25D4C53C245C39C70062D363 /* EncoderTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,7 +229,7 @@
 			children = (
 				258A91C5242AB13400901361 /* ScoutingScreens */,
 				253343B0242C720C000E6409 /* QREntries */,
-				253343AD242C0B62000E6409 /* UI */,
+				253343AD242C0B62000E6409 /* ScoutingUI */,
 				258A91C4242AB01D00901361 /* ViewControllers */,
 				258A91CD242AB30300901361 /* tba */,
 				258A91CB242AB27C00901361 /* TableView */,
@@ -213,6 +248,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		25D4C53B245C39C70062D363 /* EncoderTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 25D4C545245C39C80062D363 /* Build configuration list for PBXNativeTarget "EncoderTest" */;
+			buildPhases = (
+				25D4C538245C39C70062D363 /* Sources */,
+				25D4C539245C39C70062D363 /* Frameworks */,
+				25D4C53A245C39C70062D363 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				25D4C542245C39C80062D363 /* PBXTargetDependency */,
+			);
+			name = EncoderTest;
+			productName = EncoderTest;
+			productReference = 25D4C53C245C39C70062D363 /* EncoderTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		25F35CBF2400E60600CAA81D /* Scouting */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 25F35CD42400E60800CAA81D /* Build configuration list for PBXNativeTarget "Scouting" */;
@@ -240,6 +293,10 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = Warp7;
 				TargetAttributes = {
+					25D4C53B245C39C70062D363 = {
+						CreatedOnToolsVersion = 11.3;
+						TestTargetID = 25F35CBF2400E60600CAA81D;
+					};
 					25F35CBF2400E60600CAA81D = {
 						CreatedOnToolsVersion = 11.3;
 					};
@@ -259,11 +316,19 @@
 			projectRoot = "";
 			targets = (
 				25F35CBF2400E60600CAA81D /* Scouting */,
+				25D4C53B245C39C70062D363 /* EncoderTest */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		25D4C53A245C39C70062D363 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		25F35CBE2400E60600CAA81D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,6 +343,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		25D4C538245C39C70062D363 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25D4C53F245C39C70062D363 /* EncoderTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		25F35CBC2400E60600CAA81D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -292,7 +365,7 @@
 				25322E0C24309F930089AEA6 /* CheckBoxField.swift in Sources */,
 				25F9648924237AE90095A6DF /* matchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
-				25689EFC243AB93F00DA5DF8 /* CustomStringConvertibleProtocol.swift in Sources */,
+				25C21E81245693ED00070D16 /* QRImageCell.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
 				251EF5D12429D16E006536F1 /* ScoutingScreenJSONLayout.swift in Sources */,
@@ -306,11 +379,20 @@
 				25CEF67A240338B900034E12 /* matchSchedule.swift in Sources */,
 				25F96487242104F10095A6DF /* tbaKey.swift in Sources */,
 				25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */,
+				25C21E832458901C00070D16 /* QRCodeGenerator.swift in Sources */,
 				25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		25D4C542245C39C80062D363 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 25F35CBF2400E60600CAA81D /* Scouting */;
+			targetProxy = 25D4C541245C39C80062D363 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		25F35CC92400E60600CAA81D /* Main.storyboard */ = {
@@ -332,6 +414,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		25D4C543245C39C80062D363 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G3TH5ENU87;
+				INFOPLIST_FILE = EncoderTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = LocPham.EncoderTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Scouting.app/Scouting";
+			};
+			name = Debug;
+		};
+		25D4C544245C39C80062D363 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = G3TH5ENU87;
+				INFOPLIST_FILE = EncoderTest/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = LocPham.EncoderTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Scouting.app/Scouting";
+			};
+			name = Release;
+		};
 		25F35CD22400E60800CAA81D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -487,6 +609,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		25D4C545245C39C80062D363 /* Build configuration list for PBXNativeTarget "EncoderTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25D4C543245C39C80062D363 /* Debug */,
+				25D4C544245C39C80062D363 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		25F35CBB2400E60600CAA81D /* Build configuration list for PBXProject "ios-scouting-app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

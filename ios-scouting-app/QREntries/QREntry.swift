@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Entry : ReflectedStringConvertible{
+class Entry {
     var match : String = ""
     var team : Int = 1
     var scout : String = ""
