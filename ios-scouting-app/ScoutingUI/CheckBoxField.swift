@@ -31,12 +31,13 @@ class CheckBoxField : UIView{
         label.lineBreakMode = .byClipping
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
-        label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        label.textColor = UIColor.systemGray
         
         checkBox.layer.borderColor = UIColor.black.cgColor
         checkBox.layer.borderWidth = 2
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
         checkBox.tag = self.tag
+        checkBox.isEnabled = false
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

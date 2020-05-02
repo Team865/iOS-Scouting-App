@@ -31,13 +31,14 @@ class ButtonField : UIView{
         addSubview(counterField)
         
         button.setTitle(self.buttonTitle, for: .normal)
-        button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+        button.setTitleColor(UIColor.systemGray, for: .normal)
         button.titleLabel?.numberOfLines = 0
         button.contentHorizontalAlignment = .center
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
         button.tag = self.tag
+        button.isEnabled = false
         backgroundColor = UIColor.systemGray5
         
         button.translatesAutoresizingMaskIntoConstraints = false

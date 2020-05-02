@@ -62,6 +62,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     scoutingRow.addArrangedSubview(button)
                     button.buttonTitle = itemName
                     button.tag = itemTag
+                    listOfButtonsOnScreen.append(button.button)
                     button.setUpButtonField()
                 }
                 if (self.listOfItemsType[i][k] == "MultiToggle"){
@@ -84,6 +85,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     switchField.title = itemName
                     switchField.value = 0
                     switchField.tag = itemTag
+                    listOfSwitchesOnScreen.append(switchField.switchButton)
                     switchField.setUpSwitchField()
                 }
                 if(self.listOfItemsType[i][k] == "Checkbox"){
@@ -92,6 +94,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     checkBox.title = itemName
                     checkBox.value = 0
                     checkBox.tag = itemTag
+                    listOfCheckBoxesOnScreen.append(checkBox.label)
                     checkBox.setUpCheckBox()
                 }
             }

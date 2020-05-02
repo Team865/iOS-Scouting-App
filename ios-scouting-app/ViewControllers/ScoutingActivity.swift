@@ -11,6 +11,9 @@ import UIKit
 
 //Remove or keep, you decide
 public var DataPoints = [DataPoint]()
+public var listOfButtonsOnScreen : [UIButton] = []
+public var listOfSwitchesOnScreen : [UIButton] = []
+public var listOfCheckBoxesOnScreen : [UILabel] = []
 var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
 var screenLayout : ScoutingScreenLayout!
 public var timeStamp : Float = 0
@@ -194,16 +197,6 @@ class ScoutingActivity : UIViewController{
     
     @objc func progressBarReleased(sender : UISlider){
         self.totalProgress = sender.value
-        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-        (timer) in
-            guard self.totalProgress <= 1 else {
-            timer.invalidate()
-            return
-        }
-            self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
-            self.updateTimer()
-            self.progressBar.value = self.totalProgress
-        }
     }
     
     @objc func updateTimerOnPBDrag(sender : UISlider){
@@ -339,8 +332,6 @@ class ScoutingActivity : UIViewController{
                 PlayButton.isHidden = true
                 UndoButton.isHidden = false
                 
-                self.progressBar.isEnabled = true
-                
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                 (timer) in
                 guard self.progress.isFinished == false else {
@@ -353,9 +344,25 @@ class ScoutingActivity : UIViewController{
                     self.progressBar.value = self.totalProgress
                 }
                 
+                for i in 0..<listOfButtonsOnScreen.count{
+                    listOfButtonsOnScreen[i].isEnabled = true
+                    listOfButtonsOnScreen[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+                }
+                
+                for i in 0..<listOfSwitchesOnScreen.count{
+                    listOfSwitchesOnScreen[i].isEnabled = true
+                    listOfSwitchesOnScreen[i].setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
+                }
+                
+                for i in 0..<listOfCheckBoxesOnScreen.count{
+                    listOfCheckBoxesOnScreen[i].textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                }
+                
             } else if (sender.tag == 2){
                 PlayButton.isHidden = false
                 PauseButton.isHidden = true
+                
+                self.progressBar.isEnabled = true
                 
                 self.progressBarTimer.invalidate()
                 self.totalProgress = self.progressBar.value
@@ -363,6 +370,8 @@ class ScoutingActivity : UIViewController{
             } else if (sender.tag == 3){
                 PlayButton.isHidden = true
                 PauseButton.isHidden = false
+                
+                self.progressBar.isEnabled = false
                 
                 self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
                     (timer) in
