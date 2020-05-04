@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ToggleButton : UIButton{
+public class ToggleButton : UIButton{
     var value = 0
     
     override init(frame: CGRect) {
@@ -27,6 +27,7 @@ public class MultiToggleField : UIView{
     var title : String?
     var numberOfButtons = 0
     var listOfToggleTitles : [String] = []
+    var toggleButton = ToggleButton()
     //We know that the default value is 2, but we need to be able to change this dynamically
     var value = 2
     override init(frame: CGRect) {
@@ -66,7 +67,7 @@ public class MultiToggleField : UIView{
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
                 
         for i in 0..<numberOfButtons{
-            let toggleButton = ToggleButton()
+            toggleButton = ToggleButton()
             toggleButton.setTitle(self.listOfToggleTitles[i], for: .normal)
             toggleButton.titleLabel?.textAlignment = .center
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
@@ -87,6 +88,7 @@ public class MultiToggleField : UIView{
     @objc func getSelectedToggleButton(sender : ToggleButton){
         let scoutingActivity = ScoutingActivity()
         var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
+        prevToggleValue = self.value
         self.value = sender.value
         setUpToggleField()
         

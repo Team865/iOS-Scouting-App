@@ -74,12 +74,12 @@ class SettingsViewController: UIViewController {
                 
                 self.navigationController?.pushViewController(eventSelectionVC, animated: true)
             }
-           } else if (indexPath.section == 1){
+            } else if (indexPath.section == 1){
             if (indexPath.row == 1){
                 guard let url = URL(string: "https://github.com/Team865/iOS-Scouting-App") else { return }
                 UIApplication.shared.open(url)
+                }
             }
-        }
        }
 
 }

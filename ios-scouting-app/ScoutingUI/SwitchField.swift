@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-class SwitchField : UIView {
+public class SwitchField : UIView {
     var switchButton = UIButton()
     var title : String?
     var value = 0
