@@ -11,12 +11,14 @@ import UIKit
 
 //Remove or keep, you decide
 public var DataPoints = [DataPoint]()
-public var listOfButtonsOnScreen : [UIButton] = []
-public var listOfSwitchesOnScreen : [UIButton] = []
-public var listOfCheckBoxesOnScreen : [UILabel] = []
+public var listOfButtonsOnScreen : [ButtonField] = []
+public var listOfSwitchesOnScreen : [SwitchField] = []
+public var listOfCheckBoxesOnScreen : [CheckBoxField] = []
+public var listOfMultiToggleFieldScreen : [MultiToggleField] = []
 var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
 var screenLayout : ScoutingScreenLayout!
 public var timeStamp : Float = 0
+public var prevToggleValue = 0
 var matchNumber = ""
 var teamNumber = ""
 var boardName = ""
@@ -138,9 +140,7 @@ class ScoutingActivity : UIViewController{
                 selectedKey = eventKey
                 selectedScout = scoutName
                 encodedData = updateEncodedData()
-            } else {
-                print("Data Stinks")
-            }
+            } 
         }
         
         
@@ -158,7 +158,7 @@ class ScoutingActivity : UIViewController{
           let encoder = Encoder()
           encoder.dataPointToString(dp: dataPoint)
           encodedData = updateEncodedData()
-      }
+    }
     
     func getLayoutForScreen(completed : @escaping () -> ()){
         do {
@@ -345,17 +345,17 @@ class ScoutingActivity : UIViewController{
                 }
                 
                 for i in 0..<listOfButtonsOnScreen.count{
-                    listOfButtonsOnScreen[i].isEnabled = true
-                    listOfButtonsOnScreen[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+                    listOfButtonsOnScreen[i].button.isEnabled = true
+                    listOfButtonsOnScreen[i].button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
                 }
                 
                 for i in 0..<listOfSwitchesOnScreen.count{
-                    listOfSwitchesOnScreen[i].isEnabled = true
-                    listOfSwitchesOnScreen[i].setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
+                    listOfSwitchesOnScreen[i].switchButton.isEnabled = true
+                    listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
                 }
                 
                 for i in 0..<listOfCheckBoxesOnScreen.count{
-                    listOfCheckBoxesOnScreen[i].textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                    listOfCheckBoxesOnScreen[i].label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 }
                 
             } else if (sender.tag == 2){
@@ -386,7 +386,70 @@ class ScoutingActivity : UIViewController{
                 
                 
             } else if (sender.tag == 4){
-               
+               //Undo button
+                if (DataPoints.count >= 1){
+                let removeItemTag = DataPoints[DataPoints.count - 1].type_index
+                let removeItemValue = DataPoints[DataPoints.count - 1].value
+                var foundItem = false
+                DataPoints.remove(at: DataPoints.count - 1)
+                encodedDataPoints.removeLast(4)
+                encodedData = updateEncodedData()
+                for i in 0..<listOfButtonsOnScreen.count{
+                    if (removeItemTag == listOfButtonsOnScreen[i].tag){
+                        listOfButtonsOnScreen[i].counter -= 1
+                        listOfButtonsOnScreen[i].counterField.text = String(listOfButtonsOnScreen[i].counter)
+                        foundItem = true
+                        break
+                    }
+                }
+                for i in 0..<listOfSwitchesOnScreen.count{
+                    if (foundItem){
+                        break
+                    }
+                    if (removeItemTag == listOfSwitchesOnScreen[i].tag){
+                        if (removeItemValue == 0){
+                            listOfSwitchesOnScreen[i].value = 1
+                            listOfSwitchesOnScreen[i].switchButton.backgroundColor = UIColor.red
+                            listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor.white, for: .normal)
+                            
+                        } else if (removeItemValue == 1){
+                            listOfSwitchesOnScreen[i].value = 0
+                            listOfSwitchesOnScreen[i].switchButton.backgroundColor = UIColor.systemGray5
+                            listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor.green, for: .normal)
+                        }
+                    }
+                }
+                
+                
+                for i in 0..<listOfMultiToggleFieldScreen.count{
+                    if (foundItem){
+                        break
+                    }
+                    if (removeItemTag == listOfMultiToggleFieldScreen[i].tag){
+                        listOfMultiToggleFieldScreen[i].value = prevToggleValue
+                        listOfMultiToggleFieldScreen[i].setUpToggleField()
+                    }
+                    if (removeItemTag == 15){
+                        identicalToggles[0].value = prevToggleValue
+                        identicalToggles[0].setUpToggleField()
+                    } else if (removeItemTag == 7){
+                        identicalToggles[1].value = prevToggleValue
+                        identicalToggles[1].setUpToggleField()
+                    }
+                }
+                    
+                    for i in 0..<listOfCheckBoxesOnScreen.count{
+                        if (removeItemTag == listOfCheckBoxesOnScreen[i].tag){
+                            if (removeItemValue == 1){
+                                listOfCheckBoxesOnScreen[i].checkBox.backgroundColor = UIColor.systemGray5
+                                listOfCheckBoxesOnScreen[i].value = 0
+                            } else if (removeItemValue == 0){
+                                listOfCheckBoxesOnScreen[i].checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                                listOfCheckBoxesOnScreen[i].value = 1
+                            }
+                        }
+                    }
+                }
             }
             else if (sender.tag == 5){
                 let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)

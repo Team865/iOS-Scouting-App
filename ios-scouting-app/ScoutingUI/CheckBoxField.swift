@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-class CheckBoxField : UIView{
+public class CheckBoxField : UIView{
     var title : String?
     var value = 0
     var checkBox = UIButton()

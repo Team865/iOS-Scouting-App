@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class ButtonField : UIView{
+public class ButtonField : UIView{
     let counterField = UILabel()
     var button = UIButton()
     var value = 1
