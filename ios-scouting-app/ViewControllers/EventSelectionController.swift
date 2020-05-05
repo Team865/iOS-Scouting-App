@@ -143,46 +143,6 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
 
     }
     
-//    lazy var yearTextField : UITextField = {
-//        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.05), y: Double(self.screenHeight * 0.06) , width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
-//    textField.placeholder = "Year"
-//    textField.textAlignment = .center
-//
-//        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(self.screenHeight * 0.13)))
-//    image.image = UIImage(named : "calendar")
-//
-//    let bottomLine = CALayer()
-//    bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
-//    bottomLine.backgroundColor = UIColor.black.cgColor
-//    textField.borderStyle = .none
-//    textField.layer.addSublayer(bottomLine)
-//
-//    textField.font = textField.font?.withSize(15)
-//    textField.leftViewMode = UITextField.ViewMode.always
-//    textField.leftView = image
-//    return textField
-//    }()
-//
-//    lazy var teamTextField : UITextField = {
-//        let textField = UITextField(frame : CGRect(x: Double(self.screenWidth * 0.55), y: Double(self.screenHeight * 0.06), width: Double(screenWidth * 0.40), height: Double(self.screenHeight * 0.13)))
-//    textField.placeholder = "Team (e.g 865)"
-//    textField.textAlignment = .center
-//
-//        let image = UIImageView(frame : CGRect(x : 0, y : 0, width: Double(screenWidth * 0.40), height : Double(screenWidth * 0.40)))
-//    image.image = UIImage(named : "team")
-//
-//    let bottomLine = CALayer()
-//        bottomLine.frame = CGRect(x : 0, y : Double(self.screenHeight * 0.06) * 1.45, width: Double(screenWidth * 0.40), height : 2)
-//    bottomLine.backgroundColor = UIColor.black.cgColor
-//    textField.borderStyle = .none
-//    textField.layer.addSublayer(bottomLine)
-//
-//    textField.font = textField.font?.withSize(15)
-//    textField.leftViewMode = UITextField.ViewMode.always
-//    textField.leftView = image
-//    return textField
-//    }()
-    
     private func loadEventListFromCore(name : [String], info : [String]) -> [Events]{
         var tempEvent : [Events] = []
         for i in 0..<info.count{
