@@ -7,7 +7,10 @@
 //
 import UIKit
 
-var numberOfAddedEntries : [String] = []
+public var isTimerEnabled = false
+var newMatch = 0
+var newTeam = ""
+var numberOfAddedEntries : [Int] = []
 var numberOfAddedEntriesIndex : [Int] = []
 class ViewController: UIViewController {
 
@@ -53,30 +56,17 @@ override func viewDidLoad() {
     self.view.addSubview(currentEventLabel)
     configureTableView()
     
-    
-    if let matchNumbers = UserDefaults.standard.object(forKey : "matchNumber") as? [String]{
-        var k = 0
-        numberOfAddedEntriesIndex.removeAll()
-        for i in 0..<matchNumbers.count{
-            if(k < matchNumbers.count && numberOfAddedEntries.count > 0){
-                if (numberOfAddedEntries[k] == matchNumbers[i]){
-                    numberOfAddedEntriesIndex.append(i)
-                    k += 1
-                }
-            }
-            
-        }
-    
+    if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
+        self.selectedBoard = selectedBoard
     }
-    
-    print(numberOfAddedEntriesIndex)
+    self.index = 0
     
     self.getMatchScheduleFromCache()
     
     DataPoints.removeAll()
     encodedData = ""
     encodedDataPoints = ""
-
+    
     }
     
     //UI Configurations
@@ -92,7 +82,7 @@ override func viewDidLoad() {
            
         view.addSubview(matchTable)
         view.addSubview(borderView)
-        
+                
         borderView.translatesAutoresizingMaskIntoConstraints = false
         borderView.topAnchor.constraint(equalTo: currentEventLabel.bottomAnchor, constant: 1).isActive = true
         borderView.leadingAnchor.constraint(equalTo : self.view.leadingAnchor).isActive = true
@@ -188,15 +178,13 @@ override func viewDidLoad() {
             DispatchQueue.main.async {
                 var blueAlliance : [[String]] = []
                 var redAlliance : [[String]] = []
-                var matchNumber : [String] = []
+                var matchNumber : [Int] = []
                 var imageName : [String] = []
-                
+                	
                 self.listOfMatches.removeAll()
                 self.listOfSelectedTeams.removeAll()
-                blueAlliance.removeAll()
-                redAlliance.removeAll()
-                matchNumber.removeAll()
-                imageName.removeAll()
+                numberOfAddedEntriesIndex.removeAll()
+                
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -211,7 +199,7 @@ override func viewDidLoad() {
                     for i in 0..<self.listOfMatches.count{
                         blueAlliance.append(self.listOfMatches[i].blueAlliance)
                         redAlliance.append(self.listOfMatches[i].redAlliance)
-                        matchNumber.append(String(i + 1))
+                        matchNumber.append(i + 1)
                         imageName.append("layers")
                     }
                     
@@ -272,13 +260,6 @@ override func viewDidLoad() {
                 [weak alert] (_) in
                 let match = alert?.textFields?[0].text ?? ""
                 let team = alert?.textFields?[1].text ?? ""
-                let emptyboi = "_ _ _"
-                
-                let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: match, redAlliance: [team, emptyboi, emptyboi] , blueAlliance: [emptyboi, emptyboi, emptyboi])
-              
-                self.updateMatchScheduleInCache(newMatchSchedule: newMatchSchedule)
-
-                self.matchTable.reloadData()
                 
                 let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
                 let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
@@ -288,10 +269,10 @@ override func viewDidLoad() {
                 separatedMatchNumber = match
                 boardName = "R1"
                 
-                UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
-                self.listOfSelectedTeams.removeAll()
-                
+                newMatch = Int(match) ?? 0
+                newTeam = team
                 self.navigationController?.pushViewController(scoutingVC, animated: true)
+                
             }
             
             let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
@@ -330,7 +311,7 @@ override func viewDidLoad() {
                     (ACTION) in
                     self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
                     self.selectedBoard = self.listOfBoards[i]
-                    UserDefaults.standard.set(self.selectedBoard, forKey: "Board")
+                    UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
@@ -372,12 +353,44 @@ override func viewDidLoad() {
     func getMatchScheduleFromCache(){
         if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
                     if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
-                        if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [String]{
+                        if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [Int]{
                             if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
                                     self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName)
                         }
                     }
                 }
+        }
+        
+        if(isTimerEnabled){
+            let emptyboi = "_ _ _"
+            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: [newTeam, emptyboi, emptyboi] , blueAlliance: [emptyboi, emptyboi, emptyboi])
+            self.listOfMatches = self.updateMatchScheduleInCache(newMatchSchedule: newMatchSchedule)
+
+            self.matchTable.reloadData()
+            
+            var blueAlliance : [[String]] = []
+            var redAlliance : [[String]] = []
+            var matchNumber : [Int] = []
+            var imageName : [String] = []
+                               
+            
+            for i in 0..<self.listOfMatches.count{
+                blueAlliance.append(self.listOfMatches[i].blueAlliance)
+                redAlliance.append(self.listOfMatches[i].redAlliance)
+                matchNumber.append(self.listOfMatches[i].matchNumber)
+                imageName.append(self.listOfMatches[i].imageName)
+            }
+            
+            UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
+            UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
+            UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
+            UserDefaults.standard.set(imageName, forKey: "icon")
+            
+            numberOfAddedEntriesIndex.removeAll()
+            for i in 0..<numberOfAddedEntries.count{
+                numberOfAddedEntriesIndex.append(matchNumber.lastIndex(of: numberOfAddedEntries[i]) ?? 0)
+            }
+
         }
         
         self.matchTable.reloadData()
@@ -397,7 +410,7 @@ override func viewDidLoad() {
         }
     }
     
-    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [String], imageName : [String]) -> [matchSchedule]{
+    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String]) -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
         
         for i in 0..<matchNumber.count{
@@ -407,54 +420,10 @@ override func viewDidLoad() {
         return tempMatch
     }
     
-    func updateMatchScheduleInCache(newMatchSchedule : matchSchedule){
-        var added = false
-        if (!added){
-            numberOfAddedEntries.append(newMatchSchedule.matchNumber)
-            added = true
-        }
-        if var blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
-        if var redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
-            if var matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [String]{
-                if var imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
-                   blueAlliance.append(newMatchSchedule.blueAlliance)
-                   redAlliance.append(newMatchSchedule.redAlliance)
-                   matchNumber.append(newMatchSchedule.matchNumber)
-                   imageName.append(newMatchSchedule.imageName)
-                               
-                    var convertedArr = matchNumber.map { Int($0)!}
-                    convertedArr.sort()
-                    for i in 0..<convertedArr.count{
-                        if (convertedArr[i] == Int(newMatchSchedule.matchNumber) ?? 0){
-                            blueAlliance.insert(newMatchSchedule.blueAlliance, at: i)
-                            redAlliance.insert(newMatchSchedule.redAlliance, at : i)
-                            matchNumber.insert(String(convertedArr[i]), at: i)
-                            imageName.insert("addicon", at : i)
-                            self.listOfMatches.insert(newMatchSchedule, at: i)
-                            
-                            blueAlliance.removeLast()
-                            redAlliance.removeLast()
-                            matchNumber.removeLast()
-                            imageName.removeLast()
-                            
-
-                            break
-                        }
-                    }
-                    
-                    UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
-                    UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
-                    UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
-                    UserDefaults.standard.set(imageName, forKey: "icon")
-                }
-            }
-            }
-        } else {
-            UserDefaults.standard.set([newMatchSchedule.blueAlliance], forKey: "blueAlliance")
-            UserDefaults.standard.set([newMatchSchedule.redAlliance], forKey: "redAlliance")
-            UserDefaults.standard.set([newMatchSchedule.matchNumber], forKey: "matchNumber")
-            UserDefaults.standard.set([newMatchSchedule.imageName], forKey: "icon")
-        }
+    func updateMatchScheduleInCache(newMatchSchedule : matchSchedule) -> [matchSchedule]{
+        self.listOfMatches.append(newMatchSchedule)
+        numberOfAddedEntries.append(newMatchSchedule.matchNumber)
+        return self.listOfMatches.sorted(by: { $0.matchNumber < $1.matchNumber })
     }
     
     func createMatchSchedule() -> [matchSchedule]{
@@ -482,7 +451,7 @@ override func viewDidLoad() {
             
                                         self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                     }
-                                    let match = matchSchedule(imageName : "layers", matchNumber: String(i), redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys)
+                                    let match = matchSchedule(imageName : "layers", matchNumber: i, redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys)
                                     tempMatch.append(match)
                                 }
                             }
@@ -502,23 +471,31 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         return self.listOfMatches.count
     }
     
-    
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let match = self.listOfMatches[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "matchScheduleCells", for : indexPath) as! matchScheduleCells
         
-        
-        
         cell.setMatch(match: match)
         
         let boards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3, cell.red1, cell.red2, cell.red3]
         
-        
-        
         for i in 0..<boards.count{
             boards[i].textColor = UIColor.gray
+        }
+        
+        if (!numberOfAddedEntriesIndex.isEmpty){
+            if(self.index < numberOfAddedEntries.count){
+                if (indexPath.item == numberOfAddedEntriesIndex[self.index]){
+                    for i in 0..<boards.count{
+                        boards[i].textColor = UIColor.systemGray
+                    }
+                    boards[3].textColor = UIColor.red
+                    self.index += 1
+                }
+            } else {
+                self.index = 0
+            }
         }
         
         switch(self.selectedBoard){
@@ -547,15 +524,8 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
                 break
             }
         
-        if (self.index < numberOfAddedEntriesIndex.count){
-            if (indexPath.row == numberOfAddedEntriesIndex[self.index]){
-                       for i in 0..<boards.count{
-                       boards[i].textColor = UIColor.gray
-                       }
-                       cell.red1.textColor = UIColor.red
-                       self.index += 1
-                   }
-        }
+        
+        
        
         
         return cell
@@ -572,6 +542,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         boardName = self.selectedBoard
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
+        UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
         self.listOfSelectedTeams.removeAll()
         
         self.navigationController?.pushViewController(scoutingVC, animated: true)

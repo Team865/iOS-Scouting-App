@@ -9,12 +9,12 @@ import Foundation
 import UIKit
 class matchSchedule{
     var imageName : String
-    var matchNumber : String
+    var matchNumber : Int
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
     
     
-    init(imageName : String, matchNumber : String, redAlliance : [String], blueAlliance : [String]){
+    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String]){
         self.imageName = imageName
         self.matchNumber = matchNumber
         

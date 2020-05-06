@@ -238,7 +238,7 @@ class ScoutingActivity : UIViewController{
         let spacing = 2.5
         var startingX = 0.0
         let listOfTexts = [matchNumber, boardName, teamNumber, String(timeOnStart)]
-        let listOfLabelWidth = [30.0, 30.0, 50.0, 35.0]
+        let listOfLabelWidth = [50, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
             let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
@@ -357,6 +357,8 @@ class ScoutingActivity : UIViewController{
                 for i in 0..<listOfCheckBoxesOnScreen.count{
                     listOfCheckBoxesOnScreen[i].label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 }
+                
+                isTimerEnabled = true
                 
             } else if (sender.tag == 2){
                 PlayButton.isHidden = false
