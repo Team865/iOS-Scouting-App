@@ -12,6 +12,9 @@ var newMatch = 0
 var newTeam = ""
 var numberOfAddedEntries : [Int] = []
 var numberOfAddedEntriesIndex : [Int] = []
+var listOfBoardNames : [String] = []
+var selectedRow = 0
+
 class ViewController: UIViewController {
 
 var matchTable = UITableView()
@@ -60,9 +63,19 @@ override func viewDidLoad() {
         self.selectedBoard = selectedBoard
     }
     self.index = 0
+
+    if let listOfBoardNamesCache = UserDefaults.standard.object(forKey: "listOfBoardNames") as? [String]{
+        listOfBoardNames = listOfBoardNamesCache
+    }
+    
+    if let numberOfAddedEntriesCache = UserDefaults.standard.object(forKey: "numberOfAddedEntries") as? [Int]{
+        numberOfAddedEntries = numberOfAddedEntriesCache
+    }
     
     self.getMatchScheduleFromCache()
-    
+
+    isTimerEnabled = false
+
     DataPoints.removeAll()
     encodedData = ""
     encodedDataPoints = ""
@@ -267,7 +280,7 @@ override func viewDidLoad() {
                 teamNumber = team
                 matchNumber = "M" + match
                 separatedMatchNumber = match
-                boardName = "R1"
+                boardName = self.selectedBoard
                 
                 newMatch = Int(match) ?? 0
                 newTeam = team
@@ -329,8 +342,6 @@ override func viewDidLoad() {
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = board
         
-        self.listOfSelectedTeams.removeAll()
-        
         switch(board){
         case "B1" : selectedBoard.textColor = UIColor.blue
         case "B2" : selectedBoard.textColor = UIColor.blue
@@ -348,6 +359,7 @@ override func viewDidLoad() {
         scoutName.isUserInteractionEnabled = false
         scoutName.text = scout
         self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
+
     }
     
     func getMatchScheduleFromCache(){
@@ -363,10 +375,31 @@ override func viewDidLoad() {
         
         if(isTimerEnabled){
             let emptyboi = "_ _ _"
-            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: [newTeam, emptyboi, emptyboi] , blueAlliance: [emptyboi, emptyboi, emptyboi])
+            
+            var redAlliances : [String] = []
+            var blueAlliances : [String] = []
+            
+            for i in 0..<3{
+                if(boardName == self.listOfBoards[i]){
+                    blueAlliances.append(teamNumber)
+                } else {
+                    blueAlliances.append(emptyboi)
+                }
+            }
+            
+            for i in 3..<6{
+                if(boardName == self.listOfBoards[i]){
+                    redAlliances.append(teamNumber)
+                } else {
+                    redAlliances.append(emptyboi)
+                }
+            }
+            
+            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: redAlliances , blueAlliance: blueAlliances)
             self.listOfMatches = self.updateMatchScheduleInCache(newMatchSchedule: newMatchSchedule)
-
-            self.matchTable.reloadData()
+            
+            listOfBoardNames.append(boardName)
+            UserDefaults.standard.set(listOfBoardNames, forKey: "listOfBoardNames")
             
             var blueAlliance : [[String]] = []
             var redAlliance : [[String]] = []
@@ -392,6 +425,9 @@ override func viewDidLoad() {
             }
 
         }
+        UserDefaults.standard.set(numberOfAddedEntries, forKey: "numberOfAddedEntries")
+        numberOfAddedEntriesIndex.sort()
+        print(numberOfAddedEntriesIndex)
         
         self.matchTable.reloadData()
 
@@ -399,15 +435,21 @@ override func viewDidLoad() {
             self.currentEventLabel.text = currentEvent
         }
         
-        if let selectedBoard = UserDefaults.standard.object(forKey: "Board") as? String, let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+        if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
             self.selectedBoard = selectedBoard
-            self.scoutName = scoutName
             self.updateBoard(board: selectedBoard, scout: scoutName)
-            self.matchTable.reloadData()
         }
         if let selectedTeams = UserDefaults.standard.object(forKey: "SelectedTeams") as? [String]{
             self.listOfSelectedTeams = selectedTeams
         }
+        
+        if let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+            self.scoutName = scoutName
+            self.updateBoard(board: self.selectedBoard, scout: scoutName)
+        }
+        
+        self.matchTable.reloadData()
+
     }
     
     func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String]) -> [matchSchedule]{
@@ -483,22 +525,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         for i in 0..<boards.count{
             boards[i].textColor = UIColor.gray
         }
-        
-        if (!numberOfAddedEntriesIndex.isEmpty){
-            if(self.index < numberOfAddedEntries.count){
-                if (indexPath.item == numberOfAddedEntriesIndex[self.index]){
-                    for i in 0..<boards.count{
-                        boards[i].textColor = UIColor.systemGray
-                    }
-                    boards[3].textColor = UIColor.red
-                    self.index += 1
-                }
-            } else {
-                self.index = 0
-            }
-        }
-        
-        switch(self.selectedBoard){
+            switch(self.selectedBoard){
             case "B1" : cell.blue1.textColor = UIColor.blue
             self.listOfSelectedTeams.append(cell.blue1.text!)
             case "B2" : cell.blue2.textColor = UIColor.blue
@@ -524,7 +551,28 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
                 break
             }
         
-        
+        if (!numberOfAddedEntriesIndex.isEmpty){
+            if(self.index < numberOfAddedEntriesIndex.count){
+                if (indexPath.item == numberOfAddedEntriesIndex[self.index]){
+                    for i in 0..<boards.count{
+                        boards[i].textColor = UIColor.systemGray
+                    }
+                    for i in 0..<3{
+                        if(listOfBoardNames[self.index] == self.listOfBoards[i]){
+                            boards[i].textColor = UIColor.blue
+                        }
+                    }
+                    
+                    for i in 3..<6 {
+                        if(listOfBoardNames[self.index] == self.listOfBoards[i]){
+                        boards[i].textColor = UIColor.red
+                        }
+                    }
+            } else {
+                self.index = 0
+            }
+        }
+        }
         
        
         
@@ -540,13 +588,13 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         matchNumber = "M" + String(indexPath.row + 1)
         separatedMatchNumber = String(indexPath.row + 1)
         boardName = self.selectedBoard
+        selectedRow = indexPath.row
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
         self.listOfSelectedTeams.removeAll()
-        
+    
         self.navigationController?.pushViewController(scoutingVC, animated: true)
         
-    }
-
+        }
 }
