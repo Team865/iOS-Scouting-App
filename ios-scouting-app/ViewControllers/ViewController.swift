@@ -62,11 +62,14 @@ override func viewDidLoad() {
     if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
         self.selectedBoard = selectedBoard
     }
+    
     self.index = 0
 
     if let listOfBoardNamesCache = UserDefaults.standard.object(forKey: "listOfBoardNames") as? [String]{
         listOfBoardNames = listOfBoardNamesCache
     }
+
+    print(listOfBoardNames)
     
     if let numberOfAddedEntriesCache = UserDefaults.standard.object(forKey: "numberOfAddedEntries") as? [Int]{
         numberOfAddedEntries = numberOfAddedEntriesCache

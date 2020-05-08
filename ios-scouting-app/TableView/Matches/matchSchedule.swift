@@ -13,7 +13,6 @@ class matchSchedule{
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
     
-    
     init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String]){
         self.imageName = imageName
         self.matchNumber = matchNumber
