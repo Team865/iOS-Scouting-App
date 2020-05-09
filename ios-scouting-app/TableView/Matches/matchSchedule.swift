@@ -13,10 +13,12 @@ class matchSchedule{
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
     var board : String
-    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String){
+    var isScouted : Bool
+    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String, isScouted : Bool){
         self.imageName = imageName
         self.matchNumber = matchNumber
         self.board = board
+        self.isScouted = isScouted
         self.blueAlliance.append(contentsOf: blueAlliance)
         
         self.redAlliance.append(contentsOf: redAlliance)

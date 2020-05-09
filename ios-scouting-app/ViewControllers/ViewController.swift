@@ -58,15 +58,16 @@ override func viewDidLoad() {
     
     self.view.addSubview(currentEventLabel)
     configureTableView()
-    
-    self.getMatchScheduleFromCache()
+    }
 
-    isTimerEnabled = false
+    override func viewDidAppear(_ animated: Bool) {
+        self.getMatchScheduleFromCache()
 
-    DataPoints.removeAll()
-    encodedData = ""
-    encodedDataPoints = ""
-    
+        isTimerEnabled = false
+
+        DataPoints.removeAll()
+        encodedData = ""
+        encodedDataPoints = ""
     }
     
     //UI Configurations
@@ -181,6 +182,9 @@ override func viewDidLoad() {
                 var matchNumber : [Int] = []
                 var imageName : [String] = []
                 var boards : [String] = []
+                var isScouted : [Bool] = []
+                
+                firstTimeBoot = false
                 
                 if (isNewEventSelected && !firstTimeBoot){
                     self.listOfMatches.removeAll()
@@ -189,8 +193,6 @@ override func viewDidLoad() {
                     listOfNewMatches.removeAll()
                 }
                 
-                firstTimeBoot = false
-
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -199,16 +201,22 @@ override func viewDidLoad() {
                                }
                     self.currentEventLabel.text = self.currentEvent
                     self.view.addSubview(self.currentEventLabel)
-                    self.listOfMatches.append(contentsOf : self.createMatchSchedule())
+                    if(isNewEventSelected){
+                        self.listOfMatches.append(contentsOf : self.createMatchSchedule())
+                    }
                     
                     self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
                     
                     var tempArr : [Int] = []
-                    
-                    for i in 0..<listOfNewMatches.count{
-                        let justInCase = self.listOfMatches.firstIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon" }) ?? 0
-                        let index = self.listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon" }) ?? justInCase
-                        tempArr.append(index)
+                    var pointer = 0
+                    for i in 0..<self.listOfMatches.count{
+                        if (pointer < listOfNewMatches.count){
+                            if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].imageName == "addicon"){
+                                tempArr.append(i)
+                                pointer += 1
+                            }
+                        }
+                        
                     }
                     numberOfAddedEntriesIndices = tempArr
                     self.matchTable.reloadData()
@@ -219,6 +227,7 @@ override func viewDidLoad() {
                         matchNumber.append(self.listOfMatches[i].matchNumber)
                         imageName.append(self.listOfMatches[i].imageName)
                         boards.append(self.listOfMatches[i].board)
+                        isScouted.append(self.listOfMatches[i].isScouted)
                     }
                     
                     UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
@@ -226,6 +235,7 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(boards, forKey: "boards")
+                    UserDefaults.standard.set(isScouted, forKey: "isScouted")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
                     UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
@@ -417,9 +427,10 @@ override func viewDidLoad() {
                         if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [Int]{
                             if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
                                 if let boards = UserDefaults.standard.object(forKey: "boards") as? [String]{
-                                    self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards)
+                                    if let isScouted = UserDefaults.standard.object(forKey: "isScouted") as? [Bool]{
+                                        self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted)
                                 }
-                                    
+                                }
                         }
                     }
                 }
@@ -447,7 +458,7 @@ override func viewDidLoad() {
                 }
             }
             
-            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: redAlliances , blueAlliance: blueAlliances, board : boardName)
+            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: redAlliances , blueAlliance: blueAlliances, board : boardName, isScouted: true)
             self.listOfMatches.append(newMatchSchedule)
             
             self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
@@ -455,14 +466,19 @@ override func viewDidLoad() {
             listOfNewMatches.append(newMatch)
             listOfNewMatches.sort()
             
-            var tempMatch : [Int] = []
-            for i in 0..<listOfNewMatches.count{
-                let justInCase = listOfMatches.firstIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon"}) ?? 0
-                let index = listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon"}) ?? justInCase
-                tempMatch.append(index)
+            var tempArr : [Int] = []
+            var pointer = 0
+            for i in 0..<self.listOfMatches.count{
+                if (pointer < listOfNewMatches.count){
+                    if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].imageName == "addicon"){
+                        tempArr.append(i)
+                        pointer += 1
+                    }
+                }
+                
             }
            
-            numberOfAddedEntriesIndices = tempMatch
+            numberOfAddedEntriesIndices = tempArr
             
             var blueAlliance : [[String]] = []
             var redAlliance : [[String]] = []
@@ -510,11 +526,11 @@ override func viewDidLoad() {
 
     }
     
-    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String]) -> [matchSchedule]{
+    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String], isScouted : [Bool]) -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
         
         for i in 0..<matchNumber.count{
-            tempMatch.append(matchSchedule.init(imageName: imageName[i], matchNumber: matchNumber[i], redAlliance: redAlliance[i], blueAlliance: blueAlliance[i], board: boards[i]))
+            tempMatch.append(matchSchedule.init(imageName: imageName[i], matchNumber: matchNumber[i], redAlliance: redAlliance[i], blueAlliance: blueAlliance[i], board: boards[i], isScouted: isScouted[i]))
         }
         
         return tempMatch
@@ -545,7 +561,7 @@ override func viewDidLoad() {
             
                                         self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                     }
-                                    let match = matchSchedule(imageName : "layers", matchNumber: i, redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys, board: self.selectedBoard)
+                                    let match = matchSchedule(imageName : "layers", matchNumber: i, redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys, board: self.selectedBoard, isScouted: false)
                                     tempMatch.append(match)
                                 }
                             }
