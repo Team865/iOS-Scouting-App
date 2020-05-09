@@ -43,7 +43,6 @@ var year : Int = 0
 var eventKey : String = ""
 var currentEvent : String = "Current Event : None"
 var listOfMatches : [matchSchedule] = []
-var listOfAddedMatches : [matchSchedule] = []
 var jsonListOfMatches = [Matches]()
 
 var currentEventLabel : UILabel!
@@ -64,6 +63,10 @@ override func viewDidLoad() {
     
     if let listOfSelectedBoard = UserDefaults.standard.object(forKey: "addedMatches") as? [Int] {
         numberOfAddedEntriesIndices = listOfSelectedBoard
+    }
+    
+    if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
+        listOfNewMatches = listOfNewMatchesCache
     }
     
     self.getMatchScheduleFromCache()
@@ -191,7 +194,7 @@ override func viewDidLoad() {
                 self.listOfMatches.removeAll()
                 self.listOfSelectedTeams.removeAll()
                 numberOfAddedEntriesIndices.removeAll()
-                
+                listOfNewMatches.removeAll()
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -216,6 +219,8 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(boards, forKey: "boards")
+                    UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
+                    UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
                     UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
@@ -366,9 +371,10 @@ override func viewDidLoad() {
             }
             
             updatedBoards.append(listOfMatches[i].board)
-            UserDefaults.standard.set(updatedBoards, forKey: "boards")
 
         }
+        UserDefaults.standard.set(updatedBoards, forKey: "boards")
+        print(numberOfAddedEntriesIndices)
                 
         let scoutName = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
@@ -421,15 +427,13 @@ override func viewDidLoad() {
             listOfNewMatches.append(newMatch)
             listOfNewMatches.sort()
             
-            var tempArr : [Int] = []
+            var tempMatch : [Int] = []
             for i in 0..<listOfNewMatches.count{
                 let index = listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] }) ?? 0
-                tempArr.append(index)
+                tempMatch.append(index)
             }
            
-            numberOfAddedEntriesIndices = tempArr
-            
-            
+            numberOfAddedEntriesIndices = tempMatch
             
             var blueAlliance : [[String]] = []
             var redAlliance : [[String]] = []
@@ -451,6 +455,7 @@ override func viewDidLoad() {
             UserDefaults.standard.set(imageName, forKey: "icon")
             UserDefaults.standard.set(boards, forKey: "boards")
             UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
+            UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
             
         }
         self.matchTable.reloadData()
