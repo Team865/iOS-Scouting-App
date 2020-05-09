@@ -10,5 +10,8 @@ import Foundation
 
 class tbaKey{
     //Remove key before commit
+    //Ever head of gitignore ?
+    //Yes but I don't know how to use it
+    //Pls not judge
     var key = ""
 }

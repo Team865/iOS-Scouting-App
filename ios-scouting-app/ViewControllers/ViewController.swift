@@ -8,10 +8,12 @@
 import UIKit
 
 public var isTimerEnabled = false
+public var isNewEventSelected = false
+public var firstTimeBoot = true
+public var prevEvent = 0
 var newMatch = 0
 var newTeam = ""
 var numberOfAddedEntriesIndices : [Int] = []
-var selectedRow = 0
 var listOfNewMatches : [Int] = []
 class ViewController: UIViewController {
 
@@ -179,10 +181,16 @@ override func viewDidLoad() {
                 var matchNumber : [Int] = []
                 var imageName : [String] = []
                 var boards : [String] = []
-                self.listOfMatches.removeAll()
-                self.listOfSelectedTeams.removeAll()
-                numberOfAddedEntriesIndices.removeAll()
-                listOfNewMatches.removeAll()
+                
+                if (isNewEventSelected && !firstTimeBoot){
+                    self.listOfMatches.removeAll()
+                    self.listOfSelectedTeams.removeAll()
+                    numberOfAddedEntriesIndices.removeAll()
+                    listOfNewMatches.removeAll()
+                }
+                
+                firstTimeBoot = false
+
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
                                 if(self.jsonListOfMatches[i].comp_level == "qm"){
@@ -192,13 +200,24 @@ override func viewDidLoad() {
                     self.currentEventLabel.text = self.currentEvent
                     self.view.addSubview(self.currentEventLabel)
                     self.listOfMatches.append(contentsOf : self.createMatchSchedule())
+                    
+                    self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
+                    
+                    var tempArr : [Int] = []
+                    
+                    for i in 0..<listOfNewMatches.count{
+                        let justInCase = self.listOfMatches.firstIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon" }) ?? 0
+                        let index = self.listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon" }) ?? justInCase
+                        tempArr.append(index)
+                    }
+                    numberOfAddedEntriesIndices = tempArr
                     self.matchTable.reloadData()
                     
                     for i in 0..<self.listOfMatches.count{
                         blueAlliance.append(self.listOfMatches[i].blueAlliance)
                         redAlliance.append(self.listOfMatches[i].redAlliance)
                         matchNumber.append(self.listOfMatches[i].matchNumber)
-                        imageName.append("layers")
+                        imageName.append(self.listOfMatches[i].imageName)
                         boards.append(self.listOfMatches[i].board)
                     }
                     
@@ -207,11 +226,13 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(boards, forKey: "boards")
-                    UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
-                    UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
                     UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
+                    UserDefaults.standard.set(firstTimeBoot, forKey: "firstTimeBoot")
+                    UserDefaults.standard.set(prevEvent, forKey: "prevEvent")
+                    UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
+                    UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
                 }
             }
         }
@@ -362,7 +383,6 @@ override func viewDidLoad() {
 
         }
         UserDefaults.standard.set(updatedBoards, forKey: "boards")
-        print(numberOfAddedEntriesIndices)
                 
         let scoutName = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
@@ -383,6 +403,14 @@ override func viewDidLoad() {
            if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
                listOfNewMatches = listOfNewMatchesCache
            }
+    
+           if let firstTimeBootCache = UserDefaults.standard.object(forKey: "firstTimeBoot") as? Bool{
+                firstTimeBoot = firstTimeBootCache
+           }
+        
+           if let prevEventCache = UserDefaults.standard.object(forKey: "prevEvent") as? Int{
+                prevEvent = prevEventCache
+            }
         
         if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
                     if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
@@ -429,7 +457,8 @@ override func viewDidLoad() {
             
             var tempMatch : [Int] = []
             for i in 0..<listOfNewMatches.count{
-                let index = listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] }) ?? 0
+                let justInCase = listOfMatches.firstIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon"}) ?? 0
+                let index = listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] && $0.imageName == "addicon"}) ?? justInCase
                 tempMatch.append(index)
             }
            
@@ -542,7 +571,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let cell = tableView.dequeueReusableCell(withIdentifier: "matchScheduleCells", for : indexPath) as! matchScheduleCells
         
         cell.setMatch(match: match)
-        
+
         let boards : [UILabel] = [cell.blue1, cell.blue2, cell.blue3, cell.red1, cell.red2, cell.red3]
         
         for i in 0..<boards.count{
@@ -583,10 +612,9 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
         
         teamNumber = self.listOfSelectedTeams[indexPath.row]
-        matchNumber = "M" + String(indexPath.row + 1)
-        separatedMatchNumber = String(indexPath.row + 1)
-        boardName = self.selectedBoard
-        selectedRow = indexPath.row
+        matchNumber = "M" + String(listOfMatches[indexPath.row].matchNumber)
+        separatedMatchNumber = String(listOfMatches[indexPath.row].matchNumber)
+        boardName = self.listOfMatches[indexPath.row].board
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
