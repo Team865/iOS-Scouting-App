@@ -233,6 +233,11 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
                     alert in
                     self.selectedEventKey = self.listOfKeys[indexPath.row]
                     self.selectedName = self.listOfNames[indexPath.row]
+                    
+                    if (prevEvent != indexPath.row){
+                        isNewEventSelected = true
+                    }
+                    prevEvent = indexPath.row
                     self.performSegue(withIdentifier: "passEventKey", sender: self)
                     
                 }
