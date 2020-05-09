@@ -12,7 +12,7 @@ var newMatch = 0
 var newTeam = ""
 var numberOfAddedEntriesIndices : [Int] = []
 var selectedRow = 0
-
+var listOfNewMatches : [Int] = []
 class ViewController: UIViewController {
 
 var matchTable = UITableView()
@@ -369,9 +369,7 @@ override func viewDidLoad() {
             UserDefaults.standard.set(updatedBoards, forKey: "boards")
 
         }
-        
-        print(updatedBoards)
-        
+                
         let scoutName = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
         scoutName.text = scout
@@ -420,15 +418,17 @@ override func viewDidLoad() {
             
             self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
             
-            for i in 0..<self.listOfMatches.count{
-                if (self.listOfMatches[i].matchNumber == newMatch){
-                    if (i + 1 == self.listOfMatches.count){
-                        numberOfAddedEntriesIndices.append(i)
-                    } else if (self.listOfMatches[i + 1].matchNumber == newMatch){
-                        numberOfAddedEntriesIndices.append(i + 1)
-                    }
-                }
+            listOfNewMatches.append(newMatch)
+            listOfNewMatches.sort()
+            
+            var tempArr : [Int] = []
+            for i in 0..<listOfNewMatches.count{
+                let index = listOfMatches.lastIndex(where: { $0.matchNumber == listOfNewMatches[i] }) ?? 0
+                tempArr.append(index)
             }
+           
+            numberOfAddedEntriesIndices = tempArr
+            
             
             
             var blueAlliance : [[String]] = []
