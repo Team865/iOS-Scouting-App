@@ -12,11 +12,11 @@ class matchSchedule{
     var matchNumber : Int
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
-    
-    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String]){
+    var board : String
+    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String){
         self.imageName = imageName
         self.matchNumber = matchNumber
-        
+        self.board = board
         self.blueAlliance.append(contentsOf: blueAlliance)
         
         self.redAlliance.append(contentsOf: redAlliance)
