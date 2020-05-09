@@ -57,18 +57,6 @@ override func viewDidLoad() {
     self.view.addSubview(currentEventLabel)
     configureTableView()
     
-    if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
-        self.selectedBoard = selectedBoard
-    }
-    
-    if let listOfSelectedBoard = UserDefaults.standard.object(forKey: "addedMatches") as? [Int] {
-        numberOfAddedEntriesIndices = listOfSelectedBoard
-    }
-    
-    if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
-        listOfNewMatches = listOfNewMatchesCache
-    }
-    
     self.getMatchScheduleFromCache()
 
     isTimerEnabled = false
@@ -384,6 +372,18 @@ override func viewDidLoad() {
     }
     
     func getMatchScheduleFromCache(){
+        if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
+               self.selectedBoard = selectedBoard
+           }
+           
+           if let listOfSelectedBoard = UserDefaults.standard.object(forKey: "addedMatches") as? [Int] {
+               numberOfAddedEntriesIndices = listOfSelectedBoard
+           }
+           
+           if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
+               listOfNewMatches = listOfNewMatchesCache
+           }
+        
         if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
                     if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
                         if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [Int]{
