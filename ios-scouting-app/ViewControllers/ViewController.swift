@@ -11,6 +11,9 @@ public var isTimerEnabled = false
 public var isNewEventSelected = false
 public var firstTimeBoot = true
 public var prevEvent = 0
+var selectedIndex = 0
+var addedEntry = false
+var entrySelection = false
 var newMatch = 0
 var newTeam = ""
 var numberOfAddedEntriesIndices : [Int] = []
@@ -201,9 +204,7 @@ override func viewDidLoad() {
                                }
                     self.currentEventLabel.text = self.currentEvent
                     self.view.addSubview(self.currentEventLabel)
-                    if(isNewEventSelected){
-                        self.listOfMatches.append(contentsOf : self.createMatchSchedule())
-                    }
+                    self.listOfMatches.append(contentsOf : self.createMatchSchedule())
                     
                     self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
                     
@@ -211,7 +212,7 @@ override func viewDidLoad() {
                     var pointer = 0
                     for i in 0..<self.listOfMatches.count{
                         if (pointer < listOfNewMatches.count){
-                            if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].imageName == "addicon"){
+                            if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].isScouted){
                                 tempArr.append(i)
                                 pointer += 1
                             }
@@ -230,6 +231,7 @@ override func viewDidLoad() {
                         isScouted.append(self.listOfMatches[i].isScouted)
                     }
                     
+                    
                     UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
                     UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
                     UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
@@ -243,6 +245,7 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(prevEvent, forKey: "prevEvent")
                     UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
                     UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
+                
                 }
             }
         }
@@ -304,6 +307,10 @@ override func viewDidLoad() {
                 
                 newMatch = Int(match) ?? 0
                 newTeam = team
+                
+                addedEntry = true
+                entrySelection = false
+                
                 self.navigationController?.pushViewController(scoutingVC, animated: true)
                 
             }
@@ -390,7 +397,6 @@ override func viewDidLoad() {
             }
             
             updatedBoards.append(listOfMatches[i].board)
-
         }
         UserDefaults.standard.set(updatedBoards, forKey: "boards")
                 
@@ -436,7 +442,27 @@ override func viewDidLoad() {
                 }
         }
         
-        if(isTimerEnabled){
+        if(isTimerEnabled && entrySelection){
+            self.listOfMatches[selectedIndex].isScouted = true
+            listOfNewMatches.append(self.listOfMatches[selectedIndex].matchNumber)
+            listOfNewMatches.sort()
+            
+            var tempArr : [Int] = []
+            var pointer = 0
+             for i in 0..<self.listOfMatches.count{
+                 if (pointer < listOfNewMatches.count){
+                     if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].isScouted){
+                         tempArr.append(i)
+                         pointer += 1
+                     }
+                 }
+                 
+             }
+            
+             numberOfAddedEntriesIndices = tempArr
+            
+            updateCache()
+        } else if(isTimerEnabled && addedEntry){
             let emptyboi = "_ _ _"
             
             var redAlliances : [String] = []
@@ -470,7 +496,7 @@ override func viewDidLoad() {
             var pointer = 0
             for i in 0..<self.listOfMatches.count{
                 if (pointer < listOfNewMatches.count){
-                    if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].imageName == "addicon"){
+                    if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].isScouted){
                         tempArr.append(i)
                         pointer += 1
                     }
@@ -480,30 +506,8 @@ override func viewDidLoad() {
            
             numberOfAddedEntriesIndices = tempArr
             
-            var blueAlliance : [[String]] = []
-            var redAlliance : [[String]] = []
-            var matchNumber : [Int] = []
-            var imageName : [String] = []
-            var boards : [String] = []
-            
-            for i in 0..<self.listOfMatches.count{
-                blueAlliance.append(self.listOfMatches[i].blueAlliance)
-                redAlliance.append(self.listOfMatches[i].redAlliance)
-                matchNumber.append(self.listOfMatches[i].matchNumber)
-                imageName.append(self.listOfMatches[i].imageName)
-                boards.append(self.listOfMatches[i].board)
-            }
-            
-            UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
-            UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
-            UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
-            UserDefaults.standard.set(imageName, forKey: "icon")
-            UserDefaults.standard.set(boards, forKey: "boards")
-            UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
-            UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
-            
+            updateCache()
         }
-        self.matchTable.reloadData()
 
         if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
             self.currentEventLabel.text = currentEvent
@@ -524,6 +528,34 @@ override func viewDidLoad() {
         
         self.matchTable.reloadData()
 
+    }
+    
+    func updateCache(){
+        var blueAlliance : [[String]] = []
+        var redAlliance : [[String]] = []
+        var matchNumber : [Int] = []
+        var imageName : [String] = []
+        var boards : [String] = []
+        var isScouted : [Bool] = []
+        for i in 0..<self.listOfMatches.count{
+            blueAlliance.append(self.listOfMatches[i].blueAlliance)
+            redAlliance.append(self.listOfMatches[i].redAlliance)
+            matchNumber.append(self.listOfMatches[i].matchNumber)
+            imageName.append(self.listOfMatches[i].imageName)
+            boards.append(self.listOfMatches[i].board)
+            isScouted.append(self.listOfMatches[i].isScouted)
+        }
+        
+        UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
+        UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
+        UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
+        UserDefaults.standard.set(imageName, forKey: "icon")
+        UserDefaults.standard.set(boards, forKey: "boards")
+        UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
+        UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
+        UserDefaults.standard.set(isScouted, forKey: "isScouted")
+        
+        print(isScouted)
     }
     
     func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String], isScouted : [Bool]) -> [matchSchedule]{
@@ -619,6 +651,8 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
                 break
             }
         
+       
+        
         return cell
        
 }
@@ -631,6 +665,10 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         matchNumber = "M" + String(listOfMatches[indexPath.row].matchNumber)
         separatedMatchNumber = String(listOfMatches[indexPath.row].matchNumber)
         boardName = self.listOfMatches[indexPath.row].board
+        selectedIndex = indexPath.row
+        
+        entrySelection = true
+        addedEntry = false
         
         UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
         UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
