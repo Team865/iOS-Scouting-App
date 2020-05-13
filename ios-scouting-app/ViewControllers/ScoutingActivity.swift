@@ -90,45 +90,91 @@ class ScoutingActivity : UIViewController{
         configureProgressBar()
         
         var itemIndex = 0
-        
+        comment = ""
+
+        //This is disgusting
         getLayoutForScreen{
-            for i in 0..<screenLayout.robot_scout.screens.count{
-                var indices : [[Int]] = []
-                var items : [[String]] = []
-                var names : [[String]] = []
-                var choices : [[[String]]] = []
-                self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
-                for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
-                    var tagsInRow : [Int] = []
-                    var itemsInRow : [String] = []
-                    var namesInRow : [String] = []
-                    var choicesInRow : [[String]] = []
-                    for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
-                        let type = screenLayout.robot_scout.screens[i].layout[k][j].type
-                        let name = screenLayout.robot_scout.screens[i].layout[k][j].name
-                        let choice = screenLayout.robot_scout.screens[i].layout[k][j].choices ?? []
-                        itemsInRow.append(type)
-                        namesInRow.append(name)
-                        choicesInRow.append(choice)
-                        tagsInRow.append(itemIndex)
-                        itemIndex += 1
+            if (boardName == "BX" || boardName == "RX"){
+               let scoutingType = screenLayout.super_scout
+                for i in 0..<scoutingType.screens.count{
+                        var indices : [[Int]] = []
+                        var items : [[String]] = []
+                        var names : [[String]] = []
+                        var choices : [[[String]]] = []
+                        self.screenTitles.append(scoutingType.screens[i].title)
+                        for k in 0..<scoutingType.screens[i].layout.count{
+                            var tagsInRow : [Int] = []
+                            var itemsInRow : [String] = []
+                            var namesInRow : [String] = []
+                            var choicesInRow : [[String]] = []
+                            for j in 0..<scoutingType.screens[i].layout[k].count{
+                                let type = scoutingType.screens[i].layout[k][j].type
+                                let name = scoutingType.screens[i].layout[k][j].name
+                                let choice = scoutingType.screens[i].layout[k][j].choices ?? []
+                                itemsInRow.append(type)
+                                namesInRow.append(name)
+                                choicesInRow.append(choice)
+                                tagsInRow.append(itemIndex)
+                                itemIndex += 1
+                            }
+                            items.append(itemsInRow)
+                            names.append(namesInRow)
+                            choices.append(choicesInRow)
+                            indices.append(tagsInRow)
+                        }
+                        self.listOfTags.append(indices)
+                        self.listOfItemsType.append(items)
+                        self.listOfItemsName.append(names)
+                        self.listOfToggleTitles.append(choices)
                     }
-                    items.append(itemsInRow)
-                    names.append(namesInRow)
-                    choices.append(choicesInRow)
-                    indices.append(tagsInRow)
+                    self.screenTitles.append("QR Code")
+                    self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+                    self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
+                    self.scoutingView.dataSource = self
+                    self.scoutingView.delegate = self
+            } else {
+                let scoutingType = screenLayout.robot_scout
+                for i in 0..<scoutingType.screens.count{
+                    var indices : [[Int]] = []
+                    var items : [[String]] = []
+                    var names : [[String]] = []
+                    var choices : [[[String]]] = []
+                    self.screenTitles.append(scoutingType.screens[i].title)
+                    for k in 0..<scoutingType.screens[i].layout.count{
+                        var tagsInRow : [Int] = []
+                        var itemsInRow : [String] = []
+                        var namesInRow : [String] = []
+                        var choicesInRow : [[String]] = []
+                        for j in 0..<scoutingType.screens[i].layout[k].count{
+                            let type = scoutingType.screens[i].layout[k][j].type
+                            let name = scoutingType.screens[i].layout[k][j].name
+                            let choice = scoutingType.screens[i].layout[k][j].choices ?? []
+                            itemsInRow.append(type)
+                            namesInRow.append(name)
+                            choicesInRow.append(choice)
+                            tagsInRow.append(itemIndex)
+                            itemIndex += 1
+                        }
+                        items.append(itemsInRow)
+                        names.append(namesInRow)
+                        choices.append(choicesInRow)
+                        indices.append(tagsInRow)
+                    }
+                    self.listOfTags.append(indices)
+                    self.listOfItemsType.append(items)
+                    self.listOfItemsName.append(names)
+                    self.listOfToggleTitles.append(choices)
                 }
-                self.listOfTags.append(indices)
-                self.listOfItemsType.append(items)
-                self.listOfItemsName.append(names)
-                self.listOfToggleTitles.append(choices)
+                self.screenTitles.append("QR Code")
+                self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+                self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
+                self.scoutingView.dataSource = self
+                self.scoutingView.delegate = self
+                
             }
-            self.screenTitles.append("QR Code")
-            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-            self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
-            self.scoutingView.dataSource = self
-            self.scoutingView.delegate = self
-        }
+            }
+            
+            
         screenTitle.text = "Auto"
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
@@ -142,7 +188,6 @@ class ScoutingActivity : UIViewController{
                 encodedData = updateEncodedData()
             } 
         }
-        
         
         //Make sure the initial time stamp is 0 before taking any inputs
         timeStamp = 0
@@ -465,6 +510,7 @@ class ScoutingActivity : UIViewController{
                     [weak alert] (_) in
                     let textField = alert?.textFields![0]
                     comment = textField!.text ?? ""
+                    encodedData = self.updateEncodedData()
                 }
 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)

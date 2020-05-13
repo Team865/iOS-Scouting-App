@@ -1,170 +1,464 @@
 {
-"year": 2020,
-"revision": 7,
-"robot_scout": {
-  "screens": [
-    {
-      "title": "Auto",
-      "layout": [
-        [
-          {
-            "name": "opponent_trench",
-            "type": "Button"
-          },
-          {
-            "name": "rendezvous",
-            "type": "Button"
-          },
-          {
-            "name": "alliance_trench",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "auto_high_miss",
-            "type": "Button"
-          },
-          {
-            "name": "auto_high_hit",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "auto_low_miss",
-            "type": "Button"
-          },
-          {
-            "name": "auto_low_hit",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "field_area",
-            "type": "MultiToggle",
-            "choices": [
-              "Cross",
-              "Trench",
-              "Mid",
-              "Target"
-            ],
-            "default_choice": 2
-          }
+  "year": 2020,
+  "revision": 7,
+  "robot_scout": {
+    "screens": [
+      {
+        "title": "Auto",
+        "layout": [
+          [
+            {
+              "name": "opponent_trench",
+              "type": "Button"
+            },
+            {
+              "name": "rendezvous",
+              "type": "Button"
+            },
+            {
+              "name": "alliance_trench",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "auto_high_miss",
+              "type": "Button"
+            },
+            {
+              "name": "auto_high_hit",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "auto_low_miss",
+              "type": "Button"
+            },
+            {
+              "name": "auto_low_hit",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "field_area",
+              "type": "MultiToggle",
+              "choices": [
+                "Cross",
+                "Trench",
+                "Mid",
+                "Target"
+              ],
+              "default_choice": 2
+            }
+          ]
         ]
-      ]
-    },
-    {
-      "title": "Teleop",
-      "layout": [
-        [
-          {
-            "name": "control_panel",
-            "type": "Switch"
-          },
-          {
-            "name": "defending",
-            "type": "Switch"
-          },
-          {
-            "name": "resisting",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "high_miss",
-            "type": "Button"
-          },
-          {
-            "name": "high_hit",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "low_miss",
-            "type": "Button"
-          },
-          {
-            "name": "low_hit",
-            "type": "Button"
-          }
-        ],
-        [
-          {
-            "name": "field_area",
-            "type": "MultiToggle",
-            "choices": [
-              "Cross",
-              "Trench",
-              "Mid",
-              "Target"
-            ],
-            "default_choice": 2
-          }
+      },
+      {
+        "title": "Teleop",
+        "layout": [
+          [
+            {
+              "name": "control_panel",
+              "type": "Switch"
+            },
+            {
+              "name": "defending",
+              "type": "Switch"
+            },
+            {
+              "name": "resisting",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "high_miss",
+              "type": "Button"
+            },
+            {
+              "name": "high_hit",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "low_miss",
+              "type": "Button"
+            },
+            {
+              "name": "low_hit",
+              "type": "Button"
+            }
+          ],
+          [
+            {
+              "name": "field_area",
+              "type": "MultiToggle",
+              "choices": [
+                "Cross",
+                "Trench",
+                "Mid",
+                "Target"
+              ],
+              "default_choice": 2
+            }
+          ]
         ]
-      ]
-    },
-    {
-      "title": "Endgame",
-      "layout": [
-        [
-          {
-            "name": "climb",
-            "type": "MultiToggle",
-            "choices": [
-              "None",
-              "Attempt",
-              "Success"
-            ]
-          }
-        ],
-        [
-          {
-            "name": "climb_location",
-            "type": "MultiToggle",
-            "choices": [
-              "Middle",
-              "Up",
-              "Down",
-              "Balanced"
-            ]
-          }
-        ],
-        [
-          {
-            "name": "balanced",
-            "type": "Checkbox"
-          },
-          {
-            "name": "active_balance",
-            "type": "Checkbox"
-          }
-        ],
-        [
-          {
-            "name": "driver_skill_rating",
-            "type": "MultiToggle",
-            "choices": [
-              "1",
-              "2",
-              "3",
-              "4",
-              "5"
-            ],
-            "default_choice": 2
-          }
+      },
+      {
+        "title": "Endgame",
+        "layout": [
+          [
+            {
+              "name": "climb",
+              "type": "MultiToggle",
+              "choices": [
+                "None",
+                "Attempt",
+                "Success"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "climb_location",
+              "type": "MultiToggle",
+              "choices": [
+                "Middle",
+                "Up",
+                "Down",
+                "Balanced"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "balanced",
+              "type": "Checkbox"
+            },
+            {
+              "name": "active_balance",
+              "type": "Checkbox"
+            }
+          ],
+          [
+            {
+              "name": "driver_skill_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "default_choice": 2
+            }
+          ]
         ]
-      ]
-    }
-  ],
-  "tags": [
-    "robot_DISABLED",
-    "robot_incapacitated",
-    "entry_started_late",
-    "rescout_required"
-  ]
-}
+      }
+    ],
+    "tags": [
+      "robot_DISABLED",
+      "robot_incapacitated",
+      "entry_started_late",
+      "rescout_required"
+    ]
+  },
+  "super_scout": {
+    "screens": [
+      {
+        "title": "Robot 1",
+        "layout": [
+          [
+            {
+              "name": "A1_defends_O1",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A1_defends_O2",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A1_defends_O3",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A1_blocks_shots",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A1_follows_team",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A1_defends_loading_area",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A1_defends_rendezvous",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A1_defends_shooting_area",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A1_defence_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "A1_resistance_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Robot 2",
+        "layout": [
+          [
+            {
+              "name": "A2_defends_O1",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_defends_O2",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_defends_O3",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A2_blocks_shots",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_follows_team",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A2_defends_loading_area",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_defends_rendezvous",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_defends_shooting_area",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A2_defence_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "A2_resistance_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Robot 3",
+        "layout": [
+          [
+            {
+              "name": "A3_defends_O1",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_defends_O2",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_defends_O3",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A3_blocks_shots",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_follows_team",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A3_defends_loading_area",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_defends_rendezvous",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_defends_shooting_area",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "A3_defence_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "A3_resistance_rating",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ]
+            }
+          ]
+        ]
+      },
+      {
+        "title": "Buddy Climb",
+        "layout": [
+          [
+            {
+              "name": "lifter",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "A1",
+                "A2",
+                "A3"
+              ]
+            }
+          ],
+          [
+            {
+              "name": "A1_lifted",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A2_lifted",
+              "type": "Switch",
+              "is_lite": true
+            },
+            {
+              "name": "A3_lifted",
+              "type": "Switch",
+              "is_lite": true
+            }
+          ],
+          [
+            {
+              "name": "Climb_status",
+              "type": "MultiToggle",
+              "choices": [
+                "N/A",
+                "Attempt",
+                "Success",
+                "Fail"
+              ]
+            }
+          ],
+          [],
+          []
+        ]
+      }
+    ],
+    "tags": [
+      "comment_applies_to_A1",
+      "comment_applies_to_A2",
+      "comment_applies_to_A3"
+    ]
+  }
 }
