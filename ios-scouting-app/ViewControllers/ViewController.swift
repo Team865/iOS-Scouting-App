@@ -8,9 +8,6 @@
 import UIKit
 
 public var isTimerEnabled = false
-public var isNewEventSelected = false
-public var firstTimeBoot = true
-public var prevEvent = 0
 var selectedIndex = 0
 var addedEntry = false
 var entrySelection = false
@@ -187,14 +184,11 @@ override func viewDidLoad() {
                 var boards : [String] = []
                 var isScouted : [Bool] = []
                 
-                firstTimeBoot = false
-                
-                if (isNewEventSelected && !firstTimeBoot){
-                    self.listOfMatches.removeAll()
-                    self.listOfSelectedTeams.removeAll()
-                    numberOfAddedEntriesIndices.removeAll()
-                    listOfNewMatches.removeAll()
-                }
+                self.listOfMatches.removeAll()
+                self.listOfSelectedTeams.removeAll()
+                numberOfAddedEntriesIndices.removeAll()
+                listOfNewMatches.removeAll()
+            
                 
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
@@ -241,8 +235,6 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
                     UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
-                    UserDefaults.standard.set(firstTimeBoot, forKey: "firstTimeBoot")
-                    UserDefaults.standard.set(prevEvent, forKey: "prevEvent")
                     UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
                     UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
                 
@@ -420,14 +412,6 @@ override func viewDidLoad() {
                listOfNewMatches = listOfNewMatchesCache
            }
     
-           if let firstTimeBootCache = UserDefaults.standard.object(forKey: "firstTimeBoot") as? Bool{
-                firstTimeBoot = firstTimeBootCache
-           }
-        
-           if let prevEventCache = UserDefaults.standard.object(forKey: "prevEvent") as? Int{
-                prevEvent = prevEventCache
-            }
-        
         if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
                     if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
                         if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [Int]{
@@ -555,7 +539,6 @@ override func viewDidLoad() {
         UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
         UserDefaults.standard.set(isScouted, forKey: "isScouted")
         
-        print(isScouted)
     }
     
     func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String], isScouted : [Bool]) -> [matchSchedule]{
@@ -651,8 +634,6 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
                 break
             }
         
-       
-        
         return cell
        
 }
@@ -670,11 +651,21 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         entrySelection = true
         addedEntry = false
         
-        UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
-        UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
-        self.listOfSelectedTeams.removeAll()
-    
-        self.navigationController?.pushViewController(scoutingVC, animated: true)
-        
+        if (self.listOfMatches[indexPath.row].isScouted){
+            let alert = UIAlertController(title: "You have already scouted this entry", message: "", preferredStyle: .alert)
+            let cancel = UIAlertAction(title : "OK", style: .destructive)
+            alert.addAction(cancel)
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
+            UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
+            self.listOfSelectedTeams.removeAll()
+            
+            self.navigationController?.pushViewController(scoutingVC, animated: true)
         }
+        }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor.green : UIColor.white
+    }
 }
