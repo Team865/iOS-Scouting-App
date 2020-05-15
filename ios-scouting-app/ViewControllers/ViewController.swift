@@ -29,6 +29,7 @@ var selectedTeam = ""
 var selectedMatch = "M"
 
 var listOfSelectedTeams : [String] = []
+var listOfOpposingTeams : [String] = []
 var scoutName = "First L"
 var listOfBoardsTitles = ["Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3", "Blue Super Scout", "Red Super Scout"]
 var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
@@ -624,12 +625,14 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             self.listOfSelectedTeams.append(cell.red3.text!)
             case "BX" : for i in 0..<boards.count/2{
                 boards[i].textColor = UIColor.blue
-                self.listOfSelectedTeams.append(contentsOf: [cell.blue1.text!, cell.blue2.text!, cell.blue3.text!])
                 }
+            self.listOfSelectedTeams.append(cell.blue1.text! + " " + cell.blue2.text! + " " + cell.blue3.text!)
+            self.listOfOpposingTeams.append(cell.red1.text! + " " + cell.red2.text! + " " + cell.red3.text!)
             case "RX" : for i in boards.count/2..<boards.count{
                 boards[i].textColor = UIColor.red
-                self.listOfSelectedTeams.append(contentsOf: [cell.red1.text!, cell.red2.text!, cell.red3.text!])
                 }
+            self.listOfSelectedTeams.append(cell.red1.text! + " " + cell.red2.text! + " " + cell.red3.text!)
+            self.listOfOpposingTeams.append(cell.blue1.text! + " " + cell.blue2.text! + " " + cell.blue3.text!)
             default:
                 break
             }
@@ -650,6 +653,10 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         entrySelection = true
         addedEntry = false
+        
+        if (self.selectedBoard == "BX" || self.selectedBoard == "RX"){
+            opposingTeamNumber = self.listOfOpposingTeams[indexPath.row]
+        }
         
         if (self.listOfMatches[indexPath.row].isScouted){
             let alert = UIAlertController(title: "You have already scouted this entry", message: "", preferredStyle: .alert)

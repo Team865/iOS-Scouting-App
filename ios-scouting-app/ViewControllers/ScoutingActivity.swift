@@ -20,6 +20,7 @@ var screenLayout : ScoutingScreenLayout!
 public var timeStamp : Float = 0
 public var prevToggleValue = 0
 var matchNumber = ""
+var opposingTeamNumber = ""
 var teamNumber = ""
 var boardName = ""
 var timeOnStart = "015"
@@ -45,11 +46,8 @@ class ScoutingActivity : UIViewController{
     var itemTags = 0
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
-    var currentScreenIndex = 0
-    var screenIndex = 0
-    var tempScreenIndex = 0
-    var movedForward = false
-    var movedBackwards = false
+    
+    var isCreated : [Bool] = []
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -96,13 +94,21 @@ class ScoutingActivity : UIViewController{
         getLayoutForScreen{
             if (boardName == "BX" || boardName == "RX"){
                let scoutingType = screenLayout.super_scout
+                
+                let currentTeam = teamNumber.components(separatedBy: " ")
+                let opposingTeam = opposingTeamNumber.components(separatedBy: " ")
+                
+                print(currentTeam)
+                print(opposingTeam)
+                
                 for i in 0..<scoutingType.screens.count{
                         var indices : [[Int]] = []
                         var items : [[String]] = []
                         var names : [[String]] = []
                         var choices : [[[String]]] = []
                         self.screenTitles.append(scoutingType.screens[i].title)
-                        for k in 0..<scoutingType.screens[i].layout.count{
+                        self.isCreated.append(false)
+                    for k in 0..<scoutingType.screens[i].layout.count{
                             var tagsInRow : [Int] = []
                             var itemsInRow : [String] = []
                             var namesInRow : [String] = []
@@ -127,11 +133,6 @@ class ScoutingActivity : UIViewController{
                         self.listOfItemsName.append(names)
                         self.listOfToggleTitles.append(choices)
                     }
-                    self.screenTitles.append("QR Code")
-                    self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-                    self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
-                    self.scoutingView.dataSource = self
-                    self.scoutingView.delegate = self
             } else {
                 let scoutingType = screenLayout.robot_scout
                 for i in 0..<scoutingType.screens.count{
@@ -140,6 +141,7 @@ class ScoutingActivity : UIViewController{
                     var names : [[String]] = []
                     var choices : [[[String]]] = []
                     self.screenTitles.append(scoutingType.screens[i].title)
+                    self.isCreated.append(false)
                     for k in 0..<scoutingType.screens[i].layout.count{
                         var tagsInRow : [Int] = []
                         var itemsInRow : [String] = []
@@ -165,17 +167,17 @@ class ScoutingActivity : UIViewController{
                     self.listOfItemsName.append(names)
                     self.listOfToggleTitles.append(choices)
                 }
-                self.screenTitles.append("QR Code")
-                self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-                self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
-                self.scoutingView.dataSource = self
-                self.scoutingView.delegate = self
-                
             }
+            self.screenTitles.append("QR Code")
+            self.screenTitle.text = self.screenTitles[0]
+            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
+            self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
+            self.scoutingView.dataSource = self
+            self.scoutingView.delegate = self
             }
             
+        
             
-        screenTitle.text = "Auto"
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
         selectedTeam = Int(teamNumber) ?? 0
@@ -191,6 +193,23 @@ class ScoutingActivity : UIViewController{
         
         //Make sure the initial time stamp is 0 before taking any inputs
         timeStamp = 0
+    }
+    
+    func formatTitle(string : String, currentTeam : String, index : Int, opposingTeam : String) -> String{
+        var arr = string.components(separatedBy: "_")
+        
+        arr[0] = currentTeam
+        
+        if (index == 0){
+            arr[2] = opposingTeam
+        }
+        
+        var formated = ""
+        for i in 0..<arr.count{
+            formated += arr[i]
+        }
+        
+        return formated
     }
     
     func updateEncodedData() -> String{
@@ -536,17 +555,17 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return self.screenTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (indexPath.row != 3){
+        if (indexPath.row < self.screenTitles.count - 1){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
             cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
             cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
             cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
             cell?.listOfItemsTag = self.listOfTags[indexPath.row]
-            cell?.setUpScoutingScreen()
+            cell?.index = indexPath.row
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
