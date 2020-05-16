@@ -20,6 +20,7 @@ var screenLayout : ScoutingScreenLayout!
 public var timeStamp : Float = 0
 public var prevToggleValue = 0
 var matchNumber = ""
+var opposingTeamNumber = ""
 var teamNumber = ""
 var boardName = ""
 var timeOnStart = "015"
@@ -45,11 +46,8 @@ class ScoutingActivity : UIViewController{
     var itemTags = 0
     let images = ["timer", "team", "paste", "layers2"]
     var screenTitles : [String] = []
-    var currentScreenIndex = 0
-    var screenIndex = 0
-    var tempScreenIndex = 0
-    var movedForward = false
-    var movedBackwards = false
+    
+    var isCreated : [Bool] = []
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -90,46 +88,93 @@ class ScoutingActivity : UIViewController{
         configureProgressBar()
         
         var itemIndex = 0
-        
+        comment = ""
+
+        //This is disgusting
         getLayoutForScreen{
-            for i in 0..<screenLayout.robot_scout.screens.count{
-                var indices : [[Int]] = []
-                var items : [[String]] = []
-                var names : [[String]] = []
-                var choices : [[[String]]] = []
-                self.screenTitles.append(screenLayout.robot_scout.screens[i].title)
-                for k in 0..<screenLayout.robot_scout.screens[i].layout.count{
-                    var tagsInRow : [Int] = []
-                    var itemsInRow : [String] = []
-                    var namesInRow : [String] = []
-                    var choicesInRow : [[String]] = []
-                    for j in 0..<screenLayout.robot_scout.screens[i].layout[k].count{
-                        let type = screenLayout.robot_scout.screens[i].layout[k][j].type
-                        let name = screenLayout.robot_scout.screens[i].layout[k][j].name
-                        let choice = screenLayout.robot_scout.screens[i].layout[k][j].choices ?? []
-                        itemsInRow.append(type)
-                        namesInRow.append(name)
-                        choicesInRow.append(choice)
-                        tagsInRow.append(itemIndex)
-                        itemIndex += 1
+            if (boardName == "BX" || boardName == "RX"){
+               let scoutingType = screenLayout.super_scout
+                
+                let currentTeam = teamNumber.components(separatedBy: " ")
+                let opposingTeam = opposingTeamNumber.components(separatedBy: " ")
+                
+                for i in 0..<scoutingType.screens.count{
+                        var indices : [[Int]] = []
+                        var items : [[String]] = []
+                        var names : [[String]] = []
+                        var choices : [[[String]]] = []
+                        self.screenTitles.append(scoutingType.screens[i].title)
+                        self.isCreated.append(false)
+                    for k in 0..<scoutingType.screens[i].layout.count{
+                            var tagsInRow : [Int] = []
+                            var itemsInRow : [String] = []
+                            var namesInRow : [String] = []
+                            var choicesInRow : [[String]] = []
+                            for j in 0..<scoutingType.screens[i].layout[k].count{
+                                let type = scoutingType.screens[i].layout[k][j].type
+                                let name = self.formatTitle(string: scoutingType.screens[i].layout[k][j].name, currentTeam: currentTeam, opposingTeam: opposingTeam)
+                                let choice = self.formatChoices(string: scoutingType.screens[i].layout[k][j].choices ?? [], currentTeam: currentTeam, opposingTeam: opposingTeam)
+                                itemsInRow.append(type)
+                                namesInRow.append(name)
+                                choicesInRow.append(choice)
+                                tagsInRow.append(itemIndex)
+                                itemIndex += 1
+                            }
+                            items.append(itemsInRow)
+                            names.append(namesInRow)
+                            choices.append(choicesInRow)
+                            indices.append(tagsInRow)
+                        }
+                        self.listOfTags.append(indices)
+                        self.listOfItemsType.append(items)
+                        self.listOfItemsName.append(names)
+                        self.listOfToggleTitles.append(choices)
                     }
-                    items.append(itemsInRow)
-                    names.append(namesInRow)
-                    choices.append(choicesInRow)
-                    indices.append(tagsInRow)
+            } else {
+                let scoutingType = screenLayout.robot_scout
+                for i in 0..<scoutingType.screens.count{
+                    var indices : [[Int]] = []
+                    var items : [[String]] = []
+                    var names : [[String]] = []
+                    var choices : [[[String]]] = []
+                    self.screenTitles.append(scoutingType.screens[i].title)
+                    self.isCreated.append(false)
+                    for k in 0..<scoutingType.screens[i].layout.count{
+                        var tagsInRow : [Int] = []
+                        var itemsInRow : [String] = []
+                        var namesInRow : [String] = []
+                        var choicesInRow : [[String]] = []
+                        for j in 0..<scoutingType.screens[i].layout[k].count{
+                            let type = scoutingType.screens[i].layout[k][j].type
+                            let name = scoutingType.screens[i].layout[k][j].name
+                            let choice = scoutingType.screens[i].layout[k][j].choices ?? []
+                            itemsInRow.append(type)
+                            namesInRow.append(name)
+                            choicesInRow.append(choice)
+                            tagsInRow.append(itemIndex)
+                            itemIndex += 1
+                        }
+                        items.append(itemsInRow)
+                        names.append(namesInRow)
+                        choices.append(choicesInRow)
+                        indices.append(tagsInRow)
+                    }
+                    self.listOfTags.append(indices)
+                    self.listOfItemsType.append(items)
+                    self.listOfItemsName.append(names)
+                    self.listOfToggleTitles.append(choices)
                 }
-                self.listOfTags.append(indices)
-                self.listOfItemsType.append(items)
-                self.listOfItemsName.append(names)
-                self.listOfToggleTitles.append(choices)
             }
             self.screenTitles.append("QR Code")
+            self.screenTitle.text = self.screenTitles[0]
             self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
             self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
             self.scoutingView.dataSource = self
             self.scoutingView.delegate = self
-        }
-        screenTitle.text = "Auto"
+            }
+            
+        
+            
         scoutingView.isPagingEnabled = true
         self.progressBar.isEnabled = false
         selectedTeam = Int(teamNumber) ?? 0
@@ -143,9 +188,44 @@ class ScoutingActivity : UIViewController{
             } 
         }
         
-        
         //Make sure the initial time stamp is 0 before taking any inputs
         timeStamp = 0
+    }
+    
+    func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
+        var arr = string.components(separatedBy: "_")
+        
+        var formated = ""
+        
+        for i in 0..<arr.count{
+            if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
+                let index = Int(arr[i].suffix(1)) ?? 0
+                arr[i] = currentTeam[index - 1]
+            } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
+                let index = Int(arr[i].suffix(1)) ?? 0
+                arr[i] = opposingTeam[index - 1]
+            }
+            formated += (arr[i] + " ")
+        }
+        
+        
+        return formated
+    }
+    
+    func formatChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
+        var mutatedArr = string
+        
+        for i in 0..<string.count{
+            if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
+                let index = Int(string[i].suffix(1)) ?? 0
+                mutatedArr[i] = currentTeam[index - 1]
+            } else {
+                mutatedArr[i] = string[i]
+            }
+            
+        }
+        
+        return mutatedArr
     }
     
     func updateEncodedData() -> String{
@@ -465,6 +545,7 @@ class ScoutingActivity : UIViewController{
                     [weak alert] (_) in
                     let textField = alert?.textFields![0]
                     comment = textField!.text ?? ""
+                    encodedData = self.updateEncodedData()
                 }
 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
@@ -490,17 +571,17 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return self.screenTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (indexPath.row != 3){
+        if (indexPath.row < self.screenTitles.count - 1){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
             cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
             cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
             cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
             cell?.listOfItemsTag = self.listOfTags[indexPath.row]
-            cell?.setUpScoutingScreen()
+            cell?.index = indexPath.row
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell

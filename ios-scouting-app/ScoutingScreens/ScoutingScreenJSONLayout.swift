@@ -12,6 +12,11 @@ struct ScoutingScreenLayout : Decodable {
     var year : Int
     var revision : Int
     var robot_scout : robot_scout
+    var super_scout : super_scout
+}
+
+struct super_scout : Decodable {
+    var screens : [screens]
 }
 
 struct robot_scout : Decodable {
