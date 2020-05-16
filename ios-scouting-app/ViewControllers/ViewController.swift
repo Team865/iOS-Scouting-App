@@ -345,6 +345,7 @@ override func viewDidLoad() {
                     self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
                     self.selectedBoard = self.listOfBoards[i]
                     UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
+                    self.listOfSelectedTeams.removeAll()
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
@@ -412,6 +413,7 @@ override func viewDidLoad() {
            if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
                listOfNewMatches = listOfNewMatchesCache
            }
+        
     
         if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
                     if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
@@ -664,12 +666,12 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         } else {
-            UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
-            UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
-            self.listOfSelectedTeams.removeAll()
-            
             self.navigationController?.pushViewController(scoutingVC, animated: true)
         }
+        
+        UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
+        UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
+        self.listOfSelectedTeams.removeAll()
         }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

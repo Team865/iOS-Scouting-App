@@ -98,9 +98,6 @@ class ScoutingActivity : UIViewController{
                 let currentTeam = teamNumber.components(separatedBy: " ")
                 let opposingTeam = opposingTeamNumber.components(separatedBy: " ")
                 
-                print(currentTeam)
-                print(opposingTeam)
-                
                 for i in 0..<scoutingType.screens.count{
                         var indices : [[Int]] = []
                         var items : [[String]] = []
@@ -115,8 +112,8 @@ class ScoutingActivity : UIViewController{
                             var choicesInRow : [[String]] = []
                             for j in 0..<scoutingType.screens[i].layout[k].count{
                                 let type = scoutingType.screens[i].layout[k][j].type
-                                let name = scoutingType.screens[i].layout[k][j].name
-                                let choice = scoutingType.screens[i].layout[k][j].choices ?? []
+                                let name = self.formatTitle(string: scoutingType.screens[i].layout[k][j].name, currentTeam: currentTeam, opposingTeam: opposingTeam)
+                                let choice = self.formatChoices(string: scoutingType.screens[i].layout[k][j].choices ?? [], currentTeam: currentTeam, opposingTeam: opposingTeam)
                                 itemsInRow.append(type)
                                 namesInRow.append(name)
                                 choicesInRow.append(choice)
@@ -195,21 +192,40 @@ class ScoutingActivity : UIViewController{
         timeStamp = 0
     }
     
-    func formatTitle(string : String, currentTeam : String, index : Int, opposingTeam : String) -> String{
+    func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
         var arr = string.components(separatedBy: "_")
         
-        arr[0] = currentTeam
-        
-        if (index == 0){
-            arr[2] = opposingTeam
-        }
-        
         var formated = ""
+        
         for i in 0..<arr.count{
-            formated += arr[i]
+            if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
+                let index = Int(arr[i].suffix(1)) ?? 0
+                arr[i] = currentTeam[index - 1]
+            } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
+                let index = Int(arr[i].suffix(1)) ?? 0
+                arr[i] = opposingTeam[index - 1]
+            }
+            formated += (arr[i] + " ")
         }
+        
         
         return formated
+    }
+    
+    func formatChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
+        var mutatedArr = string
+        
+        for i in 0..<string.count{
+            if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
+                let index = Int(string[i].suffix(1)) ?? 0
+                mutatedArr[i] = currentTeam[index - 1]
+            } else {
+                mutatedArr[i] = string[i]
+            }
+            
+        }
+        
+        return mutatedArr
     }
     
     func updateEncodedData() -> String{
