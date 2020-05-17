@@ -37,7 +37,7 @@ class matchScheduleCells : UITableViewCell{
         blue2.text = match.blueAlliance[1]
         blue3.text = match.blueAlliance[2]
         
-        matchNumber.text = "M" + match.matchNumber
+        matchNumber.text = "M" + String(match.matchNumber)
         self.icon.image = UIImage(named : match.imageName) ?? UIImage(named : "layers")
     }
     

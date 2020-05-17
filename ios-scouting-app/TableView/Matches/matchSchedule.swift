@@ -9,14 +9,18 @@ import Foundation
 import UIKit
 class matchSchedule{
     var imageName : String
-    var matchNumber : String
+    var matchNumber : Int
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
-    
-    
-    init(imageName : String, matchNumber : String, redAlliance : [String], blueAlliance : [String]){
+    var board : String
+    var isScouted : Bool
+    var scoutedData : String
+    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String, isScouted : Bool, scoutedData : String){
         self.imageName = imageName
         self.matchNumber = matchNumber
+        self.board = board
+        self.isScouted = isScouted
+        self.scoutedData = scoutedData
         
         self.blueAlliance.append(contentsOf: blueAlliance)
         
