@@ -18,6 +18,8 @@ var newTeam = ""
 var numberOfAddedEntriesIndices : [Int] = []
 var listOfNewMatches : [Int] = []
 class ViewController: UIViewController {
+
+var cacheKeys = CacheKeys()
     
 var matchTable = UITableView()
 
@@ -63,9 +65,7 @@ override func viewDidLoad() {
 
     override func viewDidAppear(_ animated: Bool) {
         self.getMatchScheduleFromCache()
-        
-        print(listOfSelectedTeams.count)
-        
+                
         isTimerEnabled = false
 
         DataPoints.removeAll()
@@ -168,6 +168,8 @@ override func viewDidLoad() {
         let scoutName = UITextField(frame : .init(x : 0, y : 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
         scoutName.text = "First L"
+    
+        
         
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightSideButtonsNavBar()[0]), UIBarButtonItem(customView: rightSideButtonsNavBar()[1])]
         
@@ -220,6 +222,13 @@ override func viewDidLoad() {
                     numberOfAddedEntriesIndices = tempArr
                     self.matchTable.reloadData()
                     
+                    if let selectedBoard = UserDefaults.standard.object(forKey: self.cacheKeys.selectedBoard) as? String, let scoutNameCache = UserDefaults.standard.object(forKey: self.cacheKeys.scoutName) as? String{
+                        self.selectedBoard = selectedBoard
+                        self.scoutName = scoutNameCache
+                    }
+                    
+                    self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
+                    
                     for i in 0..<self.listOfMatches.count{
                         blueAlliance.append(self.listOfMatches[i].blueAlliance)
                         redAlliance.append(self.listOfMatches[i].redAlliance)
@@ -230,18 +239,18 @@ override func viewDidLoad() {
                         scoutedData.append(self.listOfMatches[i].scoutedData)
                     }
                     
-                    UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
-                    UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
-                    UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
-                    UserDefaults.standard.set(imageName, forKey: "icon")
-                    UserDefaults.standard.set(boards, forKey: "boards")
-                    UserDefaults.standard.set(isScouted, forKey: "isScouted")
-                    UserDefaults.standard.set(scoutedData, forKey: "scoutedData")
-                    UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
-                    UserDefaults.standard.set(self.scoutName, forKey: "scout")
-                    UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
-                    UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
-                    UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
+                    UserDefaults.standard.set(blueAlliance, forKey: self.cacheKeys.blueAlliance)
+                    UserDefaults.standard.set(redAlliance, forKey: self.cacheKeys.redAlliance)
+                    UserDefaults.standard.set(matchNumber, forKey: self.cacheKeys.matchNumber)
+                    UserDefaults.standard.set(imageName, forKey: self.cacheKeys.imageName)
+                    UserDefaults.standard.set(boards, forKey: self.cacheKeys.boards)
+                    UserDefaults.standard.set(isScouted, forKey: self.cacheKeys.isScouted)
+                    UserDefaults.standard.set(scoutedData, forKey: self.cacheKeys.scoutedData)
+                    UserDefaults.standard.set(self.currentEvent, forKey: self.cacheKeys.currentEvent)
+                    UserDefaults.standard.set(self.scoutName, forKey: self.cacheKeys.scoutName)
+                    UserDefaults.standard.set(self.eventKey, forKey: self.cacheKeys.eventKey)
+                    UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: self.cacheKeys.numberOfAddedEntriesIndices)
+                    UserDefaults.standard.set(listOfNewMatches, forKey: self.cacheKeys.listOfNewMatches)
                     
                 }
             }
@@ -329,7 +338,7 @@ override func viewDidLoad() {
                 [weak alert] (_) in
                 let textField = alert?.textFields![0]
                 self.scoutName = textField!.text ?? ""
-                UserDefaults.standard.set(self.scoutName, forKey: "ScoutName")
+                UserDefaults.standard.set(self.scoutName, forKey: "scoutName")
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
             }
             
@@ -444,26 +453,22 @@ override func viewDidLoad() {
     }
     
     func getMatchScheduleFromCache(){
-        if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
-               self.selectedBoard = selectedBoard
+        if let numberOfAddedEntriesIndicesCache = UserDefaults.standard.object(forKey: self.cacheKeys.numberOfAddedEntriesIndices) as? [Int] {
+               numberOfAddedEntriesIndices = numberOfAddedEntriesIndicesCache
            }
            
-           if let listOfSelectedBoard = UserDefaults.standard.object(forKey: "addedMatches") as? [Int] {
-               numberOfAddedEntriesIndices = listOfSelectedBoard
-           }
-           
-           if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: "addedMatchesNumber") as? [Int]{
+        if let listOfNewMatchesCache = UserDefaults.standard.object(forKey: self.cacheKeys.listOfNewMatches) as? [Int]{
                listOfNewMatches = listOfNewMatchesCache
            }
         
     
-        if let blueAlliance = UserDefaults.standard.object(forKey: "blueAlliance") as? [[String]]{
-                    if let redAlliance = UserDefaults.standard.object(forKey: "redAlliance") as? [[String]]{
-                        if let matchNumber = UserDefaults.standard.object(forKey: "matchNumber") as? [Int]{
-                            if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
-                                if let boards = UserDefaults.standard.object(forKey: "boards") as? [String]{
-                                    if let isScouted = UserDefaults.standard.object(forKey: "isScouted") as? [Bool]{
-                                        if let scoutedData = UserDefaults.standard.object(forKey: "scoutedData") as? [String]{
+        if let blueAlliance = UserDefaults.standard.object(forKey: self.cacheKeys.blueAlliance) as? [[String]]{
+                    if let redAlliance = UserDefaults.standard.object(forKey: self.cacheKeys.redAlliance) as? [[String]]{
+                        if let matchNumber = UserDefaults.standard.object(forKey: self.cacheKeys.matchNumber) as? [Int]{
+                            if let imageName = UserDefaults.standard.object(forKey: self.cacheKeys.imageName) as? [String]{
+                                if let boards = UserDefaults.standard.object(forKey: self.cacheKeys.boards) as? [String]{
+                                    if let isScouted = UserDefaults.standard.object(forKey: self.cacheKeys.isScouted) as? [Bool]{
+                                        if let scoutedData = UserDefaults.standard.object(forKey: self.cacheKeys.scoutedData) as? [String]{
                                             self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted, scoutedData: scoutedData)
                                         }
                                         
@@ -542,16 +547,16 @@ override func viewDidLoad() {
             updateCache()
         }
 
-        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+        if let currentEvent = UserDefaults.standard.object(forKey: self.cacheKeys.currentEvent) as? String{
             self.currentEventLabel.text = currentEvent
         }
         
-        if let selectedBoard = UserDefaults.standard.object(forKey: "SelectedBoard") as? String{
+        if let selectedBoard = UserDefaults.standard.object(forKey: self.cacheKeys.selectedBoard) as? String{
             self.selectedBoard = selectedBoard
             self.updateBoard(board: selectedBoard, scout: scoutName)
         }
         
-        if let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
+        if let scoutName = UserDefaults.standard.object(forKey: self.cacheKeys.scoutName) as? String{
             self.scoutName = scoutName
             self.updateBoard(board: self.selectedBoard, scout: scoutName)
         }
@@ -578,15 +583,15 @@ override func viewDidLoad() {
             scoutedData.append(self.listOfMatches[i].scoutedData)
         }
         
-        UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
-        UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
-        UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
-        UserDefaults.standard.set(imageName, forKey: "icon")
-        UserDefaults.standard.set(boards, forKey: "boards")
-        UserDefaults.standard.set(scoutedData, forKey: "scoutedData")
-        UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
-        UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
-        UserDefaults.standard.set(isScouted, forKey: "isScouted")
+        UserDefaults.standard.set(blueAlliance, forKey: self.cacheKeys.blueAlliance)
+        UserDefaults.standard.set(redAlliance, forKey: self.cacheKeys.blueAlliance)
+        UserDefaults.standard.set(matchNumber, forKey: self.cacheKeys.matchNumber)
+        UserDefaults.standard.set(imageName, forKey: self.cacheKeys.imageName)
+        UserDefaults.standard.set(boards, forKey: self.cacheKeys.boards)
+        UserDefaults.standard.set(scoutedData, forKey: self.cacheKeys.scoutedData)
+        UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: self.cacheKeys.numberOfAddedEntriesIndices)
+        UserDefaults.standard.set(listOfNewMatches, forKey: self.cacheKeys.listOfNewMatches)
+        UserDefaults.standard.set(isScouted, forKey: self.cacheKeys.isScouted)
         
     }
     
@@ -685,7 +690,32 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
         
         if (self.listOfMatches[indexPath.row].isScouted){
-            let alert = UIAlertController(title: self.listOfMatches[indexPath.row].scoutedData, message: "", preferredStyle: .alert)
+            let arr = self.listOfMatches[indexPath.row].scoutedData.components(separatedBy: ":")
+            
+            let alert = UIAlertController(title: arr[0], message: "", preferredStyle: .alert)
+            
+            let qrGenerator = QRCodeGenerator()
+            
+            let qrImageView = qrGenerator.generateQRCode(from : self.listOfMatches[indexPath.row].scoutedData)
+            
+            let maxSize = CGSize(width : 245, height : 245)
+            let imageSize = qrImageView!.size
+            
+            var ratio : CGFloat!
+            if (imageSize.width > imageSize.height){
+                ratio = maxSize.width / imageSize.width
+            } else {
+                ratio = maxSize.height / imageSize.height
+            }
+            
+            let scaledSize = CGSize(width : imageSize.width * ratio, height: imageSize.height * ratio)
+            
+            let resizeImage = qrImageView?.imageWithSize(scaledSize)
+            
+            let qrAction = UIAlertAction(title: "", style: .default, handler: nil)
+            qrAction.isEnabled = false
+            qrAction.setValue(resizeImage?.withRenderingMode(.alwaysOriginal), forKey: "image")
+            alert.addAction(qrAction)
             
             let cancel = UIAlertAction(title : "OK", style: .destructive)
             alert.addAction(cancel)
@@ -704,13 +734,13 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             addedEntry = false
             
             self.navigationController?.pushViewController(scoutingVC, animated: true)
-            UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
+            UserDefaults.standard.set(self.selectedBoard, forKey: self.cacheKeys.selectedBoard)
         }
         
         
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor.green : UIColor.white
+        cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor(red: 0.47, green: 0.89, blue: 0.41, alpha: 1.00) : UIColor.white
     }
 }

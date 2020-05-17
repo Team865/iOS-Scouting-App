@@ -12,6 +12,8 @@
 		251EF5D62429D613006536F1 /* layout.json in Resources */ = {isa = PBXBuildFile; fileRef = 251EF5D52429D612006536F1 /* layout.json */; };
 		25322E0C24309F930089AEA6 /* CheckBoxField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25322E0B24309F930089AEA6 /* CheckBoxField.swift */; };
 		253343B2242C7228000E6409 /* QREntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253343B1242C7228000E6409 /* QREntry.swift */; };
+		2543F0B024710DF500914B4F /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2543F0AF24710DF500914B4F /* CacheKeys.swift */; };
+		2543F0B2247130ED00914B4F /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2543F0B1247130ED00914B4F /* Utilities.swift */; };
 		254B4E1C243A78EA002B6239 /* DataPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254B4E1B243A78EA002B6239 /* DataPoint.swift */; };
 		2553B83224481A7E0093C481 /* SwitchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2553B83124481A7E0093C481 /* SwitchField.swift */; };
 		25619D662438C7BE0057BC76 /* MultiToggleField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25619D652438C7BE0057BC76 /* MultiToggleField.swift */; };
@@ -56,6 +58,8 @@
 		251EF5D52429D612006536F1 /* layout.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = layout.json; sourceTree = "<group>"; };
 		25322E0B24309F930089AEA6 /* CheckBoxField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxField.swift; sourceTree = "<group>"; };
 		253343B1242C7228000E6409 /* QREntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QREntry.swift; sourceTree = "<group>"; };
+		2543F0AF24710DF500914B4F /* CacheKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheKeys.swift; sourceTree = "<group>"; };
+		2543F0B1247130ED00914B4F /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		254B4E1B243A78EA002B6239 /* DataPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPoint.swift; sourceTree = "<group>"; };
 		2553B83124481A7E0093C481 /* SwitchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchField.swift; sourceTree = "<group>"; };
 		25619D652438C7BE0057BC76 /* MultiToggleField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiToggleField.swift; sourceTree = "<group>"; };
@@ -241,6 +245,8 @@
 				25F35CD12400E60800CAA81D /* Info.plist */,
 				25F96486242104F10095A6DF /* tbaKey.swift */,
 				251EF5D52429D612006536F1 /* layout.json */,
+				2543F0AF24710DF500914B4F /* CacheKeys.swift */,
+				2543F0B1247130ED00914B4F /* Utilities.swift */,
 			);
 			path = "ios-scouting-app";
 			sourceTree = "<group>";
@@ -357,6 +363,7 @@
 			files = (
 				254B4E1C243A78EA002B6239 /* DataPoint.swift in Sources */,
 				25619D662438C7BE0057BC76 /* MultiToggleField.swift in Sources */,
+				2543F0B2247130ED00914B4F /* Utilities.swift in Sources */,
 				253343B2242C7228000E6409 /* QREntry.swift in Sources */,
 				25E0F56E241F6BFE0034432A /* Events.swift in Sources */,
 				25E0F564241EC1610034432A /* settings.swift in Sources */,
@@ -372,6 +379,7 @@
 				25B23D0C243FCA470065E7BB /* Encoder.swift in Sources */,
 				2553B83224481A7E0093C481 /* SwitchField.swift in Sources */,
 				2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */,
+				2543F0B024710DF500914B4F /* CacheKeys.swift in Sources */,
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
 				251EF5CC24282855006536F1 /* ScoutingActivity.swift in Sources */,
