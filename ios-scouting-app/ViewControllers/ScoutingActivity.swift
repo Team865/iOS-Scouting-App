@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 //Remove or keep, you decide
+public var encodedData = ""
+public var encodedDataPoints = ""
 public var DataPoints = [DataPoint]()
 public var listOfButtonsOnScreen : [ButtonField] = []
 public var listOfSwitchesOnScreen : [SwitchField] = []
