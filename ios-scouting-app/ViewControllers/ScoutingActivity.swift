@@ -33,6 +33,8 @@ private var selectedKey = ""
 private var selectedScout = ""
 private var comment = ""
 class ScoutingActivity : UIViewController{
+    var cacheKeys = CacheKeys()
+    
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
     
@@ -182,8 +184,8 @@ class ScoutingActivity : UIViewController{
         selectedTeam = Int(teamNumber) ?? 0
         selectedBoard = boardName
         
-        if let eventKey = UserDefaults.standard.object(forKey: "eventKey") as? String{
-           if let scoutName = UserDefaults.standard.object(forKey: "scout") as? String {
+        if let eventKey = UserDefaults.standard.object(forKey: self.cacheKeys.eventKey) as? String{
+           if let scoutName = UserDefaults.standard.object(forKey: self.cacheKeys.scoutName) as? String {
                 selectedKey = eventKey
                 selectedScout = scoutName
                 encodedData = updateEncodedData()
