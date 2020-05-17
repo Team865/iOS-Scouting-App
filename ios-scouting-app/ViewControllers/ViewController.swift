@@ -8,6 +8,8 @@
 import UIKit
 
 public var isTimerEnabled = false
+var listOfSelectedTeams : [String] = []
+var listOfOpposingTeams : [String] = []
 var selectedIndex = 0
 var addedEntry = false
 var entrySelection = false
@@ -16,7 +18,7 @@ var newTeam = ""
 var numberOfAddedEntriesIndices : [Int] = []
 var listOfNewMatches : [Int] = []
 class ViewController: UIViewController {
-
+    
 var matchTable = UITableView()
 
 var key = tbaKey()
@@ -28,8 +30,6 @@ var selectedBoard = "B1"
 var selectedTeam = ""
 var selectedMatch = "M"
 
-var listOfSelectedTeams : [String] = []
-var listOfOpposingTeams : [String] = []
 var scoutName = "First L"
 var listOfBoardsTitles = ["Blue 1", "Blue 2", "Blue 3", "Red 1", "Red 2", "Red 3", "Blue Super Scout", "Red Super Scout"]
 var listOfBoards = ["B1", "B2", "B3", "R1", "R2", "R3", "BX", "RX"]
@@ -63,7 +63,9 @@ override func viewDidLoad() {
 
     override func viewDidAppear(_ animated: Bool) {
         self.getMatchScheduleFromCache()
-
+        
+        print(listOfSelectedTeams.count)
+        
         isTimerEnabled = false
 
         DataPoints.removeAll()
@@ -184,12 +186,14 @@ override func viewDidLoad() {
                 var imageName : [String] = []
                 var boards : [String] = []
                 var isScouted : [Bool] = []
-                
+                var scoutedData : [String] = []
+            
                 self.listOfMatches.removeAll()
-                self.listOfSelectedTeams.removeAll()
+                listOfSelectedTeams.removeAll()
+                listOfOpposingTeams.removeAll()
                 numberOfAddedEntriesIndices.removeAll()
                 listOfNewMatches.removeAll()
-            
+                
                 
                 self.getTBAJson {
                     for i in 0..<self.jsonListOfMatches.count{
@@ -198,8 +202,7 @@ override func viewDidLoad() {
                                    }
                                }
                     self.currentEventLabel.text = self.currentEvent
-                    self.view.addSubview(self.currentEventLabel)
-                    self.listOfMatches.append(contentsOf : self.createMatchSchedule())
+                    self.listOfMatches =  self.createMatchSchedule()
                     
                     self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
                     
@@ -224,8 +227,8 @@ override func viewDidLoad() {
                         imageName.append(self.listOfMatches[i].imageName)
                         boards.append(self.listOfMatches[i].board)
                         isScouted.append(self.listOfMatches[i].isScouted)
+                        scoutedData.append(self.listOfMatches[i].scoutedData)
                     }
-                    
                     
                     UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
                     UserDefaults.standard.set(redAlliance, forKey: "redAlliance")
@@ -233,12 +236,13 @@ override func viewDidLoad() {
                     UserDefaults.standard.set(imageName, forKey: "icon")
                     UserDefaults.standard.set(boards, forKey: "boards")
                     UserDefaults.standard.set(isScouted, forKey: "isScouted")
+                    UserDefaults.standard.set(scoutedData, forKey: "scoutedData")
                     UserDefaults.standard.set(self.currentEvent, forKey: "currentEvent")
                     UserDefaults.standard.set(self.scoutName, forKey: "scout")
                     UserDefaults.standard.set(self.eventKey, forKey: "eventKey")
                     UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
                     UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
-                
+                    
                 }
             }
         }
@@ -345,7 +349,6 @@ override func viewDidLoad() {
                     self.updateBoard(board: self.listOfBoards[i], scout: self.scoutName)
                     self.selectedBoard = self.listOfBoards[i]
                     UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
-                    self.listOfSelectedTeams.removeAll()
                     self.matchTable.reloadData()
                 }
                 alert.addAction(board)
@@ -357,6 +360,34 @@ override func viewDidLoad() {
         }
     }
     
+    private func updateSelectedTeamsList(list : [matchSchedule], index : Int, board : String){
+        if (board == "BX"){
+            for i in 0..<list.count{
+                listOfSelectedTeams.append(list[i].blueAlliance[0] + " " + list[i].blueAlliance[1] + " " + list[i].blueAlliance[2])
+                listOfOpposingTeams.append(list[i].redAlliance[0] + " " + list[i].redAlliance[1] + " " + list[i].redAlliance[2])
+            }
+        }
+        
+        if (board == "RX"){
+            for i in 0..<list.count{
+                listOfSelectedTeams.append(list[i].redAlliance[0] + " " + list[i].redAlliance[1] + " " + list[i].redAlliance[2])
+                listOfOpposingTeams.append(list[i].blueAlliance[0] + " " + list[i].blueAlliance[1] + " " + list[i].blueAlliance[2])
+            }
+        }
+        
+        if (board.prefix(1) == "B"){
+            for i in 0..<list.count{
+                listOfSelectedTeams.append(list[i].blueAlliance[index])
+            }
+        }
+        
+        if (board.prefix(1) == "R"){
+            for i in 0..<list.count{
+                listOfSelectedTeams.append(list[i].redAlliance[index])
+            }
+        }
+                
+    }
     
     //Update board after an action is performed
     private func updateBoard(board : String, scout : String){
@@ -364,15 +395,26 @@ override func viewDidLoad() {
         selectedBoard.isUserInteractionEnabled = false
         selectedBoard.text = board
         
+        listOfSelectedTeams.removeAll()
+        listOfOpposingTeams.removeAll()
+        
         switch(board){
         case "B1" : selectedBoard.textColor = UIColor.blue
+        self.updateSelectedTeamsList(list: self.listOfMatches, index: 0, board: "B")
         case "B2" : selectedBoard.textColor = UIColor.blue
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 1, board: "B")
         case "B3" : selectedBoard.textColor = UIColor.blue
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 2, board: "B")
         case "R1" : selectedBoard.textColor = UIColor.red
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 0, board: "R")
         case "R2" : selectedBoard.textColor = UIColor.red
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 1, board: "R")
         case "R3" : selectedBoard.textColor = UIColor.red
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 2, board: "B")
         case "BX" : selectedBoard.textColor = UIColor.blue
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 0, board: "BX")
         case "RX" : selectedBoard.textColor = UIColor.red
+            self.updateSelectedTeamsList(list: self.listOfMatches, index: 0, board: "RX")
         default :
             selectedBoard.textColor = UIColor.black
         }
@@ -421,7 +463,10 @@ override func viewDidLoad() {
                             if let imageName = UserDefaults.standard.object(forKey: "icon") as? [String]{
                                 if let boards = UserDefaults.standard.object(forKey: "boards") as? [String]{
                                     if let isScouted = UserDefaults.standard.object(forKey: "isScouted") as? [Bool]{
-                                        self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted)
+                                        if let scoutedData = UserDefaults.standard.object(forKey: "scoutedData") as? [String]{
+                                            self.listOfMatches = self.loadMatchScheduleFromCoreData(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted, scoutedData: scoutedData)
+                                        }
+                                        
                                 }
                                 }
                         }
@@ -431,6 +476,7 @@ override func viewDidLoad() {
         
         if(isTimerEnabled && entrySelection){
             self.listOfMatches[selectedIndex].isScouted = true
+            self.listOfMatches[selectedIndex].scoutedData = encodedData
             listOfNewMatches.append(self.listOfMatches[selectedIndex].matchNumber)
             listOfNewMatches.sort()
             
@@ -471,7 +517,7 @@ override func viewDidLoad() {
                 }
             }
             
-            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: redAlliances , blueAlliance: blueAlliances, board : boardName, isScouted: true)
+            let newMatchSchedule = matchSchedule.init(imageName: "addicon", matchNumber: newMatch, redAlliance: redAlliances , blueAlliance: blueAlliances, board : boardName, isScouted: true, scoutedData: encodedData)
             self.listOfMatches.append(newMatchSchedule)
             
             self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
@@ -504,9 +550,6 @@ override func viewDidLoad() {
             self.selectedBoard = selectedBoard
             self.updateBoard(board: selectedBoard, scout: scoutName)
         }
-        if let selectedTeams = UserDefaults.standard.object(forKey: "SelectedTeams") as? [String]{
-            self.listOfSelectedTeams = selectedTeams
-        }
         
         if let scoutName = UserDefaults.standard.object(forKey: "ScoutName") as? String{
             self.scoutName = scoutName
@@ -524,6 +567,7 @@ override func viewDidLoad() {
         var imageName : [String] = []
         var boards : [String] = []
         var isScouted : [Bool] = []
+        var scoutedData : [String] = []
         for i in 0..<self.listOfMatches.count{
             blueAlliance.append(self.listOfMatches[i].blueAlliance)
             redAlliance.append(self.listOfMatches[i].redAlliance)
@@ -531,6 +575,7 @@ override func viewDidLoad() {
             imageName.append(self.listOfMatches[i].imageName)
             boards.append(self.listOfMatches[i].board)
             isScouted.append(self.listOfMatches[i].isScouted)
+            scoutedData.append(self.listOfMatches[i].scoutedData)
         }
         
         UserDefaults.standard.set(blueAlliance, forKey: "blueAlliance")
@@ -538,17 +583,18 @@ override func viewDidLoad() {
         UserDefaults.standard.set(matchNumber, forKey: "matchNumber")
         UserDefaults.standard.set(imageName, forKey: "icon")
         UserDefaults.standard.set(boards, forKey: "boards")
+        UserDefaults.standard.set(scoutedData, forKey: "scoutedData")
         UserDefaults.standard.set(numberOfAddedEntriesIndices, forKey: "addedMatches")
         UserDefaults.standard.set(listOfNewMatches, forKey: "addedMatchesNumber")
         UserDefaults.standard.set(isScouted, forKey: "isScouted")
         
     }
     
-    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String], isScouted : [Bool]) -> [matchSchedule]{
+    func loadMatchScheduleFromCoreData(blueAlliance : [[String]], redAlliance : [[String]], matchNumber : [Int], imageName : [String], boards : [String], isScouted : [Bool], scoutedData : [String]) -> [matchSchedule]{
         var tempMatch : [matchSchedule] = []
         
         for i in 0..<matchNumber.count{
-            tempMatch.append(matchSchedule.init(imageName: imageName[i], matchNumber: matchNumber[i], redAlliance: redAlliance[i], blueAlliance: blueAlliance[i], board: boards[i], isScouted: isScouted[i]))
+            tempMatch.append(matchSchedule.init(imageName: imageName[i], matchNumber: matchNumber[i], redAlliance: redAlliance[i], blueAlliance: blueAlliance[i], board: boards[i], isScouted: isScouted[i], scoutedData: scoutedData[i]))
         }
         
         return tempMatch
@@ -579,7 +625,7 @@ override func viewDidLoad() {
             
                                         self.jsonListOfMatches[u].alliances.red.team_keys[p] = String(parsedRed)
                                     }
-                                    let match = matchSchedule(imageName : "layers", matchNumber: i, redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys, board: self.selectedBoard, isScouted: false)
+                                    let match = matchSchedule(imageName : "layers", matchNumber: i, redAlliance:  self.jsonListOfMatches[u].alliances.red.team_keys, blueAlliance: self.jsonListOfMatches[u].alliances.blue.team_keys, board: self.selectedBoard, isScouted: false, scoutedData: "")
                                     tempMatch.append(match)
                                 }
                             }
@@ -611,30 +657,21 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         for i in 0..<boards.count{
             boards[i].textColor = UIColor.gray
         }
+        
+        
         switch(match.board){
             case "B1" : cell.blue1.textColor = UIColor.blue
-            self.listOfSelectedTeams.append(cell.blue1.text!)
             case "B2" : cell.blue2.textColor = UIColor.blue
-            self.listOfSelectedTeams.append(cell.blue2.text!)
             case "B3" : cell.blue3.textColor = UIColor.blue
-            self.listOfSelectedTeams.append(cell.blue3.text!)
-
             case "R1" : cell.red1.textColor = UIColor.red
-            self.listOfSelectedTeams.append(cell.red1.text!)
             case "R2" : cell.red2.textColor = UIColor.red
-            self.listOfSelectedTeams.append(cell.red2.text!)
             case "R3" : cell.red3.textColor = UIColor.red
-            self.listOfSelectedTeams.append(cell.red3.text!)
             case "BX" : for i in 0..<boards.count/2{
                 boards[i].textColor = UIColor.blue
                 }
-            self.listOfSelectedTeams.append(cell.blue1.text! + " " + cell.blue2.text! + " " + cell.blue3.text!)
-            self.listOfOpposingTeams.append(cell.red1.text! + " " + cell.red2.text! + " " + cell.red3.text!)
             case "RX" : for i in boards.count/2..<boards.count{
                 boards[i].textColor = UIColor.red
                 }
-            self.listOfSelectedTeams.append(cell.red1.text! + " " + cell.red2.text! + " " + cell.red3.text!)
-            self.listOfOpposingTeams.append(cell.blue1.text! + " " + cell.blue2.text! + " " + cell.blue3.text!)
             default:
                 break
             }
@@ -647,32 +684,31 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: "ScoutingActivity") as! ScoutingActivity
         
-        teamNumber = self.listOfSelectedTeams[indexPath.row]
-        matchNumber = "M" + String(listOfMatches[indexPath.row].matchNumber)
-        separatedMatchNumber = String(listOfMatches[indexPath.row].matchNumber)
-        boardName = self.listOfMatches[indexPath.row].board
-        selectedIndex = indexPath.row
-        
-        entrySelection = true
-        addedEntry = false
-        
-        if (self.selectedBoard == "BX" || self.selectedBoard == "RX"){
-            opposingTeamNumber = self.listOfOpposingTeams[indexPath.row]
-        }
-        
         if (self.listOfMatches[indexPath.row].isScouted){
-            let alert = UIAlertController(title: "You have already scouted this entry", message: "", preferredStyle: .alert)
+            let alert = UIAlertController(title: self.listOfMatches[indexPath.row].scoutedData, message: "", preferredStyle: .alert)
+            
             let cancel = UIAlertAction(title : "OK", style: .destructive)
             alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         } else {
+            if (self.selectedBoard == "BX" || self.selectedBoard == "RX"){
+                opposingTeamNumber = listOfOpposingTeams[indexPath.row]
+            }
+            teamNumber = listOfSelectedTeams[indexPath.row]
+            matchNumber = "M" + String(listOfMatches[indexPath.row].matchNumber)
+            separatedMatchNumber = String(listOfMatches[indexPath.row].matchNumber)
+            boardName = self.listOfMatches[indexPath.row].board
+            selectedIndex = indexPath.row
+            
+            entrySelection = true
+            addedEntry = false
+            
             self.navigationController?.pushViewController(scoutingVC, animated: true)
+            UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
         }
         
-        UserDefaults.standard.set(self.listOfSelectedTeams, forKey: "SelectedTeams")
-        UserDefaults.standard.set(self.selectedBoard, forKey: "SelectedBoard")
-        self.listOfSelectedTeams.removeAll()
-        }
+        
+    }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor.green : UIColor.white

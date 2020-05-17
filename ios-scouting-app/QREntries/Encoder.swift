@@ -14,8 +14,6 @@ import Foundation
  * bit 7-10: value
  * bit 11-24: time
  */
-public var encodedData = ""
-public var encodedDataPoints = ""
 public class Encoder {
     
 func require(format : Bool, integer : Int) -> Bool{
