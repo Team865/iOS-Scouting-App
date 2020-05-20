@@ -32,6 +32,7 @@ struct layout : Decodable {
    var name : String
    var type : String
    var choices : [String]?
-    var default_choice : Int?
+   var default_choice : Int?
+    var is_lite : Bool?
 }
 

@@ -16,6 +16,7 @@ class ScoutingScreenCell : UICollectionViewCell {
     var listOfItemsName : [[String]] = []
     var listOfToggleTitles : [[[String]]] = []
     var listOfItemsTag : [[Int]] = []
+    var listOfLiteOptions  : [[Bool]] = []
     override init(frame: CGRect) {
         super.init(frame : frame)
         
@@ -36,8 +37,9 @@ class ScoutingScreenCell : UICollectionViewCell {
         var title = ""
         
         for i in 0..<titleArr.count{
-            title += titleArr[i].prefix(1).uppercased() + titleArr[i].lowercased().dropFirst() + " "
+            title += titleArr[i].prefix(1).capitalized + titleArr[i].dropFirst() + " "
         }
+                        
         return title
     }
     
@@ -89,6 +91,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                         scoutingRow.addArrangedSubview(switchField)
                         switchField.title = itemName
                         switchField.value = 0
+                        switchField.lite = self.listOfLiteOptions[i][k]
                         switchField.tag = itemTag
                         listOfSwitchesOnScreen.append(switchField)
                         switchField.setUpSwitchField()

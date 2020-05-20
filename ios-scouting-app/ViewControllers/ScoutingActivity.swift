@@ -82,6 +82,7 @@ class ScoutingActivity : UIViewController{
     var listOfItemsType : [[[String]]] = []
     var listOfItemsName : [[[String]]] = []
     var listOfToggleTitles : [[[[String]]]] = []
+    var listOfLiteOptions : [[[Bool]]] = []
     var QRImageCellID = "QRImageCell"
     var QRImageCellMade : [QRImageCell] = []
     override func viewDidLoad() {
@@ -107,6 +108,7 @@ class ScoutingActivity : UIViewController{
                         var items : [[String]] = []
                         var names : [[String]] = []
                         var choices : [[[String]]] = []
+                        var is_lites : [[Bool]] = []
                         self.screenTitles.append(scoutingType.screens[i].title)
                         self.isCreated.append(false)
                     for k in 0..<scoutingType.screens[i].layout.count{
@@ -114,25 +116,30 @@ class ScoutingActivity : UIViewController{
                             var itemsInRow : [String] = []
                             var namesInRow : [String] = []
                             var choicesInRow : [[String]] = []
+                        var isLiteInRow : [Bool] = []
                             for j in 0..<scoutingType.screens[i].layout[k].count{
                                 let type = scoutingType.screens[i].layout[k][j].type
                                 let name = self.formatTitle(string: scoutingType.screens[i].layout[k][j].name, currentTeam: currentTeam, opposingTeam: opposingTeam)
                                 let choice = self.formatChoices(string: scoutingType.screens[i].layout[k][j].choices ?? [], currentTeam: currentTeam, opposingTeam: opposingTeam)
+                                let lite = scoutingType.screens[i].layout[k][j].is_lite ?? false
                                 itemsInRow.append(type)
                                 namesInRow.append(name)
                                 choicesInRow.append(choice)
                                 tagsInRow.append(itemIndex)
+                                isLiteInRow.append(lite)
                                 itemIndex += 1
                             }
                             items.append(itemsInRow)
                             names.append(namesInRow)
                             choices.append(choicesInRow)
                             indices.append(tagsInRow)
+                            is_lites.append(isLiteInRow)
                         }
                         self.listOfTags.append(indices)
                         self.listOfItemsType.append(items)
                         self.listOfItemsName.append(names)
                         self.listOfToggleTitles.append(choices)
+                        self.listOfLiteOptions.append(is_lites)
                     }
             } else {
                 let scoutingType = screenLayout.robot_scout
@@ -141,6 +148,7 @@ class ScoutingActivity : UIViewController{
                     var items : [[String]] = []
                     var names : [[String]] = []
                     var choices : [[[String]]] = []
+                    var isLites : [[Bool]] = []
                     self.screenTitles.append(scoutingType.screens[i].title)
                     self.isCreated.append(false)
                     for k in 0..<scoutingType.screens[i].layout.count{
@@ -148,25 +156,30 @@ class ScoutingActivity : UIViewController{
                         var itemsInRow : [String] = []
                         var namesInRow : [String] = []
                         var choicesInRow : [[String]] = []
+                        var isLiteInRow : [Bool] = []
                         for j in 0..<scoutingType.screens[i].layout[k].count{
                             let type = scoutingType.screens[i].layout[k][j].type
                             let name = scoutingType.screens[i].layout[k][j].name
                             let choice = scoutingType.screens[i].layout[k][j].choices ?? []
+                            let lite = scoutingType.screens[i].layout[k][j].is_lite ?? false
                             itemsInRow.append(type)
                             namesInRow.append(name)
                             choicesInRow.append(choice)
                             tagsInRow.append(itemIndex)
+                            isLiteInRow.append(lite)
                             itemIndex += 1
                         }
                         items.append(itemsInRow)
                         names.append(namesInRow)
                         choices.append(choicesInRow)
                         indices.append(tagsInRow)
+                        isLites.append(isLiteInRow)
                     }
                     self.listOfTags.append(indices)
                     self.listOfItemsType.append(items)
                     self.listOfItemsName.append(names)
                     self.listOfToggleTitles.append(choices)
+                    self.listOfLiteOptions.append(isLites)
                 }
             }
             self.screenTitles.append("QR Code")
@@ -209,8 +222,9 @@ class ScoutingActivity : UIViewController{
                 let index = Int(arr[i].suffix(1)) ?? 0
                 arr[i] = opposingTeam[index - 1]
             }
-            formated += (arr[i] + " ")
+            formated += (arr[i] + "_")
         }
+        
         
         
         return formated
@@ -550,6 +564,9 @@ class ScoutingActivity : UIViewController{
                     let textField = alert?.textFields![0]
                     comment = textField!.text ?? ""
                     encodedData = self.updateEncodedData()
+                    if (self.QRImageCellMade.count == 1){
+                        self.QRImageCellMade[0].setUpQRImage()
+                    }
                 }
 
                 let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
@@ -585,6 +602,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
             cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
             cell?.listOfItemsTag = self.listOfTags[indexPath.row]
+            cell?.listOfLiteOptions = self.listOfLiteOptions[indexPath.row]
             cell?.index = indexPath.row
             return cell!
         } else {

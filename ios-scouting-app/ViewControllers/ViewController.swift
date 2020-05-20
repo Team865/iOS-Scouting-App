@@ -480,8 +480,11 @@ override func viewDidLoad() {
         }
         
         if(isTimerEnabled && entrySelection){
-            self.listOfMatches[selectedIndex].isScouted = true
-            self.listOfMatches[selectedIndex].scoutedData = encodedData
+            let newMatchSchedule = matchSchedule.init(imageName: "check", matchNumber: self.listOfMatches[selectedIndex].matchNumber, redAlliance: self.listOfMatches[selectedIndex].redAlliance, blueAlliance: self.listOfMatches[selectedIndex].blueAlliance, board : self.listOfMatches[selectedIndex].board, isScouted: true, scoutedData: encodedData)
+            
+            self.listOfMatches.append(newMatchSchedule)
+            self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
+            
             listOfNewMatches.append(self.listOfMatches[selectedIndex].matchNumber)
             listOfNewMatches.sort()
             
@@ -489,7 +492,7 @@ override func viewDidLoad() {
             var pointer = 0
              for i in 0..<self.listOfMatches.count{
                  if (pointer < listOfNewMatches.count){
-                     if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].isScouted){
+                     if (self.listOfMatches[i].isScouted){
                          tempArr.append(i)
                          pointer += 1
                      }
@@ -534,7 +537,7 @@ override func viewDidLoad() {
             var pointer = 0
             for i in 0..<self.listOfMatches.count{
                 if (pointer < listOfNewMatches.count){
-                    if (self.listOfMatches[i].matchNumber == listOfNewMatches[pointer] && self.listOfMatches[i].isScouted){
+                    if (self.listOfMatches[i].isScouted){
                         tempArr.append(i)
                         pointer += 1
                     }
@@ -584,7 +587,7 @@ override func viewDidLoad() {
         }
         
         UserDefaults.standard.set(blueAlliance, forKey: self.cacheKeys.blueAlliance)
-        UserDefaults.standard.set(redAlliance, forKey: self.cacheKeys.blueAlliance)
+        UserDefaults.standard.set(redAlliance, forKey: self.cacheKeys.redAlliance)
         UserDefaults.standard.set(matchNumber, forKey: self.cacheKeys.matchNumber)
         UserDefaults.standard.set(imageName, forKey: self.cacheKeys.imageName)
         UserDefaults.standard.set(boards, forKey: self.cacheKeys.boards)
@@ -741,6 +744,8 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor(red: 0.47, green: 0.89, blue: 0.41, alpha: 1.00) : UIColor.white
+        cell.contentView.backgroundColor = self.listOfMatches[indexPath.row].isScouted ? UIColor(red: 0.40, green: 1.00, blue: 0.53, alpha: 0.38)
+
+ : UIColor.white
     }
 }
