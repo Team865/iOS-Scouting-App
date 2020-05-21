@@ -7,20 +7,25 @@
 //
 
 import Foundation
+
 class Entry {
+    var encodedData = ""
+    var encodedDataPoints = ""
+    var DataPoints = [DataPoint]()
+    
     var match : String = ""
     var team : Int = 1
     var scout : String = ""
     var board : String = ""
-    var timeStamp : Float = 00
+    var timeStampSince1970 : Float = 00
     var data_point : [DataPoint] = []
     
-    init(match : String, team : Int, scout : String, board : String, timeStamp : Float, data_point : [DataPoint]) {
+    func setEntry(match : String, team : Int, scout : String, board : String, timeStamp : Float, data_point : [DataPoint]) {
         self.match = match
         self.team = team
         self.scout = scout
         self.board = board
-        self.timeStamp = timeStamp
+        self.timeStampSince1970 = timeStamp
         self.data_point = data_point
     }
 }

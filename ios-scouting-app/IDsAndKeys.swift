@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class CacheKeys {
+class IDsAndKeys {
     let blueAlliance = "blueAlliance"
     let redAlliance = "redAlliance"
     let matchNumber = "matchNumber"
@@ -29,4 +29,12 @@ class CacheKeys {
     
     let year = "year"
     let team = "team"
+    
+    let matchScheduleCellID = "matchScheduleCell"
+    let QRCellID = "QRImageCell"
+    let scoutingCellsID = "scoutingCells"
+    
+    let mainController = "MainController"
+    let scoutingActivity = "ScoutingActivity"
+    let settingsViewController = "SettingsViewController"
 }

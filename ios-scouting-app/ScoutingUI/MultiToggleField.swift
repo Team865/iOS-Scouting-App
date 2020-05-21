@@ -19,17 +19,30 @@ public class ToggleButton : UIButton{
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
 }
 
-public class MultiToggleField : UIView{
+class MultiToggleField : UIView, InputControl{
+    func encodeData() {
+        let entry = Entry()
+        let timer = DataTimer()
+        let dataPoint = DataPoint(type_index: self.toggleButton.tag, value: self.defaultValue, time: timer.getTimeStamp())
+        entry.data_point.append(dataPoint)
+    }
+    
+    func onTimerStarted() {
+        print("Do nothing lol")
+    }
+    
+    func setUpItem() {
+        
+    }
+    
     var title : String?
     var numberOfButtons = 0
     var listOfToggleTitles : [String] = []
     var toggleButton = ToggleButton()
     //We know that the default value is 2, but we need to be able to change this dynamically
-    var value = 2
+    var defaultValue = 2
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -65,7 +78,7 @@ public class MultiToggleField : UIView{
         toggleButtons.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
         toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-                
+        
         for i in 0..<numberOfButtons{
             toggleButton = ToggleButton()
             toggleButton.setTitle(self.listOfToggleTitles[i], for: .normal)
@@ -73,8 +86,8 @@ public class MultiToggleField : UIView{
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
             toggleButton.tag = self.tag
             toggleButton.value = i
-            if (i == value){
-            toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            if (i == self.defaultValue){
+                toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 toggleButton.setTitleColor(UIColor.white, for: .normal)
             } else {
                 toggleButton.backgroundColor = UIColor.systemGray5
@@ -86,24 +99,9 @@ public class MultiToggleField : UIView{
     }
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
-        let scoutingActivity = ScoutingActivity()
-        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
-        prevToggleValue = self.value
-        self.value = sender.value
+        self.defaultValue = sender.value
+        self.encodeData()
         setUpToggleField()
-        
-        dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
-        scoutingActivity.encodeData(dataPoint : dataPoint)
-        
-        if (sender.tag == 15){
-            identicalToggles[0].value = sender.value
-            identicalToggles[0].setUpToggleField()
-        } else if (sender.tag == 7){
-            identicalToggles[1].value = sender.value
-            identicalToggles[1].setUpToggleField()
-        }
-        
-        
     }
-   
+    
 }

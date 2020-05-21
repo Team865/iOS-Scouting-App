@@ -112,5 +112,114 @@
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "ScoutingActivity"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6 - a63911fac687a638"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Scouting.ScoutingActivity.__allocating_init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; Scouting.ScoutingActivity"
+                  moduleName = "Scouting"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6 - ba34cc6ca1c89aaf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Scouting.ScoutingActivity.init(nibName: Swift.Optional&lt;Swift.String&gt;, bundle: Swift.Optional&lt;__C.NSBundle&gt;) -&gt; Scouting.ScoutingActivity"
+                  moduleName = "Scouting"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "189">
+               </Location>
+               <Location
+                  uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6 - 9f1c8dadde085647"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Scouting.ScoutingActivity.__allocating_init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;Scouting.ScoutingActivity&gt;"
+                  moduleName = "Scouting"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6 - 97bf9139b88716dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Scouting.ScoutingActivity.init(coder: __C.NSCoder) -&gt; Swift.Optional&lt;Scouting.ScoutingActivity&gt;"
+                  moduleName = "Scouting"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "126">
+               </Location>
+               <Location
+                  uuid = "D64FDC78-07A4-4AC4-9E3C-AFD2367A69E6 - 1b8072c789ea52af"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Scouting.ScoutingActivity.__deallocating_deinit"
+                  moduleName = "Scouting"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mrloc/Desktop/Xcode/ios-scouting-app/ios-scouting-app/ViewControllers/ScoutingActivity.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3CC0A42B-14C1-439E-9654-319F5D82AAAB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ios-scouting-app/QREntries/DataPoint.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "10"
+            endingLineNumber = "10"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

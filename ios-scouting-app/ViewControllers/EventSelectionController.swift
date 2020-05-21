@@ -49,7 +49,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
             self.listOfNames = eventName
             self.eventTable.reloadData()
         }
-       }
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         yearText.resignFirstResponder()
@@ -128,7 +128,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         teamText.leadingAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 5).isActive = true
         teamText.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
         teamText.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05).isActive = true
-    
+        
         let bottomLine = CALayer()
         bottomLine.backgroundColor = UIColor.black.cgColor
         bottomLine.frame = CGRect(x : 0, y : UIScreen.main.bounds.height * 0.045, width : UIScreen.main.bounds.width * 0.45 - 10, height : 1)
@@ -140,7 +140,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         bottomLine2.frame = CGRect(x : 0, y : UIScreen.main.bounds.height * 0.045, width : UIScreen.main.bounds.width * 0.45, height : 1)
         teamText.borderStyle = .none
         teamText.layer.addSublayer(bottomLine2)
-
+        
     }
     
     private func loadEventListFromCore(name : [String], info : [String]) -> [Events]{
@@ -157,15 +157,15 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         
         var listOfInfo : [String] = []
         
-                for i in 0..<self.jsonListOfEvents.count{
-                    if(jsonListOfEvents[i].year == Int(self.yearText.text!) ?? 0){
-                        let event = Events.init(name: jsonListOfEvents[i].name, info : jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
-                        tempCell.append(event)
-                        listOfInfo.append(jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
-                        self.listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
-                        self.listOfNames.append(self.jsonListOfEvents[i].name)
-                    }
-                }
+        for i in 0..<self.jsonListOfEvents.count{
+            if(jsonListOfEvents[i].year == Int(self.yearText.text!) ?? 0){
+                let event = Events.init(name: jsonListOfEvents[i].name, info : jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
+                tempCell.append(event)
+                listOfInfo.append(jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country)
+                self.listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
+                self.listOfNames.append(self.jsonListOfEvents[i].name)
+            }
+        }
         UserDefaults.standard.set(self.yearText.text!, forKey: "year")
         UserDefaults.standard.set(self.listOfKeys, forKey: "EventKeys")
         
@@ -176,8 +176,8 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     }
     
     private func setUpNavigationBar(){
-           navigationItem.title = "Select FRC Event"
-       }
+        navigationItem.title = "Select FRC Event"
+    }
     
     private func getJSONEvents(completed : @escaping () -> ()){
         let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc" + self.teamText.text! + "/events")!
@@ -186,23 +186,23 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
             (data, response, error) in
-        guard let data = data else { return }
-        do {
-            let decoder = JSONDecoder()
-            self.jsonListOfEvents = try decoder.decode([jsonEvents].self, from: data)
-            
-            DispatchQueue.main.async {
-                completed()
+            guard let data = data else { return }
+            do {
+                let decoder = JSONDecoder()
+                self.jsonListOfEvents = try decoder.decode([jsonEvents].self, from: data)
+                
+                DispatchQueue.main.async {
+                    completed()
+                }
+            } catch let jsonErr {
+                print(jsonErr)
             }
-        } catch let jsonErr {
-            print(jsonErr)
-        }
-    }.resume()
-    
-   }
+        }.resume()
+        
+    }
     
     override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
+        super.didReceiveMemoryWarning()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -226,23 +226,23 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
-            let alert = UIAlertController(title: "Warning", message: "You will delete all data of current event, are you sure ?", preferredStyle: .alert)
-                
-                let getName = UIAlertAction(title: "OK", style: .default){
-                    alert in
-                    self.selectedEventKey = self.listOfKeys[indexPath.row]
-                    self.selectedName = self.listOfNames[indexPath.row]
-                    self.performSegue(withIdentifier: "passEventKey", sender: self)
-                    
-                }
-                
-                let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
-                
-                alert.addAction(getName)
-                alert.addAction(cancel)
-                self.present(alert, animated: true, completion: nil)
-            }
+        
+        let alert = UIAlertController(title: "Warning", message: "You will delete all data of current event, are you sure ?", preferredStyle: .alert)
+        
+        let getName = UIAlertAction(title: "OK", style: .default){
+            alert in
+            self.selectedEventKey = self.listOfKeys[indexPath.row]
+            self.selectedName = self.listOfNames[indexPath.row]
+            self.performSegue(withIdentifier: "passEventKey", sender: self)
+            
         }
+        
+        let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
+        
+        alert.addAction(getName)
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
+    }
+}
 
 

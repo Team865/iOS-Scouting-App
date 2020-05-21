@@ -7,6 +7,8 @@
 //
 
 import Foundation
+
+
 public class DataPoint{
     var type_index = 0
     var value = 0

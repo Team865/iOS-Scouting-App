@@ -8,7 +8,23 @@
 
 import Foundation
 import UIKit
-public class SwitchField : UIView {
+public class SwitchField : UIView, InputControl {
+    func encodeData() {
+        let entry = Entry()
+        let timer = DataTimer()
+        let dataPoint = DataPoint(type_index: self.switchButton.tag, value: self.value, time: timer.getTimeStamp())
+        entry.data_point.append(dataPoint)
+    }
+    
+    func onTimerStarted() {
+        self.switchButton.isEnabled = true
+        self.switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
+    }
+    
+    func setUpItem() {
+        
+    }
+    
     var switchButton = UIButton()
     var title : String?
     var value = 0
@@ -53,9 +69,6 @@ public class SwitchField : UIView {
     }
     
     @objc func activateSwitch(sender : UIButton){
-        let scoutingActivity = ScoutingActivity()
-        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
-               
         if(self.value == 0){
             //Turn on
             sender.backgroundColor = UIColor.red
@@ -73,9 +86,8 @@ public class SwitchField : UIView {
             sender.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
             self.value = 0
         }
-     
-        dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
-        scoutingActivity.encodeData(dataPoint : dataPoint)
         
+        self.encodeData()
+        setUpSwitchField()
     }
 }

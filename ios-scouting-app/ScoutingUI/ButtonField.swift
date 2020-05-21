@@ -9,7 +9,24 @@
 import Foundation
 import UIKit
 
-public class ButtonField : UIView{
+public class ButtonField : UIView, InputControl{
+    func encodeData() {
+        let entry = Entry()
+        let timer = DataTimer()
+        let dataPoint = DataPoint(type_index: self.button.tag, value: self.value, time: timer.getTimeStamp())
+        entry.data_point.append(dataPoint)
+        //print(entry.data_point)
+    }
+    
+    func setUpItem() {
+        
+    }
+    
+    func onTimerStarted() {
+        self.button.isEnabled = true
+        self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+    }
+    
     let counterField = UILabel()
     var button = UIButton()
     var value = 1
@@ -17,7 +34,7 @@ public class ButtonField : UIView{
     var buttonTitle = ""
     override init (frame : CGRect){
         super.init(frame : frame)
-
+        
     }
     
     required init?(coder: NSCoder) {
@@ -55,14 +72,10 @@ public class ButtonField : UIView{
     }
     
     @objc func updateCounter(sender : UIButton){
-        let scoutingActivity = ScoutingActivity()
-        var dataPoint = DataPoint(type_index: 0, value: 0, time: 0)
-        
         counter += 1
         counterField.text = String(counter)
         
-        dataPoint = .init(type_index: sender.tag, value: self.value, time: timeStamp)
-        scoutingActivity.encodeData(dataPoint : dataPoint)
-        
+        self.encodeData()
+        setUpButtonField()
     }
 }
