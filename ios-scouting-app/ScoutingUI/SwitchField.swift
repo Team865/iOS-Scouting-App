@@ -9,22 +9,12 @@
 import Foundation
 import UIKit
 public class SwitchField : UIView, InputControl {
-    func encodeData() {
-        let entry = Entry()
-        let timer = DataTimer()
-        let dataPoint = DataPoint(type_index: self.switchButton.tag, value: self.value, time: timer.getTimeStamp())
-        entry.data_point.append(dataPoint)
-    }
-    
     func onTimerStarted() {
         self.switchButton.isEnabled = true
         self.switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
     }
     
-    func setUpItem() {
-        
-    }
-    
+    var entry : Entry!
     var switchButton = UIButton()
     var title : String?
     var value = 0
@@ -87,7 +77,12 @@ public class SwitchField : UIView, InputControl {
             self.value = 0
         }
         
-        self.encodeData()
+        let dataPoint = DataPoint(type_index: self.tag, value: self.value, time : 0.00)
+        self.entry.addDataPoint(dp: dataPoint)
+        self.entry.updateQREntry(entry: self.entry)
+        
+        print("Match is" + self.entry.getQREntry().match)
+        
         setUpSwitchField()
     }
 }

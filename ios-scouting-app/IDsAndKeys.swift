@@ -15,7 +15,6 @@ class IDsAndKeys {
     let boards = "boards"
     let isScouted = "isScouted"
     let scoutedData = "scoutedData"
-    let currentEvent = "currentEvent"
     let scoutName = "scoutName"
     let eventKey = "eventKey"
     let numberOfAddedEntriesIndices = "addedMatches"
@@ -25,7 +24,9 @@ class IDsAndKeys {
     
     let eventKeys = "EventKeys"
     let eventInfos = "EventInfos"
-    let eventName = "EventNames"
+    let eventNames = "EventNames"
+    let eventCells = "EventCells"
+    let currentEvent = "currentEvent"
     
     let year = "year"
     let team = "team"
@@ -33,8 +34,11 @@ class IDsAndKeys {
     let matchScheduleCellID = "matchScheduleCell"
     let QRCellID = "QRImageCell"
     let scoutingCellsID = "scoutingCells"
+    let settingsCell = "SettingsCell"
     
     let mainController = "MainController"
     let scoutingActivity = "ScoutingActivity"
     let settingsViewController = "SettingsViewController"
+    let eventSelectionController = "EventSelectionController"
+    
 }

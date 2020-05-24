@@ -10,23 +10,12 @@ import Foundation
 import UIKit
 
 public class ButtonField : UIView, InputControl{
-    func encodeData() {
-        let entry = Entry()
-        let timer = DataTimer()
-        let dataPoint = DataPoint(type_index: self.button.tag, value: self.value, time: timer.getTimeStamp())
-        entry.data_point.append(dataPoint)
-        //print(entry.data_point)
-    }
-    
-    func setUpItem() {
-        
-    }
-    
     func onTimerStarted() {
         self.button.isEnabled = true
         self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
     }
     
+    var entry : Entry!
     let counterField = UILabel()
     var button = UIButton()
     var value = 1
@@ -75,7 +64,6 @@ public class ButtonField : UIView, InputControl{
         counter += 1
         counterField.text = String(counter)
         
-        self.encodeData()
         setUpButtonField()
     }
 }

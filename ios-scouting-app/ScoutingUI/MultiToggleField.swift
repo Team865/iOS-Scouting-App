@@ -22,21 +22,11 @@ public class ToggleButton : UIButton{
 }
 
 class MultiToggleField : UIView, InputControl{
-    func encodeData() {
-        let entry = Entry()
-        let timer = DataTimer()
-        let dataPoint = DataPoint(type_index: self.toggleButton.tag, value: self.defaultValue, time: timer.getTimeStamp())
-        entry.data_point.append(dataPoint)
-    }
-    
     func onTimerStarted() {
         print("Do nothing lol")
     }
     
-    func setUpItem() {
-        
-    }
-    
+    var entry : Entry!
     var title : String?
     var numberOfButtons = 0
     var listOfToggleTitles : [String] = []
@@ -100,7 +90,6 @@ class MultiToggleField : UIView, InputControl{
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
         self.defaultValue = sender.value
-        self.encodeData()
         setUpToggleField()
     }
     

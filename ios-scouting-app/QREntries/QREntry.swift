@@ -14,18 +14,43 @@ class Entry {
     var DataPoints = [DataPoint]()
     
     var match : String = ""
-    var team : Int = 1
+    var team : String = ""
     var scout : String = ""
     var board : String = ""
-    var timeStampSince1970 : Float = 00
+    var referenceTime : Float = 0.0
     var data_point : [DataPoint] = []
+    var eventKey : String = ""
+    var comment : String = ""
     
-    func setEntry(match : String, team : Int, scout : String, board : String, timeStamp : Float, data_point : [DataPoint]) {
-        self.match = match
-        self.team = team
-        self.scout = scout
-        self.board = board
-        self.timeStampSince1970 = timeStamp
-        self.data_point = data_point
+    func initializeEntry(selectedEntry : MatchEntry) {
+        self.match = selectedEntry.matchNumber
+        self.team = selectedEntry.teamNumber
+        self.scout = selectedEntry.scoutName
+        self.board = selectedEntry.board
+        self.eventKey = selectedEntry.eventKey
+        self.referenceTime = Float(Date().timeIntervalSinceReferenceDate)
+        self.data_point = []
+    }
+    
+    func addDataPoint(dp : DataPoint){
+        self.data_point.append(dp)
+    }
+    
+    func updateComment(comment : String){
+        
+    }
+    
+    func updateQREntry(entry : Entry){
+        self.match = entry.match
+        self.team = entry.team
+        self.scout = entry.scout
+        self.board = entry.board
+        self.referenceTime = entry.referenceTime
+        self.data_point = entry.data_point
+  
+    }
+    
+    func getQREntry() -> Entry {
+        return self
     }
 }

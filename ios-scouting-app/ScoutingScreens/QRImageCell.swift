@@ -11,6 +11,7 @@ import UIKit
 class QRImageCell : UICollectionViewCell{
     let image = UIImageView()
     let view = UIButton()
+    let qrData = ""
     var qrCodeGenerator = QRCodeGenerator()
     
     override init(frame: CGRect) {

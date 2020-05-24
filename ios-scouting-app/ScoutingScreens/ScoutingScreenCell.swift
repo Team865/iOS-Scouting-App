@@ -11,6 +11,7 @@ import UIKit
 var times = 0
 class ScoutingScreenCell : UICollectionViewCell {
     var reusing = false
+    var qrEntry = Entry()
     var listOfItemsType : [[String]] = []
     var listOfItemsName : [[String]] = []
     var listOfToggleTitles : [[[String]]] = []
@@ -68,7 +69,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     scoutingRow.addArrangedSubview(button)
                     button.buttonTitle = itemName
                     button.tag = itemTag
-                    ScoutingActivity().listOfInputControls.append(button)
+                    button.entry = self.qrEntry.getQREntry()
                     button.setUpButtonField()
                 }
                 if (self.listOfItemsType[i][k] == "MultiToggle"){
@@ -77,8 +78,8 @@ class ScoutingScreenCell : UICollectionViewCell {
                     toggle.numberOfButtons = self.listOfToggleTitles[i][k].count
                     toggle.listOfToggleTitles = self.listOfToggleTitles[i][k]
                     toggle.title = itemName
+                    toggle.entry = self.qrEntry.getQREntry()
                     toggle.tag = itemTag
-                    ScoutingActivity().listOfInputControls.append(toggle)
                     toggle.setUpToggleField()
                     
                 }
@@ -89,7 +90,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     switchField.value = 0
                     switchField.lite = self.listOfLiteOptions[i][k]
                     switchField.tag = itemTag
-                    ScoutingActivity().listOfInputControls.append(switchField)
+                    switchField.entry = self.qrEntry.getQREntry()
                     switchField.setUpSwitchField()
                 }
                 if(self.listOfItemsType[i][k] == "Checkbox"){
@@ -98,7 +99,7 @@ class ScoutingScreenCell : UICollectionViewCell {
                     checkBox.title = itemName
                     checkBox.value = 0
                     checkBox.tag = itemTag
-                    ScoutingActivity().listOfInputControls.append(checkBox)
+                    checkBox.entry = self.qrEntry.getQREntry()
                     checkBox.setUpCheckBox()
                 }
             }

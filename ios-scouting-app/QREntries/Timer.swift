@@ -9,7 +9,7 @@
 import Foundation
 class DataTimer {
     var timeStamp : Float = 0
-    
+        
     func setTimeStamp(timeStamp : Float){
         self.timeStamp = timeStamp
     }

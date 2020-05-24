@@ -14,6 +14,8 @@ class SettingsViewController: UIViewController {
     var settingsActionSection = [Settings]()
     var settingsInfoSection = [Settings]()
     
+    let idsAndKeys = IDsAndKeys()
+    
     var sectionTitle : [String] = ["Configurations", "About"]
     
     override func viewDidLoad() {
@@ -31,7 +33,7 @@ class SettingsViewController: UIViewController {
         
         var selectedEvent = "None"
         
-        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+        if let currentEvent = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEvent) as? String{
             selectedEvent = currentEvent
         }	
         
@@ -58,7 +60,7 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UIScreen.main.bounds.height * 0.1
         
-        tableView.register(SettingsCell.self, forCellReuseIdentifier: "SettingsCell")
+        tableView.register(SettingsCell.self, forCellReuseIdentifier: self.idsAndKeys.settingsCell)
         view.addSubview(tableView)
         tableView.frame = view.frame
         tableView.tableFooterView = UIView()
@@ -69,7 +71,7 @@ class SettingsViewController: UIViewController {
         if(indexPath.section == 0){
             if(indexPath.row == 0){
                 let eventSelection = UIStoryboard(name : "Main", bundle: nil)
-                guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
+                guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: self.idsAndKeys.eventSelectionController) as?
                     EventSelectionController else { return }
                 
                 self.navigationController?.pushViewController(eventSelectionVC, animated: true)
@@ -116,7 +118,7 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for : indexPath) as! SettingsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.idsAndKeys.settingsCell, for : indexPath) as! SettingsCell
         switch indexPath.section {
         case 0 :
             let section1 = settingsActionSection[indexPath.row]

@@ -9,22 +9,13 @@
 import Foundation
 import UIKit
 class CheckBoxField : UIView, InputControl{
-    func encodeData() {
-        let entry = Entry()
-        let timer = DataTimer()
-        let dataPoint = DataPoint(type_index: self.checkBox.tag, value: self.value, time: timer.getTimeStamp())
-        entry.data_point.append(dataPoint)
-    }
-    
-    func setUpItem() {
-        
-    }
     
     func onTimerStarted() {
         self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         self.checkBox.isEnabled = true
     }
     
+    var entry : Entry!
     var title : String?
     var value = 0
     var checkBox = UIButton()
@@ -77,7 +68,6 @@ class CheckBoxField : UIView, InputControl{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
-        self.encodeData()
         setUpCheckBox()
     }
 }

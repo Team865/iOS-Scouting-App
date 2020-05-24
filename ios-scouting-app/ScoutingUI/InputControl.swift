@@ -10,6 +10,4 @@ import Foundation
 import UIKit
 protocol InputControl {
     func onTimerStarted()
-    func encodeData()
-    func setUpItem()
 }

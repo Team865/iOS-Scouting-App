@@ -9,24 +9,12 @@
 import Foundation
 import UIKit
 
-//Remove or keep, you decide
-
-
-var matchNumber = ""
-var opposingTeamNumber = ""
-var teamNumber = ""
-var boardName = ""
-var timeOnStart = "015"
-var separatedMatchNumber = ""
 class ScoutingActivity : UIViewController{
     var listOfInputControls : [InputControl] = []
+    var matchEntry : MatchEntry?
+    var qrEntry = Entry()
+    var parser = Parser()
     
-    var screenLayout : ScoutingScreenLayout!
-    
-    var selectedTeam = 0
-    var selectedBoard = ""
-    var selectedKey = ""
-    var selectedScout = ""
     var comment = ""
     
     var idsAndKeys = IDsAndKeys()
@@ -85,118 +73,14 @@ class ScoutingActivity : UIViewController{
         configureButtons()
         configureProgressBar()
         
-        var itemIndex = 0
         comment = ""
         
-        //This is disgusting
-        getLayoutForScreen{
-            if (boardName == "BX" || boardName == "RX"){
-                let scoutingType = self.screenLayout.super_scout
-                
-                let currentTeam = teamNumber.components(separatedBy: " ")
-                let opposingTeam = opposingTeamNumber.components(separatedBy: " ")
-                
-                for i in 0..<scoutingType.screens.count{
-                    var indices : [[Int]] = []
-                    var items : [[String]] = []
-                    var names : [[String]] = []
-                    var choices : [[[String]]] = []
-                    var is_lites : [[Bool]] = []
-                    self.screenTitles.append(scoutingType.screens[i].title)
-                    self.isCreated.append(false)
-                    for k in 0..<scoutingType.screens[i].layout.count{
-                        var tagsInRow : [Int] = []
-                        var itemsInRow : [String] = []
-                        var namesInRow : [String] = []
-                        var choicesInRow : [[String]] = []
-                        var isLiteInRow : [Bool] = []
-                        for j in 0..<scoutingType.screens[i].layout[k].count{
-                            let type = scoutingType.screens[i].layout[k][j].type
-                            let name = self.formatTitle(string: scoutingType.screens[i].layout[k][j].name, currentTeam: currentTeam, opposingTeam: opposingTeam)
-                            let choice = self.formatChoices(string: scoutingType.screens[i].layout[k][j].choices ?? [], currentTeam: currentTeam, opposingTeam: opposingTeam)
-                            let lite = scoutingType.screens[i].layout[k][j].is_lite ?? false
-                            itemsInRow.append(type)
-                            namesInRow.append(name)
-                            choicesInRow.append(choice)
-                            tagsInRow.append(itemIndex)
-                            isLiteInRow.append(lite)
-                            itemIndex += 1
-                        }
-                        items.append(itemsInRow)
-                        names.append(namesInRow)
-                        choices.append(choicesInRow)
-                        indices.append(tagsInRow)
-                        is_lites.append(isLiteInRow)
-                    }
-                    self.listOfTags.append(indices)
-                    self.listOfItemsType.append(items)
-                    self.listOfItemsName.append(names)
-                    self.listOfToggleTitles.append(choices)
-                    self.listOfLiteOptions.append(is_lites)
-                }
-            } else {
-                let scoutingType = self.screenLayout.robot_scout
-                for i in 0..<scoutingType.screens.count{
-                    var indices : [[Int]] = []
-                    var items : [[String]] = []
-                    var names : [[String]] = []
-                    var choices : [[[String]]] = []
-                    var is_lites : [[Bool]] = []
-                    
-                    self.screenTitles.append(scoutingType.screens[i].title)
-                    self.isCreated.append(false)
-                    for k in 0..<scoutingType.screens[i].layout.count{
-                        var tagsInRow : [Int] = []
-                        var itemsInRow : [String] = []
-                        var namesInRow : [String] = []
-                        var choicesInRow : [[String]] = []
-                        var isLiteInRow : [Bool] = []
-                        
-                        for j in 0..<scoutingType.screens[i].layout[k].count{
-                            let type = scoutingType.screens[i].layout[k][j].type
-                            let name = scoutingType.screens[i].layout[k][j].name
-                            let choice = scoutingType.screens[i].layout[k][j].choices ?? []
-                            let lite = scoutingType.screens[i].layout[k][j].is_lite ?? false
-                            
-                            itemsInRow.append(type)
-                            namesInRow.append(name)
-                            choicesInRow.append(choice)
-                            tagsInRow.append(itemIndex)
-                            isLiteInRow.append(lite)
-                            
-                            itemIndex += 1
-                        }
-                        items.append(itemsInRow)
-                        names.append(namesInRow)
-                        choices.append(choicesInRow)
-                        indices.append(tagsInRow)
-                        is_lites.append(isLiteInRow)
-                        
-                    }
-                    self.listOfTags.append(indices)
-                    self.listOfItemsType.append(items)
-                    self.listOfItemsName.append(names)
-                    self.listOfToggleTitles.append(choices)
-                    self.listOfLiteOptions.append(is_lites)
-                    
-                }
-            }
-            self.screenTitles.append("QR Code")
-            self.screenTitle.text = self.screenTitles[0]
-            self.configureScoutingView()
-        }
+        self.qrEntry.initializeEntry(selectedEntry: self.matchEntry!)
         
-        selectedTeam = Int(teamNumber) ?? 0
-        selectedBoard = boardName
+        print(self.matchEntry?.eventKey ?? "")
         
-        if let eventKey = UserDefaults.standard.object(forKey: self.idsAndKeys.eventKey) as? String{
-            if let scoutName = UserDefaults.standard.object(forKey: self.idsAndKeys.scoutName) as? String {
-                selectedKey = eventKey
-                selectedScout = scoutName
-                let entry = Entry()
-                entry.setEntry(match: matchNumber, team: self.selectedTeam, scout: selectedScout, board: selectedBoard, timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
-            } 
-        }
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "")
+        
     }
     
     func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
@@ -236,20 +120,7 @@ class ScoutingActivity : UIViewController{
         return mutatedArr
     }
     
-    func getLayoutForScreen(completed : @escaping () -> ()){
-        do {
-            let url = Bundle.main.url(forResource: "layout", withExtension: "json")
-            let jsonData = try Data(contentsOf : url!)
-            screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
-            
-            DispatchQueue.main.async{
-                completed()
-            }
-            
-        } catch let err{
-            print(err)
-        }
-    }
+    
     
     //UI Configurations
     func configureScoutingView(){
@@ -321,11 +192,12 @@ class ScoutingActivity : UIViewController{
         let iconsWidth = 34.0
         let spacing = 2.5
         var startingX = 0.0
-        let listOfTexts = [matchNumber, boardName, teamNumber, String(timeOnStart)]
+        let timeOnStart = "015"
+        let listOfTexts = ["M" + (self.matchEntry?.matchNumber ?? ""), self.matchEntry?.board, self.matchEntry?.teamNumber, timeOnStart]
         let listOfLabelWidth = [50, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
+            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i] ?? "")
             label.text = listOfTexts[i]
             view.addSubview(self.createIcon(x: startingX, y: 3.5, width: iconsWidth, height: 28, iconName: listOfIconNames[i]))
             
@@ -353,88 +225,26 @@ class ScoutingActivity : UIViewController{
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
     }
     
-    
-    
-    func updateTimer(){
-        let timer = DataTimer()
-        timer.setTimeStamp(timeStamp: self.totalProgress * 165)
-        var totalTime : Float = 0
-        var numberOf0s = ""
-        var color = UIColor()
-        if(165 * self.totalProgress < 15.0){
-            totalTime = 15
-            color = UIColor.yellow
-        } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
-            totalTime = 135
-            color = UIColor.green
-        } else if (165 * self.totalProgress >= 135){
-            totalTime = 165
-            color = UIColor.red
-        }
-        
-        var timeLeft = String(totalTime - round(165 * self.totalProgress))
-        
-        for _ in 0..<(5 - timeLeft.count){
-            numberOf0s += "0"
-        }
-        
-        timeLeft = numberOf0s + String(timeLeft.prefix(timeLeft.count - 3))
-        
-        self.listOfLabels[3].text = timeLeft
-        self.listOfLabels[3].textColor = color
-    }
-    
     @objc func clickHandler(sender : UIButton){
         if(sender.tag == 1){
             StartTimerButton.isHidden = true
             PauseButton.isHidden = false
             PlayButton.isHidden = true
             UndoButton.isHidden = false
-            
-            self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-                (timer) in
-                guard self.progress.isFinished == false else {
-                    timer.invalidate()
-                    return
-                }
-                self.progress.completedUnitCount += 1
-                self.totalProgress = Float(self.progress.fractionCompleted)
-                self.updateTimer()
-                self.progressBar.value = self.totalProgress
-                
-                for i in 0..<self.listOfInputControls.count{
-                    self.listOfInputControls[i].onTimerStarted()
-                }
-            }
-            
+        
+            self.startTimer()
             isTimerEnabled = true
-            
+        
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
             PauseButton.isHidden = true
+            self.pauseTimer()
             
-            self.progressBar.isEnabled = true
-            
-            self.progressBarTimer.invalidate()
-            self.totalProgress = self.progressBar.value
-            self.progressBar.value = self.totalProgress
         } else if (sender.tag == 3){
             PlayButton.isHidden = true
             PauseButton.isHidden = false
             
-            self.progressBar.isEnabled = false
-            
-            self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-                (timer) in
-                guard self.totalProgress <= 1 else {
-                    timer.invalidate()
-                    return
-                }
-                self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
-                self.updateTimer()
-                self.progressBar.value = self.totalProgress
-            }
-            
+            self.resumeTimer()
             
         } else if (sender.tag == 4){
             //Undo button
@@ -464,8 +274,79 @@ class ScoutingActivity : UIViewController{
             self.present(alert, animated : true, completion : nil)
         } else if (sender.tag == 6){
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
+            vc.selectedMatchEntry = self.matchEntry
             self.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+    
+    func startTimer(){
+        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+            (timer) in
+            guard self.progress.isFinished == false else {
+                timer.invalidate()
+                return
+            }
+        self.progress.completedUnitCount += 1
+        self.totalProgress = Float(self.progress.fractionCompleted)
+        self.progressBar.value = self.totalProgress
+        
+        self.updateTimer()
+        }
+        for i in 0..<self.listOfInputControls.count{
+            self.listOfInputControls[i].onTimerStarted()
+        }
+    }
+    
+    func pauseTimer(){
+        self.progressBar.isEnabled = true
+        
+        self.progressBarTimer.invalidate()
+        self.totalProgress = self.progressBar.value
+        self.progressBar.value = self.totalProgress
+    }
+    
+    func resumeTimer(){
+        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+            (timer) in
+            guard self.totalProgress <= 1 else {
+                timer.invalidate()
+                return
+            }
+        
+        self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
+        self.updateTimer()
+        self.progressBar.value = self.totalProgress
+        self.progressBar.isEnabled = false
+        }
+    }
+    
+    func updateTimer(){
+        let dataTimer = DataTimer()
+        dataTimer.setTimeStamp(timeStamp: self.totalProgress * 165)
+        var totalTime : Float = 0
+        var numberOf0s = ""
+        var color = UIColor()
+        if(165 * self.totalProgress < 15.0){
+            totalTime = 15
+            color = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
+        } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
+            totalTime = 135
+            color = UIColor.green
+        } else if (165 * self.totalProgress >= 135){
+            totalTime = 165
+            color = UIColor.red
+        }
+        
+        var timeLeft = String(totalTime - round(165 * self.totalProgress))
+        
+        for _ in 0..<(5 - timeLeft.count){
+            numberOf0s += "0"
+        }
+        
+        timeLeft = numberOf0s + String(timeLeft.prefix(timeLeft.count - 2))
+        
+        self.listOfLabels[3].text = timeLeft
+        self.listOfLabels[3].textColor = color
     }
 }
 
@@ -483,6 +364,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         if (indexPath.row < self.screenTitles.count - 1){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.scoutingCellsID, for: indexPath) as? ScoutingScreenCell
             cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
@@ -491,7 +373,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.listOfItemsTag = self.listOfTags[indexPath.row]
             cell?.listOfLiteOptions = self.listOfLiteOptions[indexPath.row]
             cell?.index = indexPath.row
-            print(self.listOfInputControls.count)
+            cell?.qrEntry = self.qrEntry.getQREntry()
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
@@ -499,7 +381,6 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             if (QRImageCellMade.count < 1){
                 QRImageCellMade.append(QRcell!)
             }
-            
             
             return QRcell!
         }
