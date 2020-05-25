@@ -22,7 +22,7 @@ class Entry {
     var eventKey : String = ""
     var comment : String = ""
     
-    func initializeEntry(selectedEntry : MatchEntry) {
+    init(selectedEntry : MatchEntry) {
         self.match = selectedEntry.matchNumber
         self.team = selectedEntry.teamNumber
         self.scout = selectedEntry.scoutName
@@ -38,19 +38,5 @@ class Entry {
     
     func updateComment(comment : String){
         
-    }
-    
-    func updateQREntry(entry : Entry){
-        self.match = entry.match
-        self.team = entry.team
-        self.scout = entry.scout
-        self.board = entry.board
-        self.referenceTime = entry.referenceTime
-        self.data_point = entry.data_point
-  
-    }
-    
-    func getQREntry() -> Entry {
-        return self
     }
 }

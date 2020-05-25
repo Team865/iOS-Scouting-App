@@ -28,12 +28,12 @@ class CheckBoxField : UIView, InputControl{
         fatalError("The check box is null")
     }
     
-    func setUpCheckBox() {
+    func setUpCheckBox(data : fieldData) {
         addSubview(label)
         addSubview(checkBox)
         backgroundColor = UIColor.systemGray5
         
-        label.text = title
+        label.text = data.name
         label.numberOfLines = 0
         label.lineBreakMode = .byClipping
         label.textAlignment = .left
@@ -43,7 +43,7 @@ class CheckBoxField : UIView, InputControl{
         checkBox.layer.borderColor = UIColor.black.cgColor
         checkBox.layer.borderWidth = 2
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
-        checkBox.tag = self.tag
+        checkBox.tag = data.tag
         checkBox.isEnabled = false
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +68,6 @@ class CheckBoxField : UIView, InputControl{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
-        setUpCheckBox()
     }
 }
 

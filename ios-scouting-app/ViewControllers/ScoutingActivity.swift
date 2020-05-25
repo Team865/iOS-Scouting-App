@@ -12,9 +12,10 @@ import UIKit
 class ScoutingActivity : UIViewController{
     var listOfInputControls : [InputControl] = []
     var matchEntry : MatchEntry?
-    var qrEntry = Entry()
+    var qrEntry = Entry(selectedEntry: MatchEntry())
     var parser = Parser()
-    
+    var listOfFieldData : [fieldData] = []
+    let dataTimer = DataTimer()
     var comment = ""
     
     var idsAndKeys = IDsAndKeys()
@@ -32,9 +33,10 @@ class ScoutingActivity : UIViewController{
     var listOfLabels : [UILabel] = []
     var itemTags = 0
     let images = ["timer", "team", "paste", "layers2"]
-    var screenTitles : [String] = []
     
-    var isCreated : [Bool] = []
+    var screenTitles : [String] = []
+    var isCreated = false
+    var numberOfScreens = 4
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -57,73 +59,27 @@ class ScoutingActivity : UIViewController{
     var totalProgress : Float = 0
     let progress = Progress(totalUnitCount: 16500)
     
-    var names : [String] = []
-    var types : [String] = []
-    
     //ScoutingScreen variables
-    var listOfTags : [[[Int]]] = []
-    var listOfItemsType : [[[String]]] = []
-    var listOfItemsName : [[[String]]] = []
-    var listOfToggleTitles : [[[[String]]]] = []
-    var listOfLiteOptions : [[[Bool]]] = []
     var QRImageCellMade : [QRImageCell] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
+        configureScoutingView()
         
-        comment = ""
-        
-        self.qrEntry.initializeEntry(selectedEntry: self.matchEntry!)
-        
-        print(self.matchEntry?.eventKey ?? "")
-        
-        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "")
-        
+        //self.qrEntry = .init(selectedEntry: self.matchEntry!)
     }
-    
-    func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
-        var arr = string.components(separatedBy: "_")
-        
-        var formatted = ""
-        
-        for i in 0..<arr.count{
-            if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = currentTeam[index - 1]
-            } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = opposingTeam[index - 1]
-            }
-            formatted += (arr[i] + "_")
-        }
-        
-        
-        
-        return formatted
-    }
-    
-    func formatChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
-        var mutatedArr = string
-        
-        for i in 0..<string.count{
-            if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
-                let index = Int(string[i].suffix(1)) ?? 0
-                mutatedArr[i] = currentTeam[index - 1]
-            } else {
-                mutatedArr[i] = string[i]
-            }
-            
-        }
-        
-        return mutatedArr
-    }
-    
-    
     
     //UI Configurations
     func configureScoutingView(){
+        if (self.matchEntry?.board.suffix(1) == "X"){
+            self.numberOfScreens = 5
+        }
+        
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index: 0)
+        self.screenTitles = parser.getScreenTitles()
+        screenTitle.text = self.screenTitles[0]
         self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
         self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.idsAndKeys.QRCellID)
@@ -156,7 +112,7 @@ class ScoutingActivity : UIViewController{
     
     @objc func updateTimerOnPBDrag(sender : UISlider){
         self.totalProgress = sender.value
-        updateTimer()
+        self.dataTimer.updateTimer(scoutingActivity: self)
     }
     
     @objc func pauseTimerOnPBSelection(sender : UISlider){
@@ -231,20 +187,21 @@ class ScoutingActivity : UIViewController{
             PauseButton.isHidden = false
             PlayButton.isHidden = true
             UndoButton.isHidden = false
-        
-            self.startTimer()
+            
+            self.dataTimer.startTimer(scoutingActivity: self)
+            
             isTimerEnabled = true
-        
+            
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
             PauseButton.isHidden = true
-            self.pauseTimer()
-            
+
+            self.dataTimer.pauseTimer(scoutingActivity: self)
         } else if (sender.tag == 3){
             PlayButton.isHidden = true
             PauseButton.isHidden = false
             
-            self.resumeTimer()
+            self.dataTimer.resumeTimer(scoutingActivity: self)
             
         } else if (sender.tag == 4){
             //Undo button
@@ -279,75 +236,6 @@ class ScoutingActivity : UIViewController{
         }
     }
     
-    func startTimer(){
-        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-            (timer) in
-            guard self.progress.isFinished == false else {
-                timer.invalidate()
-                return
-            }
-        self.progress.completedUnitCount += 1
-        self.totalProgress = Float(self.progress.fractionCompleted)
-        self.progressBar.value = self.totalProgress
-        
-        self.updateTimer()
-        }
-        for i in 0..<self.listOfInputControls.count{
-            self.listOfInputControls[i].onTimerStarted()
-        }
-    }
-    
-    func pauseTimer(){
-        self.progressBar.isEnabled = true
-        
-        self.progressBarTimer.invalidate()
-        self.totalProgress = self.progressBar.value
-        self.progressBar.value = self.totalProgress
-    }
-    
-    func resumeTimer(){
-        self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-            (timer) in
-            guard self.totalProgress <= 1 else {
-                timer.invalidate()
-                return
-            }
-        
-        self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
-        self.updateTimer()
-        self.progressBar.value = self.totalProgress
-        self.progressBar.isEnabled = false
-        }
-    }
-    
-    func updateTimer(){
-        let dataTimer = DataTimer()
-        dataTimer.setTimeStamp(timeStamp: self.totalProgress * 165)
-        var totalTime : Float = 0
-        var numberOf0s = ""
-        var color = UIColor()
-        if(165 * self.totalProgress < 15.0){
-            totalTime = 15
-            color = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
-        } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
-            totalTime = 135
-            color = UIColor.green
-        } else if (165 * self.totalProgress >= 135){
-            totalTime = 165
-            color = UIColor.red
-        }
-        
-        var timeLeft = String(totalTime - round(165 * self.totalProgress))
-        
-        for _ in 0..<(5 - timeLeft.count){
-            numberOf0s += "0"
-        }
-        
-        timeLeft = numberOf0s + String(timeLeft.prefix(timeLeft.count - 2))
-        
-        self.listOfLabels[3].text = timeLeft
-        self.listOfLabels[3].textColor = color
-    }
 }
 
 extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -360,20 +248,17 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.screenTitles.count
+        return self.numberOfScreens
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if (indexPath.row < self.screenTitles.count - 1){
+        if (indexPath.row < 3){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.scoutingCellsID, for: indexPath) as? ScoutingScreenCell
-            cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
-            cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
-            cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
-            cell?.listOfItemsTag = self.listOfTags[indexPath.row]
-            cell?.listOfLiteOptions = self.listOfLiteOptions[indexPath.row]
-            cell?.index = indexPath.row
-            cell?.qrEntry = self.qrEntry.getQREntry()
+            parser.getLayoutForScreenWithBoard(board:   self.matchEntry?.board ?? "", index : indexPath.row)
+            cell?.listOfFieldData = parser.listOfFieldData
+            if (!isCreated){
+                self.listOfInputControls.append(contentsOf : cell?.setUpScoutingScreen() ?? [])
+            }
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
@@ -381,6 +266,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             if (QRImageCellMade.count < 1){
                 QRImageCellMade.append(QRcell!)
             }
+            self.isCreated = true
             
             return QRcell!
         }

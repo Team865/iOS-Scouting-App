@@ -33,7 +33,6 @@ class ViewController: UIViewController {
     var selectedTeam = ""
     var selectedMatch = "M"
     
-    
     let settingsTag = 1;
     let additemTag = 2;
     let editNameTag = 3;

@@ -9,31 +9,31 @@
 import Foundation
 import UIKit
 public class SwitchField : UIView, InputControl {
+    var value = 0
+    var lite = false
+    
     func onTimerStarted() {
         self.switchButton.isEnabled = true
         self.switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
     }
     
-    var entry : Entry!
     var switchButton = UIButton()
-    var title : String?
-    var value = 0
-    var lite : Bool?
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
     
-    func setUpSwitchField(){
+    func setUpSwitchField(data : fieldData){
         addSubview(switchButton)
-        switchButton.setTitle(self.title, for: .normal)
+        switchButton.setTitle(data.name, for: .normal)
         switchButton.titleLabel?.numberOfLines = 0
         switchButton.contentHorizontalAlignment = .center
         switchButton.titleLabel?.textAlignment = .center
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
-        switchButton.tag = self.tag
+        switchButton.tag = data.tag
+        self.lite = data.is_lite
         switchButton.addTarget(self, action: #selector(activateSwitch(sender:)), for: .touchUpInside)
         
-        if (self.lite ?? false){
+        if (data.is_lite){
             switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
             backgroundColor = UIColor.systemGray5
             switchButton.isEnabled = true
@@ -64,7 +64,7 @@ public class SwitchField : UIView, InputControl {
             sender.backgroundColor = UIColor.red
             sender.setTitleColor(UIColor.white, for: .normal)
             
-            if (self.lite ?? false){
+            if (self.lite){
                 sender.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 sender.setTitleColor(UIColor.systemGray5, for: .normal)
             }
@@ -76,13 +76,5 @@ public class SwitchField : UIView, InputControl {
             sender.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
             self.value = 0
         }
-        
-        let dataPoint = DataPoint(type_index: self.tag, value: self.value, time : 0.00)
-        self.entry.addDataPoint(dp: dataPoint)
-        self.entry.updateQREntry(entry: self.entry)
-        
-        print("Match is" + self.entry.getQREntry().match)
-        
-        setUpSwitchField()
     }
 }

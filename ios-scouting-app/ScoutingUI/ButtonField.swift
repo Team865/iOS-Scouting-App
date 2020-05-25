@@ -30,20 +30,22 @@ public class ButtonField : UIView, InputControl{
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUpButtonField(){
+    
+    
+    func setUpButtonField(data : fieldData){
         counterField.text = String(self.counter)
         backgroundColor = UIColor.systemGray5
         addSubview(button)
         addSubview(counterField)
         
-        button.setTitle(self.buttonTitle, for: .normal)
+        button.setTitle(data.name, for: .normal)
         button.setTitleColor(UIColor.systemGray, for: .normal)
         button.titleLabel?.numberOfLines = 0
         button.contentHorizontalAlignment = .center
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
-        button.tag = self.tag
+        button.tag = data.tag
         button.isEnabled = false
         backgroundColor = UIColor.systemGray5
         
@@ -64,6 +66,5 @@ public class ButtonField : UIView, InputControl{
         counter += 1
         counterField.text = String(counter)
         
-        setUpButtonField()
     }
 }
