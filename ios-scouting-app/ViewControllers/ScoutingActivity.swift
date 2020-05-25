@@ -77,8 +77,12 @@ class ScoutingActivity : UIViewController{
             self.numberOfScreens = 5
         }
         
-        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index: 0)
+        let currentTeams = self.matchEntry?.teamNumber.components(separatedBy: " ") ?? []
+        let opposingTeams = self.matchEntry?.opposingTeamNumber.components(separatedBy: " ") ?? []
+        
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams)
         self.screenTitles = parser.getScreenTitles()
+        self.screenTitles.append("QR Code")
         screenTitle.text = self.screenTitles[0]
         self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
@@ -104,19 +108,6 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(updateTimerOnPBDrag(sender:)), for: .touchDragInside)
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
         self.progressBar.isEnabled = false
-    }
-    
-    @objc func progressBarReleased(sender : UISlider){
-        self.totalProgress = sender.value
-    }
-    
-    @objc func updateTimerOnPBDrag(sender : UISlider){
-        self.totalProgress = sender.value
-        self.dataTimer.updateTimer(scoutingActivity: self)
-    }
-    
-    @objc func pauseTimerOnPBSelection(sender : UISlider){
-        self.progressBarTimer.invalidate()
     }
     
     func createLabels(x : Double, y : Double, width : Double, height : Double, fontSize : CGFloat, text : String) -> UILabel{
@@ -181,6 +172,19 @@ class ScoutingActivity : UIViewController{
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
     }
     
+    @objc func progressBarReleased(sender : UISlider){
+        self.totalProgress = sender.value
+    }
+    
+    @objc func updateTimerOnPBDrag(sender : UISlider){
+        self.totalProgress = sender.value
+        self.dataTimer.updateTimer(scoutingActivity: self)
+    }
+    
+    @objc func pauseTimerOnPBSelection(sender : UISlider){
+        self.progressBarTimer.invalidate()
+    }
+    
     @objc func clickHandler(sender : UIButton){
         if(sender.tag == 1){
             StartTimerButton.isHidden = true
@@ -195,7 +199,7 @@ class ScoutingActivity : UIViewController{
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
             PauseButton.isHidden = true
-
+            
             self.dataTimer.pauseTimer(scoutingActivity: self)
         } else if (sender.tag == 3){
             PlayButton.isHidden = true
@@ -252,12 +256,16 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (indexPath.row < 3){
+            if (indexPath.row < self.numberOfScreens - 1){
+            let currentTeams = self.matchEntry?.teamNumber.components(separatedBy: " ") ?? []
+            let opposingTeams = self.matchEntry?.opposingTeamNumber.components(separatedBy: " ") ?? []
+            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.scoutingCellsID, for: indexPath) as? ScoutingScreenCell
-            parser.getLayoutForScreenWithBoard(board:   self.matchEntry?.board ?? "", index : indexPath.row)
+            parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index : indexPath.row, currentTeams: currentTeams, opposingTeams: opposingTeams)
             cell?.listOfFieldData = parser.listOfFieldData
+            cell?.index = indexPath.row
             if (!isCreated){
-                self.listOfInputControls.append(contentsOf : cell?.setUpScoutingScreen() ?? [])
+                self.listOfInputControls.append(contentsOf : cell?.listOfInputControl ?? [])
             }
             return cell!
         } else {

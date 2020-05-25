@@ -201,7 +201,7 @@ class ViewController: UIViewController {
                     numberOfAddedEntriesIndices = tempArr
                     self.currentEventLabel.text = self.selectedEvent?.name
                     self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
-
+                    
                     print(self.selectedEvent?.key ?? "")
                     
                     self.matchTable.reloadData()
@@ -456,15 +456,15 @@ class ViewController: UIViewController {
         }
         if let blueAlliance = UserDefaults.standard.object(forKey: self.idsAndKeys.blueAlliance) as? [[String]]
             ,let redAlliance = UserDefaults.standard.object(forKey: self.idsAndKeys.redAlliance) as? [[String]]
-                ,let matchNumber = UserDefaults.standard.object(forKey: self.idsAndKeys.matchNumber) as? [Int]
-                    , let imageName = UserDefaults.standard.object(forKey: self.idsAndKeys.imageName) as? [String]
-                        , let boards = UserDefaults.standard.object(forKey: self.idsAndKeys.boards) as? [String]
-                            , let isScouted = UserDefaults.standard.object(forKey: self.idsAndKeys.isScouted) as? [Bool]
-                                , let scoutedData = UserDefaults.standard.object(forKey: self.idsAndKeys.scoutedData) as? [String]{
-                                    self.listOfMatches = self.loadMatchScheduleFromCache(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted, scoutedData: scoutedData)
-                                }
-                                
-                          
+            ,let matchNumber = UserDefaults.standard.object(forKey: self.idsAndKeys.matchNumber) as? [Int]
+            , let imageName = UserDefaults.standard.object(forKey: self.idsAndKeys.imageName) as? [String]
+            , let boards = UserDefaults.standard.object(forKey: self.idsAndKeys.boards) as? [String]
+            , let isScouted = UserDefaults.standard.object(forKey: self.idsAndKeys.isScouted) as? [Bool]
+            , let scoutedData = UserDefaults.standard.object(forKey: self.idsAndKeys.scoutedData) as? [String]{
+            self.listOfMatches = self.loadMatchScheduleFromCache(blueAlliance: blueAlliance, redAlliance: redAlliance, matchNumber: matchNumber, imageName: imageName, boards: boards, isScouted: isScouted, scoutedData: scoutedData)
+        }
+        
+        
         
         if(isTimerEnabled){
             var redAlliances : [String] = []
