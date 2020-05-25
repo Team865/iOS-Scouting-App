@@ -12,10 +12,14 @@ class Parser {
     var listOfFieldData = [[fieldData]]()
     var board = ""
     var index = 0
+    var currentTeams : [String] = []
+    var opposingTeams : [String] = []
     var screens : [screens] = []
-    func getLayoutForScreenWithBoard(board : String, index : Int){
+    func getLayoutForScreenWithBoard(board : String, index : Int, currentTeams : [String], opposingTeams : [String]){
         self.board = board
         self.index = index
+        self.currentTeams = currentTeams
+        self.opposingTeams = opposingTeams
         self.listOfFieldData.removeAll()
         do {
             let url = Bundle.main.url(forResource: "layout", withExtension: "json")
@@ -46,7 +50,7 @@ class Parser {
     }
     
     //Format title for super scouting
-    func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
+    func formatTeamTitles(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
         var arr = string.components(separatedBy: "_")
         
         var formatted = ""
@@ -62,12 +66,12 @@ class Parser {
             formatted += (arr[i] + "_")
         }
         
-        
+        formatted = self.formatTitleOfItem(string: formatted)
         
         return formatted
     }
     
-    func formatChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
+    func formatTeamChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
         var mutatedArr = string
         
         for i in 0..<string.count{
@@ -96,11 +100,16 @@ class Parser {
     func convertLayoutToItems(layout : [screens]){
         var tag = lookUpTag(screen : screens)
         
-        for k in 0..<screens[self.index].layout.count{
+        for k in 0..<layout[self.index].layout.count{
             var itemsInRow : [fieldData] = []
-            for j in 0..<screens[self.index].layout[k].count{
-                let currentItem = screens[self.index].layout[k][j]
-                let fieldItem = fieldData(name: formatTitleOfItem(string: currentItem.name), type: currentItem.type, choice: currentItem.choices ?? [], is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice)
+            for j in 0..<layout[self.index].layout[k].count{
+                let currentItem = layout[self.index].layout[k][j]
+                
+                let name = (self.board == "BX" || self.board == "RX") ? formatTeamTitles(string: currentItem.name, currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : formatTitleOfItem(string: currentItem.name)
+                
+                let choice = (self.board == "BX" || self.board == "RX") ? formatTeamChoices(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
+                
+                let fieldItem = fieldData(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice)
                 tag += 1
                 itemsInRow.append(fieldItem)
             }
