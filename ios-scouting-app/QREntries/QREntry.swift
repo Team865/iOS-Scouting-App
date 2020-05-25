@@ -7,20 +7,36 @@
 //
 
 import Foundation
+
 class Entry {
+    var encodedData = ""
+    var encodedDataPoints = ""
+    var DataPoints = [DataPoint]()
+    
     var match : String = ""
-    var team : Int = 1
+    var team : String = ""
     var scout : String = ""
     var board : String = ""
-    var timeStamp : Float = 00
+    var referenceTime : Float = 0.0
     var data_point : [DataPoint] = []
+    var eventKey : String = ""
+    var comment : String = ""
     
-    init(match : String, team : Int, scout : String, board : String, timeStamp : Float, data_point : [DataPoint]) {
-        self.match = match
-        self.team = team
-        self.scout = scout
-        self.board = board
-        self.timeStamp = timeStamp
-        self.data_point = data_point
+    init(selectedEntry : MatchEntry) {
+        self.match = selectedEntry.matchNumber
+        self.team = selectedEntry.teamNumber
+        self.scout = selectedEntry.scoutName
+        self.board = selectedEntry.board
+        self.eventKey = selectedEntry.eventKey
+        self.referenceTime = Float(Date().timeIntervalSinceReferenceDate)
+        self.data_point = []
+    }
+    
+    func addDataPoint(dp : DataPoint){
+        self.data_point.append(dp)
+    }
+    
+    func updateComment(comment : String){
+        
     }
 }

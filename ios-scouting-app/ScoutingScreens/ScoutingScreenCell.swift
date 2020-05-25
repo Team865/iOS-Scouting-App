@@ -9,104 +9,78 @@
 import Foundation
 import UIKit
 var times = 0
-public var identicalToggles : [MultiToggleField] = []
 class ScoutingScreenCell : UICollectionViewCell {
     var reusing = false
-    var listOfItemsType : [[String]] = []
-    var listOfItemsName : [[String]] = []
-    var listOfToggleTitles : [[[String]]] = []
-    var listOfItemsTag : [[Int]] = []
+    var listOfFieldData : [[fieldData]] = []
+    let scoutingView = UIStackView()
+    let blankView = UIView()
+    
     override init(frame: CGRect) {
         super.init(frame : frame)
-        
+        configureBlankView()
+        configureScoutingStackView()
     }
     
     required init?(coder aDecoder: NSCoder) {
-       super.init(coder: aDecoder)
+        super.init(coder: aDecoder)
     }
     
-    var index : Int?{
-        willSet{
-            setUpScoutingScreen()
-        }
+    func configureBlankView(){
+        contentView.addSubview(blankView)
+        blankView.frame = CGRect(x : 0, y : 0, width : contentView.frame.width, height: contentView.frame.height)
+        blankView.backgroundColor = UIColor.white
     }
     
-    func formatTitleOfItem(string : String) -> String{
-        let titleArr = string.components(separatedBy: "_")
-        var title = ""
+    func configureScoutingStackView(){
+        contentView.addSubview(scoutingView)
+        contentView.backgroundColor = UIColor.white
+        scoutingView.axis = .vertical
+        scoutingView.distribution = .fillEqually
+        scoutingView.spacing = 2.5
+        scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
+    }
+    
+    func setUpScoutingScreen() -> [InputControl]{
+        var listOfInputControl : [InputControl] = []
         
-        for i in 0..<titleArr.count{
-            title += titleArr[i].prefix(1).uppercased() + titleArr[i].lowercased().dropFirst() + " "
-        }
-        return title
-    }
-    
-    func setUpScoutingScreen(){
-        let view = UIView()
-        view.frame = CGRect(x : 0, y : 0, width : contentView.frame.width, height: contentView.frame.height)
-        view.backgroundColor = UIColor.white
-        contentView.addSubview(view)
-        
-        let scoutingView = UIStackView()
-            contentView.addSubview(scoutingView)
-            contentView.backgroundColor = UIColor.white
-            scoutingView.axis = .vertical
-            scoutingView.distribution = .fillEqually
-            scoutingView.spacing = 2.5
-            scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
-            for i in 0..<self.listOfItemsType.count{
-                let scoutingRow = UIStackView()
-                scoutingRow.axis = .horizontal
-                scoutingRow.distribution = .fillEqually
-                scoutingRow.spacing = 2.5
-                for k in 0..<self.listOfItemsType[i].count{
-                    let itemName = formatTitleOfItem(string: self.listOfItemsName[i][k])
-                    let itemTag = self.listOfItemsTag[i][k]
-                    if (self.listOfItemsType[i][k] == "Button"){
-                        let button = ButtonField()
-                        scoutingRow.addArrangedSubview(button)
-                        button.buttonTitle = itemName
-                        button.tag = itemTag
-                        listOfButtonsOnScreen.append(button)
-                        button.setUpButtonField()
-                    }
-                    if (self.listOfItemsType[i][k] == "MultiToggle"){
-                        let toggle = MultiToggleField()
-                        scoutingRow.addArrangedSubview(toggle)
-                        toggle.numberOfButtons = self.listOfToggleTitles[i][k].count
-                        toggle.listOfToggleTitles = self.listOfToggleTitles[i][k]
-                        toggle.title = itemName
-                        toggle.tag = itemTag
-                        listOfMultiToggleFieldScreen.append(toggle)
-                        toggle.setUpToggleField()
-                        if identicalToggles.count < 2{
-                            identicalToggles.append(toggle)
-                        }
-                        
-                    }
-                    if(self.listOfItemsType[i][k] == "Switch"){
-                        let switchField = SwitchField()
-                        scoutingRow.addArrangedSubview(switchField)
-                        switchField.title = itemName
-                        switchField.value = 0
-                        switchField.tag = itemTag
-                        listOfSwitchesOnScreen.append(switchField)
-                        switchField.setUpSwitchField()
-                    }
-                    if(self.listOfItemsType[i][k] == "Checkbox"){
-                        let checkBox = CheckBoxField()
-                        scoutingRow.addArrangedSubview(checkBox)
-                        checkBox.title = itemName
-                        checkBox.value = 0
-                        checkBox.tag = itemTag
-                        listOfCheckBoxesOnScreen.append(checkBox)
-                        checkBox.setUpCheckBox()
-                    }
+        for i in 0..<self.listOfFieldData.count{
+            let scoutingRow = UIStackView()
+            scoutingRow.axis = .horizontal
+            scoutingRow.distribution = .fillEqually
+            scoutingRow.spacing = 2.5
+            for j in 0..<self.listOfFieldData[i].count{
+                switch self.listOfFieldData[i][j].type {
+                case "Button":
+                    let item = ButtonField()
+                    item.setUpButtonField(data: listOfFieldData[i][j])
+                    listOfInputControl.append(item)
+                    scoutingRow.addArrangedSubview(item)
+                case "Switch":
+                    let item = SwitchField()
+                    item.setUpSwitchField(data: listOfFieldData[i][j])
+                    listOfInputControl.append(item)
+                    scoutingRow.addArrangedSubview(item)
+                case "MultiToggle":
+                    let item = MultiToggleField()
+                    item.setUpToggleField(data: listOfFieldData[i][j])
+                    listOfInputControl.append(item)
+                    scoutingRow.addArrangedSubview(item)
+                case "Checkbox":
+                    let item = CheckBoxField()
+                    item.setUpCheckBox(data: listOfFieldData[i][j])
+                    listOfInputControl.append(item)
+                    scoutingRow.addArrangedSubview(item)
+                default:
+                    print("O")
                 }
-                scoutingView.addArrangedSubview(scoutingRow)
-                }
-        
             }
-           
+            scoutingView.addArrangedSubview(scoutingRow)
         }
         
+        return listOfInputControl
+    }
+    
+}
+
+
+

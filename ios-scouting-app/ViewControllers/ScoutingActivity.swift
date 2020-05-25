@@ -9,31 +9,16 @@
 import Foundation
 import UIKit
 
-//Remove or keep, you decide
-public var encodedData = ""
-public var encodedDataPoints = ""
-public var DataPoints = [DataPoint]()
-public var listOfButtonsOnScreen : [ButtonField] = []
-public var listOfSwitchesOnScreen : [SwitchField] = []
-public var listOfCheckBoxesOnScreen : [CheckBoxField] = []
-public var listOfMultiToggleFieldScreen : [MultiToggleField] = []
-var entry = Entry(match: "", team: 0, scout: "", board: "", timeStamp: Float(Date().timeIntervalSinceReferenceDate), data_point: [])
-var screenLayout : ScoutingScreenLayout!
-public var timeStamp : Float = 0
-public var prevToggleValue = 0
-var matchNumber = ""
-var opposingTeamNumber = ""
-var teamNumber = ""
-var boardName = ""
-var timeOnStart = "015"
-var separatedMatchNumber = ""
-private var selectedTeam = 0
-private var selectedBoard = ""
-private var selectedKey = ""
-private var selectedScout = ""
-private var comment = ""
 class ScoutingActivity : UIViewController{
-    var cacheKeys = CacheKeys()
+    var listOfInputControls : [InputControl] = []
+    var matchEntry : MatchEntry?
+    var qrEntry = Entry(selectedEntry: MatchEntry())
+    var parser = Parser()
+    var listOfFieldData : [fieldData] = []
+    let dataTimer = DataTimer()
+    var comment = ""
+    
+    var idsAndKeys = IDsAndKeys()
     
     let navBarWidth = UIScreen.main.bounds.width
     let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
@@ -46,12 +31,12 @@ class ScoutingActivity : UIViewController{
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     
     var listOfLabels : [UILabel] = []
-    var navBarView : UIView!
     var itemTags = 0
     let images = ["timer", "team", "paste", "layers2"]
-    var screenTitles : [String] = []
     
-    var isCreated : [Bool] = []
+    var screenTitles : [String] = []
+    var isCreated = false
+    var numberOfScreens = 4
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -74,195 +59,36 @@ class ScoutingActivity : UIViewController{
     var totalProgress : Float = 0
     let progress = Progress(totalUnitCount: 16500)
     
-    var names : [String] = []
-    var types : [String] = []
-    
     //ScoutingScreen variables
-    var listOfTags : [[[Int]]] = []
-    var listOfItemsType : [[[String]]] = []
-    var listOfItemsName : [[[String]]] = []
-    var listOfToggleTitles : [[[[String]]]] = []
-    var QRImageCellID = "QRImageCell"
     var QRImageCellMade : [QRImageCell] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navBarView = self.createNavBarView()
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
+        configureScoutingView()
         
-        var itemIndex = 0
-        comment = ""
-
-        //This is disgusting
-        getLayoutForScreen{
-            if (boardName == "BX" || boardName == "RX"){
-               let scoutingType = screenLayout.super_scout
-                
-                let currentTeam = teamNumber.components(separatedBy: " ")
-                let opposingTeam = opposingTeamNumber.components(separatedBy: " ")
-                
-                for i in 0..<scoutingType.screens.count{
-                        var indices : [[Int]] = []
-                        var items : [[String]] = []
-                        var names : [[String]] = []
-                        var choices : [[[String]]] = []
-                        self.screenTitles.append(scoutingType.screens[i].title)
-                        self.isCreated.append(false)
-                    for k in 0..<scoutingType.screens[i].layout.count{
-                            var tagsInRow : [Int] = []
-                            var itemsInRow : [String] = []
-                            var namesInRow : [String] = []
-                            var choicesInRow : [[String]] = []
-                            for j in 0..<scoutingType.screens[i].layout[k].count{
-                                let type = scoutingType.screens[i].layout[k][j].type
-                                let name = self.formatTitle(string: scoutingType.screens[i].layout[k][j].name, currentTeam: currentTeam, opposingTeam: opposingTeam)
-                                let choice = self.formatChoices(string: scoutingType.screens[i].layout[k][j].choices ?? [], currentTeam: currentTeam, opposingTeam: opposingTeam)
-                                itemsInRow.append(type)
-                                namesInRow.append(name)
-                                choicesInRow.append(choice)
-                                tagsInRow.append(itemIndex)
-                                itemIndex += 1
-                            }
-                            items.append(itemsInRow)
-                            names.append(namesInRow)
-                            choices.append(choicesInRow)
-                            indices.append(tagsInRow)
-                        }
-                        self.listOfTags.append(indices)
-                        self.listOfItemsType.append(items)
-                        self.listOfItemsName.append(names)
-                        self.listOfToggleTitles.append(choices)
-                    }
-            } else {
-                let scoutingType = screenLayout.robot_scout
-                for i in 0..<scoutingType.screens.count{
-                    var indices : [[Int]] = []
-                    var items : [[String]] = []
-                    var names : [[String]] = []
-                    var choices : [[[String]]] = []
-                    self.screenTitles.append(scoutingType.screens[i].title)
-                    self.isCreated.append(false)
-                    for k in 0..<scoutingType.screens[i].layout.count{
-                        var tagsInRow : [Int] = []
-                        var itemsInRow : [String] = []
-                        var namesInRow : [String] = []
-                        var choicesInRow : [[String]] = []
-                        for j in 0..<scoutingType.screens[i].layout[k].count{
-                            let type = scoutingType.screens[i].layout[k][j].type
-                            let name = scoutingType.screens[i].layout[k][j].name
-                            let choice = scoutingType.screens[i].layout[k][j].choices ?? []
-                            itemsInRow.append(type)
-                            namesInRow.append(name)
-                            choicesInRow.append(choice)
-                            tagsInRow.append(itemIndex)
-                            itemIndex += 1
-                        }
-                        items.append(itemsInRow)
-                        names.append(namesInRow)
-                        choices.append(choicesInRow)
-                        indices.append(tagsInRow)
-                    }
-                    self.listOfTags.append(indices)
-                    self.listOfItemsType.append(items)
-                    self.listOfItemsName.append(names)
-                    self.listOfToggleTitles.append(choices)
-                }
-            }
-            self.screenTitles.append("QR Code")
-            self.screenTitle.text = self.screenTitles[0]
-            self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: "scoutingCell")
-            self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.QRImageCellID)
-            self.scoutingView.dataSource = self
-            self.scoutingView.delegate = self
-            }
-            
-        
-            
-        scoutingView.isPagingEnabled = true
-        self.progressBar.isEnabled = false
-        selectedTeam = Int(teamNumber) ?? 0
-        selectedBoard = boardName
-        
-        if let eventKey = UserDefaults.standard.object(forKey: self.cacheKeys.eventKey) as? String{
-           if let scoutName = UserDefaults.standard.object(forKey: self.cacheKeys.scoutName) as? String {
-                selectedKey = eventKey
-                selectedScout = scoutName
-                encodedData = updateEncodedData()
-            } 
-        }
-        
-        //Make sure the initial time stamp is 0 before taking any inputs
-        timeStamp = 0
-    }
-    
-    func formatTitle(string : String, currentTeam : [String], opposingTeam : [String]) -> String{
-        var arr = string.components(separatedBy: "_")
-        
-        var formated = ""
-        
-        for i in 0..<arr.count{
-            if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = currentTeam[index - 1]
-            } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = opposingTeam[index - 1]
-            }
-            formated += (arr[i] + " ")
-        }
-        
-        
-        return formated
-    }
-    
-    func formatChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
-        var mutatedArr = string
-        
-        for i in 0..<string.count{
-            if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
-                let index = Int(string[i].suffix(1)) ?? 0
-                mutatedArr[i] = currentTeam[index - 1]
-            } else {
-                mutatedArr[i] = string[i]
-            }
-            
-        }
-        
-        return mutatedArr
-    }
-    
-    func updateEncodedData() -> String{
-          let data = (selectedKey + "_" + separatedMatchNumber + ":" + teamNumber + ":" + selectedScout + ":" + boardName + ":" + String(format:"%02X", Int(NSDate().timeIntervalSince1970)) + ":" + encodedDataPoints +  ":" + comment)
-          return data
-      }
-      
-      func encodeData(dataPoint : DataPoint){
-          DataPoints.append(dataPoint)
-          let encoder = Encoder()
-          encoder.dataPointToString(dp: dataPoint)
-          encodedData = updateEncodedData()
-    }
-    
-    func getLayoutForScreen(completed : @escaping () -> ()){
-        do {
-            let url = Bundle.main.url(forResource: "layout", withExtension: "json")
-            let jsonData = try Data(contentsOf : url!)
-            screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
-            
-            DispatchQueue.main.async{
-                completed()
-            }
-            
-        } catch let err{
-            print(err)
-        }
+        //self.qrEntry = .init(selectedEntry: self.matchEntry!)
     }
     
     //UI Configurations
+    func configureScoutingView(){
+        if (self.matchEntry?.board.suffix(1) == "X"){
+            self.numberOfScreens = 5
+        }
+        
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index: 0)
+        self.screenTitles = parser.getScreenTitles()
+        screenTitle.text = self.screenTitles[0]
+        self.scoutingView.isPagingEnabled = true
+        self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
+        self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.idsAndKeys.QRCellID)
+        self.scoutingView.dataSource = self
+        self.scoutingView.delegate = self
+    }
+    
     func configureButtons(){
         StartTimerButton.layer.cornerRadius = 5
-        
         StartTimerButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
         PauseButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
         PlayButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
@@ -277,6 +103,7 @@ class ScoutingActivity : UIViewController{
         self.progressBar.addTarget(self, action: #selector(pauseTimerOnPBSelection(sender:)), for: .touchDown)
         self.progressBar.addTarget(self, action: #selector(updateTimerOnPBDrag(sender:)), for: .touchDragInside)
         self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
+        self.progressBar.isEnabled = false
     }
     
     @objc func progressBarReleased(sender : UISlider){
@@ -285,7 +112,7 @@ class ScoutingActivity : UIViewController{
     
     @objc func updateTimerOnPBDrag(sender : UISlider){
         self.totalProgress = sender.value
-        updateTimer()
+        self.dataTimer.updateTimer(scoutingActivity: self)
     }
     
     @objc func pauseTimerOnPBSelection(sender : UISlider){
@@ -301,7 +128,7 @@ class ScoutingActivity : UIViewController{
         case "B":
             label.textColor = UIColor.blue
         case "R":
-        label.textColor = UIColor.red
+            label.textColor = UIColor.red
         default :
             label.textColor = UIColor.black
         }
@@ -321,11 +148,12 @@ class ScoutingActivity : UIViewController{
         let iconsWidth = 34.0
         let spacing = 2.5
         var startingX = 0.0
-        let listOfTexts = [matchNumber, boardName, teamNumber, String(timeOnStart)]
+        let timeOnStart = "015"
+        let listOfTexts = ["M" + (self.matchEntry?.matchNumber ?? ""), self.matchEntry?.board, self.matchEntry?.teamNumber, timeOnStart]
         let listOfLabelWidth = [50, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
+            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i] ?? "")
             label.text = listOfTexts[i]
             view.addSubview(self.createIcon(x: startingX, y: 3.5, width: iconsWidth, height: 28, iconName: listOfIconNames[i]))
             
@@ -340,229 +168,74 @@ class ScoutingActivity : UIViewController{
         return view
     }
     
-    private func setUpNavigationBar(){
-    navigationItem.titleView = self.navBarView
-    navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
-    }
-    
     lazy var backButton : UIButton = {
-           let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 34))
-           button.tag = 6
-           button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
-           button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
-           return button
-       }()
+        let button = UIButton(frame : CGRect(x : 0, y : 0, width : 5, height : 34))
+        button.tag = 6
+        button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        return button
+    }()
     
-    func updateTimer(){
-        timeStamp = 165 * self.totalProgress
-        if(165 * self.totalProgress < 15.0){
-            let time = 15 - round(165 * self.totalProgress)
-            var timeLeft = String(time)
+    private func setUpNavigationBar(){
+        navigationItem.titleView = self.createNavBarView()
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
+    }
+    
+    @objc func clickHandler(sender : UIButton){
+        if(sender.tag == 1){
+            StartTimerButton.isHidden = true
+            PauseButton.isHidden = false
+            PlayButton.isHidden = true
+            UndoButton.isHidden = false
             
-            switch timeLeft.count{
-            case 5:
-                timeLeft = String(timeLeft.prefix(3))
-            case 4:
-                timeLeft = "0" + String(timeLeft.prefix(2))
-            case 3:
-                timeLeft = "00" + String(timeLeft.prefix(1))
-            default :
-                break
+            self.dataTimer.startTimer(scoutingActivity: self)
+            
+            isTimerEnabled = true
+            
+        } else if (sender.tag == 2){
+            PlayButton.isHidden = false
+            PauseButton.isHidden = true
+
+            self.dataTimer.pauseTimer(scoutingActivity: self)
+        } else if (sender.tag == 3){
+            PlayButton.isHidden = true
+            PauseButton.isHidden = false
+            
+            self.dataTimer.resumeTimer(scoutingActivity: self)
+            
+        } else if (sender.tag == 4){
+            //Undo button
+        }
+        else if (sender.tag == 5){
+            let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
+            
+            alert.addTextField{
+                (UITextField) in UITextField.placeholder = "Enter comment"
+                UITextField.text = self.comment
             }
             
-            self.listOfLabels[3].text = timeLeft
-            self.listOfLabels[3].textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
-            
-        } else if (165 * self.totalProgress >= 15 && 165 * self.totalProgress < 135.0){
-            let time = 135 - round(165 * self.totalProgress)
-            var timeLeft = String(time)
-            
-            switch timeLeft.count{
-            case 5:
-                timeLeft = String(timeLeft.prefix(3))
-            case 4:
-                timeLeft = "0" + String(timeLeft.prefix(2))
-            case 3:
-                timeLeft = "00" + String(timeLeft.prefix(1))
-            default :
-                break
-            }
-            self.listOfLabels[3].text = timeLeft
-            self.listOfLabels[3].textColor = UIColor.systemGreen
-        } else if (165 * self.totalProgress >= 135){
-            let time = 165 - round(165 * self.totalProgress)
-            var timeLeft = String(time)
-            
-            switch timeLeft.count{
-            case 5:
-                timeLeft = String(timeLeft.prefix(3))
-            case 4:
-                timeLeft = "0" + String(timeLeft.prefix(2))
-            case 3:
-                timeLeft = "00" + String(timeLeft.prefix(1))
-            default :
-                break
+            let getComment = UIAlertAction(title: "OK", style: .default){
+                [weak alert] (_) in
+                let textField = alert?.textFields![0]
+                self.comment = textField!.text ?? ""
+                if (self.QRImageCellMade.count == 1){
+                    self.QRImageCellMade[0].setUpQRImage()
+                }
             }
             
-            self.listOfLabels[3].text = timeLeft
-            self.listOfLabels[3].textColor = UIColor.red
+            let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
+            
+            alert.addAction(getComment)
+            alert.addAction(cancel)
+            
+            self.present(alert, animated : true, completion : nil)
+        } else if (sender.tag == 6){
+            let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
+            vc.selectedMatchEntry = self.matchEntry
+            self.navigationController?.pushViewController(vc, animated: true)
         }
     }
     
-        @objc func clickHandler(sender : UIButton){
-            if(sender.tag == 1){
-                StartTimerButton.isHidden = true
-                PauseButton.isHidden = false
-                PlayButton.isHidden = true
-                UndoButton.isHidden = false
-                
-                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-                (timer) in
-                guard self.progress.isFinished == false else {
-                    timer.invalidate()
-                    return
-                }
-                    self.progress.completedUnitCount += 1
-                    self.totalProgress = Float(self.progress.fractionCompleted)
-                    self.updateTimer()
-                    self.progressBar.value = self.totalProgress
-                }
-                
-                for i in 0..<listOfButtonsOnScreen.count{
-                    listOfButtonsOnScreen[i].button.isEnabled = true
-                    listOfButtonsOnScreen[i].button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-                }
-                
-                for i in 0..<listOfSwitchesOnScreen.count{
-                    listOfSwitchesOnScreen[i].switchButton.isEnabled = true
-                    listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
-                }
-                
-                for i in 0..<listOfCheckBoxesOnScreen.count{
-                    listOfCheckBoxesOnScreen[i].label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                }
-                
-                isTimerEnabled = true
-                
-            } else if (sender.tag == 2){
-                PlayButton.isHidden = false
-                PauseButton.isHidden = true
-                
-                self.progressBar.isEnabled = true
-                
-                self.progressBarTimer.invalidate()
-                self.totalProgress = self.progressBar.value
-                self.progressBar.value = self.totalProgress
-            } else if (sender.tag == 3){
-                PlayButton.isHidden = true
-                PauseButton.isHidden = false
-                
-                self.progressBar.isEnabled = false
-                
-                self.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
-                    (timer) in
-                    guard self.totalProgress <= 1 else {
-                        timer.invalidate()
-                        return
-                    }
-                    self.totalProgress = (self.totalProgress * 16500 + 1) / 16500
-                    self.updateTimer()
-                    self.progressBar.value = self.totalProgress
-                    }
-                
-                
-            } else if (sender.tag == 4){
-               //Undo button
-                if (DataPoints.count >= 1){
-                let removeItemTag = DataPoints[DataPoints.count - 1].type_index
-                let removeItemValue = DataPoints[DataPoints.count - 1].value
-                var foundItem = false
-                DataPoints.remove(at: DataPoints.count - 1)
-                encodedDataPoints.removeLast(4)
-                encodedData = updateEncodedData()
-                for i in 0..<listOfButtonsOnScreen.count{
-                    if (removeItemTag == listOfButtonsOnScreen[i].tag){
-                        listOfButtonsOnScreen[i].counter -= 1
-                        listOfButtonsOnScreen[i].counterField.text = String(listOfButtonsOnScreen[i].counter)
-                        foundItem = true
-                        break
-                    }
-                }
-                for i in 0..<listOfSwitchesOnScreen.count{
-                    if (foundItem){
-                        break
-                    }
-                    if (removeItemTag == listOfSwitchesOnScreen[i].tag){
-                        if (removeItemValue == 0){
-                            listOfSwitchesOnScreen[i].value = 1
-                            listOfSwitchesOnScreen[i].switchButton.backgroundColor = UIColor.red
-                            listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor.white, for: .normal)
-                            
-                        } else if (removeItemValue == 1){
-                            listOfSwitchesOnScreen[i].value = 0
-                            listOfSwitchesOnScreen[i].switchButton.backgroundColor = UIColor.systemGray5
-                            listOfSwitchesOnScreen[i].switchButton.setTitleColor(UIColor.green, for: .normal)
-                        }
-                    }
-                }
-                
-                
-                for i in 0..<listOfMultiToggleFieldScreen.count{
-                    if (foundItem){
-                        break
-                    }
-                    if (removeItemTag == listOfMultiToggleFieldScreen[i].tag){
-                        listOfMultiToggleFieldScreen[i].value = prevToggleValue
-                        listOfMultiToggleFieldScreen[i].setUpToggleField()
-                    }
-                    if (removeItemTag == 15){
-                        identicalToggles[0].value = prevToggleValue
-                        identicalToggles[0].setUpToggleField()
-                    } else if (removeItemTag == 7){
-                        identicalToggles[1].value = prevToggleValue
-                        identicalToggles[1].setUpToggleField()
-                    }
-                }
-                    
-                    for i in 0..<listOfCheckBoxesOnScreen.count{
-                        if (removeItemTag == listOfCheckBoxesOnScreen[i].tag){
-                            if (removeItemValue == 1){
-                                listOfCheckBoxesOnScreen[i].checkBox.backgroundColor = UIColor.systemGray5
-                                listOfCheckBoxesOnScreen[i].value = 0
-                            } else if (removeItemValue == 0){
-                                listOfCheckBoxesOnScreen[i].checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                                listOfCheckBoxesOnScreen[i].value = 1
-                            }
-                        }
-                    }
-                }
-            }
-            else if (sender.tag == 5){
-                let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
-
-                alert.addTextField{
-                    (UITextField) in UITextField.placeholder = "Enter comment"
-                    UITextField.text = comment
-                }
-
-                let getComment = UIAlertAction(title: "OK", style: .default){
-                    [weak alert] (_) in
-                    let textField = alert?.textFields![0]
-                    comment = textField!.text ?? ""
-                    encodedData = self.updateEncodedData()
-                }
-
-                let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
-
-                alert.addAction(getComment)
-                alert.addAction(cancel)
-
-                self.present(alert, animated : true, completion : nil)
-            } else if (sender.tag == 6){
-                let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "MainController") as? ViewController)!
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        }
 }
 
 extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -575,29 +248,29 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.screenTitles.count
+        return self.numberOfScreens
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (indexPath.row < self.screenTitles.count - 1){
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scoutingCell", for: indexPath) as? ScoutingScreenCell
-            cell?.listOfItemsType = self.listOfItemsType[indexPath.row]
-            cell?.listOfItemsName = self.listOfItemsName[indexPath.row]
-            cell?.listOfToggleTitles = self.listOfToggleTitles[indexPath.row]
-            cell?.listOfItemsTag = self.listOfTags[indexPath.row]
-            cell?.index = indexPath.row
+        if (indexPath.row < 3){
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.scoutingCellsID, for: indexPath) as? ScoutingScreenCell
+            parser.getLayoutForScreenWithBoard(board:   self.matchEntry?.board ?? "", index : indexPath.row)
+            cell?.listOfFieldData = parser.listOfFieldData
+            if (!isCreated){
+                self.listOfInputControls.append(contentsOf : cell?.setUpScoutingScreen() ?? [])
+            }
             return cell!
         } else {
-            let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.QRImageCellID, for: indexPath) as? QRImageCell
+            let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
             QRcell?.setUpQRImage()
             if (QRImageCellMade.count < 1){
                 QRImageCellMade.append(QRcell!)
             }
-            
+            self.isCreated = true
             
             return QRcell!
         }
-       
+        
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

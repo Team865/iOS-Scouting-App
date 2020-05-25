@@ -9,10 +9,12 @@
 import Foundation
 
 class Events {
-    var name : String?
-    var info : String?
-    init(name : String, info : String){
+    var name : String
+    var info : String
+    var key : String
+    init(name : String, info : String, key : String){
         self.name = name
         self.info = info
+        self.key = key
     }
 }

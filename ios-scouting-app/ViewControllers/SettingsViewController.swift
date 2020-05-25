@@ -14,6 +14,8 @@ class SettingsViewController: UIViewController {
     var settingsActionSection = [Settings]()
     var settingsInfoSection = [Settings]()
     
+    let idsAndKeys = IDsAndKeys()
+    
     var sectionTitle : [String] = ["Configurations", "About"]
     
     override func viewDidLoad() {
@@ -31,20 +33,20 @@ class SettingsViewController: UIViewController {
         
         var selectedEvent = "None"
         
-        if let currentEvent = UserDefaults.standard.object(forKey: "currentEvent") as? String{
+        if let currentEvent = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEvent) as? String{
             selectedEvent = currentEvent
         }	
         
         tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
-            hideSwitch : false))
+                                    hideSwitch : false))
         
         return tempSection
     }
     
     func createInfoSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
-
+        
         tempSection.append(Settings(image : UIImage(named: "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
         tempSection.append(Settings(image : UIImage(named : "github")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named : "badge")!, title : "Open source Licenses", description : "MIT License", hideSwitch : true))
@@ -58,44 +60,44 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UIScreen.main.bounds.height * 0.1
         
-        tableView.register(SettingsCell.self, forCellReuseIdentifier: "SettingsCell")
+        tableView.register(SettingsCell.self, forCellReuseIdentifier: self.idsAndKeys.settingsCell)
         view.addSubview(tableView)
         tableView.frame = view.frame
         tableView.tableFooterView = UIView()
     }
-
-
+    
+    
     @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-           if(indexPath.section == 0){
+        if(indexPath.section == 0){
             if(indexPath.row == 0){
                 let eventSelection = UIStoryboard(name : "Main", bundle: nil)
-                guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: "EventSelectionController") as?
+                guard let eventSelectionVC = eventSelection.instantiateViewController(withIdentifier: self.idsAndKeys.eventSelectionController) as?
                     EventSelectionController else { return }
                 
                 self.navigationController?.pushViewController(eventSelectionVC, animated: true)
             }
-            } else if (indexPath.section == 1){
+        } else if (indexPath.section == 1){
             if (indexPath.row == 1){
                 guard let url = URL(string: "https://github.com/Team865/iOS-Scouting-App") else { return }
                 UIApplication.shared.open(url)
-                }
             }
-       }
-
+        }
+    }
+    
 }
 
 extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-          return 2
-      }
-      
-      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0 : return 2
         case 1 : return 3
         default : return 0
         }
-      }
+    }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
@@ -116,7 +118,7 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for : indexPath) as! SettingsCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: self.idsAndKeys.settingsCell, for : indexPath) as! SettingsCell
         switch indexPath.section {
         case 0 :
             let section1 = settingsActionSection[indexPath.row]
@@ -129,12 +131,12 @@ extension SettingsViewController : UITableViewDelegate, UITableViewDataSource {
             let section2 = settingsInfoSection[indexPath.row]
             cell.setCell(settings: section2)
             cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
-            default: cell.backgroundColor = UIColor.white
+        default: cell.backgroundColor = UIColor.white
         }
         
         return cell
     }
     
     
-  
+    
 }
