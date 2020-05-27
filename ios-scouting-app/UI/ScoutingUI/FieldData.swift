@@ -7,11 +7,13 @@
 //
 
 import Foundation
-struct fieldData {
+struct FieldData {
     var name : String
     var type : String
     var choice : [String]?
     var is_lite : Bool
     var tag : Int
     var default_choice : Int?
+    var value : Int
+    var scoutingActivity : ScoutingActivity
 }

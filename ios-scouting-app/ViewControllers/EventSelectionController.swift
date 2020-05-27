@@ -10,7 +10,8 @@ import Foundation
 import UIKit
 
 class EventSelectionController : UIViewController, UITextFieldDelegate{
-    
+    var tbaParser = TBAParser()
+    var coreData = CoreData()
     var selectedEvent : Events!
     
     var eventTable : UITableView!
@@ -20,7 +21,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     
     let viewDimension = 40
     
-    var key = tbaKey()
+    var key = TBAKey()
     var idsAndKeys = IDsAndKeys()
     
     var jsonListOfEvents = [jsonEvents]()
@@ -32,13 +33,15 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.listOfEvents.removeAll()
+        self.coreData.fetchDataFromCore()
+        self.listOfEvents = self.coreData.loadListOfEventsFromCore()
+        
         configureTeamTextField()
         configureYearTextField()
         configureTableView()
         setUpNavigationBar()
         
-        //Load data from cache
-        loadEventListFromCache()
     }
     
     //UI Configurations
@@ -72,7 +75,6 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         yearText.leftView = calendar
         
         view.addSubview(yearText)
-        
         
         yearText.translatesAutoresizingMaskIntoConstraints = false
         yearText.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -115,25 +117,6 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         teamText.layer.addSublayer(bottomLine2)
     }
     
-    private func loadEventListFromCache(){
-        if let eventKeys = UserDefaults.standard.object(forKey: self.idsAndKeys.eventKeys) as? [String],
-            let eventInfo = UserDefaults.standard.object(forKey: self.idsAndKeys.eventInfos) as? [String],
-            let eventName = UserDefaults.standard.object(forKey: self.idsAndKeys.eventNames) as? [String]{
-            self.listOfEvents = self.createEventListFromCache(name : eventName, info : eventInfo, keys : eventKeys)
-            self.eventTable.reloadData()
-        }
-    }
-    
-    private func createEventListFromCache(name : [String], info : [String], keys : [String]) -> [Events]{
-        var tempEvent : [Events] = []
-        for i in 0..<info.count{
-            let event = Events(name: name[i], info: info[i], key: keys[i])
-            tempEvent.append(event)
-        }
-        
-        return tempEvent
-    }
-    
     //Create list view when return button is pressed
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         yearText.resignFirstResponder()
@@ -141,65 +124,23 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         
         self.listOfEvents.removeAll()
         
-        getJSONEvents {
-            self.listOfEvents = self.createEventCells()
+        self.tbaParser.teamNumber = self.teamText.text ?? ""
+        self.tbaParser.key = self.key.key
+        self.tbaParser.eventSelectionController = self
+        
+        self.coreData.clearCoreData(entity: self.idsAndKeys.eventsCoreID)
+        
+        self.tbaParser.getJSONEvents {
+            self.listOfEvents = self.tbaParser.createEventCells(jsonEvents : self.jsonListOfEvents, year: self.yearText.text ?? "")
+            self.coreData.moveListOfEventsToCore(listOfEvents: self.listOfEvents)
             self.eventTable.reloadData()
         }
         
         return true
     }
     
-    private func createEventCells() -> [Events]{
-        var tempCell : [Events] = []
-        
-        var listOfInfo : [String] = []
-        var listOfKeys : [String] = []
-        var listOfNames : [String] = []
-        
-        for i in 0..<self.jsonListOfEvents.count{
-            if(jsonListOfEvents[i].year == Int(self.yearText.text!) ?? 0){
-                let info = jsonListOfEvents[i].start_date + " in " + jsonListOfEvents[i].city + ", " + jsonListOfEvents[i].state_prov + ", " + jsonListOfEvents[i].country
-                
-                let event = Events(name: jsonListOfEvents[i].name, info : info, key : self.yearText.text! + jsonListOfEvents[i].event_code)
-                tempCell.append(event)
-                
-                listOfKeys.append(self.yearText.text! + jsonListOfEvents[i].event_code)
-                listOfNames.append(self.jsonListOfEvents[i].name)
-                listOfInfo.append(info)
-            }
-        }
-        UserDefaults.standard.set(self.yearText.text!, forKey: self.idsAndKeys.year)
-        UserDefaults.standard.set(listOfKeys, forKey: self.idsAndKeys.eventKeys)
-        UserDefaults.standard.set(listOfNames, forKey: self.idsAndKeys.eventNames)
-        UserDefaults.standard.set(listOfInfo, forKey: self.idsAndKeys.eventInfos)
-        
-        return tempCell
-    }
-    
     private func setUpNavigationBar(){
         navigationItem.title = "Select FRC Event"
-    }
-    
-    private func getJSONEvents(completed : @escaping () -> ()){
-        let url = URL(string: "https://www.thebluealliance.com/api/v3/team/frc" + self.teamText.text! + "/events")!
-        UserDefaults.standard.set(self.teamText.text!, forKey: "teamNumber")
-        var request = URLRequest(url: url)
-        request.setValue(self.key.key, forHTTPHeaderField: "X-TBA-Auth-Key")
-        URLSession.shared.dataTask(with: request) {
-            (data, response, error) in
-            guard let data = data else { return }
-            do {
-                let decoder = JSONDecoder()
-                self.jsonListOfEvents = try decoder.decode([jsonEvents].self, from: data)
-                
-                DispatchQueue.main.async {
-                    completed()
-                }
-            } catch let jsonErr {
-                print(jsonErr)
-            }
-        }.resume()
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -233,7 +174,6 @@ extension EventSelectionController : UITableViewDelegate, UITableViewDataSource{
             alert in
             
             self.selectedEvent = self.listOfEvents[indexPath.row]
-            UserDefaults.standard.set(self.selectedEvent.name, forKey: self.idsAndKeys.currentEvent)
             self.performSegue(withIdentifier: "passEventKey", sender: self)
         }
         

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
-protocol InputControl {
+protocol InputControl : UIView{
     func onTimerStarted()
+    func setUpView(data : FieldData)
 }
