@@ -10,33 +10,15 @@ import Foundation
 import UIKit
 
 public class ButtonField : UIView, InputControl{
-    func onTimerStarted() {
-        self.button.isEnabled = true
-        self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-    }
+    var scoutingActivity = ScoutingActivity()
     
-    var entry : Entry!
-    let counterField = UILabel()
-    var button = UIButton()
-    var value = 1
-    var counter = 0
-    var buttonTitle = ""
-    override init (frame : CGRect){
-        super.init(frame : frame)
-        
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    
-    func setUpButtonField(data : fieldData){
+    func setUpView(data: FieldData) {
         counterField.text = String(self.counter)
         backgroundColor = UIColor.systemGray5
         addSubview(button)
         addSubview(counterField)
+        
+        self.scoutingActivity = data.scoutingActivity
         
         button.setTitle(data.name, for: .normal)
         button.setTitleColor(UIColor.systemGray, for: .normal)
@@ -62,9 +44,32 @@ public class ButtonField : UIView, InputControl{
         counterField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
     }
     
+    func onTimerStarted() {
+        self.button.isEnabled = true
+        self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+    }
+    
+    let counterField = UILabel()
+    var button = UIButton()
+    var value = 1
+    var counter = 0
+    var buttonTitle = ""
+    override init (frame : CGRect){
+        super.init(frame : frame)
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     @objc func updateCounter(sender : UIButton){
         counter += 1
         counterField.text = String(counter)
+        
+        let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        
+        self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
     }
 }

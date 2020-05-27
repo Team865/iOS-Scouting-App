@@ -8,25 +8,30 @@
 
 import Foundation
 class IDsAndKeys {
-    let blueAlliance = "blueAlliance"
-    let redAlliance = "redAlliance"
-    let matchNumber = "matchNumber"
-    let imageName = "icon"
-    let boards = "boards"
-    let isScouted = "isScouted"
-    let scoutedData = "scoutedData"
-    let scoutName = "scoutName"
-    let eventKey = "eventKey"
-    let numberOfAddedEntriesIndices = "addedMatches"
-    let listOfNewMatches = "addedMatchesNumber"
+    let matchScheduleCoreID = "MatchScheduleCore"
+    let eventsCoreID = "EventsCore"
+    
+    let blueAlliance = "blueAllianceCore"
+    let redAlliance = "redAllianceCore"
+    let matchNumber = "matchNumberCore"
+    let imageName = "imageNameCore"
+    let boards = "boardCore"
+    let isScouted = "isScoutedCore"
+    let scoutedData = "scoutedDataCore"
     
     let selectedBoard = "SelectedBoard"
+    let scoutName = "scoutName"
+    let numberOfAddedEntriesIndices = "addedMatches"
     
-    let eventKeys = "EventKeys"
-    let eventInfos = "EventInfos"
-    let eventNames = "EventNames"
+    let eventKeys = "keyCore"
+    let eventInfos = "infoCore"
+    let eventNames = "nameCore"
+    
     let eventCells = "EventCells"
-    let currentEvent = "currentEvent"
+    
+    let currentEventName = "currentEventName"
+    let currentEventInfo = "currentEventInfo"
+    let currentEventKey = "currentEventKey"
     
     let year = "year"
     let team = "team"

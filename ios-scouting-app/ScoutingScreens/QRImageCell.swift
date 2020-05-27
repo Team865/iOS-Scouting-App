@@ -11,9 +11,8 @@ import UIKit
 class QRImageCell : UICollectionViewCell{
     let image = UIImageView()
     let view = UIButton()
-    let qrData = ""
     var qrCodeGenerator = QRCodeGenerator()
-    
+    var scoutingActivity = ScoutingActivity()
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -21,10 +20,11 @@ class QRImageCell : UICollectionViewCell{
     func setUpQRImage(){
         view.frame = CGRect(x : 2.5, y : self.bounds.height / 1.5, width: self.bounds.width - 5, height :  self.bounds.height / 5)
         view.titleLabel?.textAlignment = .center
-        view.setTitle("", for: .normal)
+        view.setTitle(self.scoutingActivity.qrEntry.getQRData(), for: .normal)
         view.addTarget(self, action: #selector(displayEncodedData(sender:)), for: .touchUpInside)
         view.setTitleColor(UIColor.black, for: .normal)
-        let qrCode = self.qrCodeGenerator.generateQRCode(from: "")
+        
+        let qrCode = self.qrCodeGenerator.generateQRCode(from: self.scoutingActivity.qrEntry.getQRData())
         
         image.image = qrCode
         image.frame = CGRect(x : 2.5, y : 0, width: self.bounds.width - 5, height: self.bounds.height / 1.5)

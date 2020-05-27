@@ -24,7 +24,7 @@ public class Encoder {
         }
     }
     
-    func dataPointToString(dp: DataPoint) {
+    func dataPointToString(dp: DataPoint) -> String{
         var string = ""
         
         let intTime = Int(dp.time * 100)
@@ -37,6 +37,8 @@ public class Encoder {
         string += String(toBase64(i: b))
         string += String(toBase64(i: c))
         string += String(toBase64(i: d))
+        
+        return string
     }
     
     func fromBase64(ch: Int) -> Int {

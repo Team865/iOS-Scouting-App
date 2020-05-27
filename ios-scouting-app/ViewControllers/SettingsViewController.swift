@@ -33,9 +33,10 @@ class SettingsViewController: UIViewController {
         
         var selectedEvent = "None"
         
-        if let currentEvent = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEvent) as? String{
+        if let currentEvent = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String{
             selectedEvent = currentEvent
-        }	
+            print(currentEvent)
+        }
         
         tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",

@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-class ScoutingActivity : UIViewController{
+class ScoutingActivity : UIViewController {
     var listOfInputControls : [InputControl] = []
-    var matchEntry : MatchEntry?
-    var qrEntry = Entry(selectedEntry: MatchEntry())
+    var matchEntry = MatchEntry()
+    var qrEntry = Entry()
     var parser = Parser()
-    var listOfFieldData : [fieldData] = []
+    var listOfFieldData : [FieldData] = []
     let dataTimer = DataTimer()
     var comment = ""
     
@@ -68,19 +68,18 @@ class ScoutingActivity : UIViewController{
         configureProgressBar()
         configureScoutingView()
         
-        //self.qrEntry = .init(selectedEntry: self.matchEntry!)
+        self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
+        
+        self.matchEntry.scoutedData = self.qrEntry.getQRData()   
     }
     
     //UI Configurations
     func configureScoutingView(){
-        if (self.matchEntry?.board.suffix(1) == "X"){
+        if (self.matchEntry.board.suffix(1) == "X"){
             self.numberOfScreens = 5
         }
-        
-        let currentTeams = self.matchEntry?.teamNumber.components(separatedBy: " ") ?? []
-        let opposingTeams = self.matchEntry?.opposingTeamNumber.components(separatedBy: " ") ?? []
-        
-        parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams)
+        self.parser.scoutingActivity = self
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: [], opposingTeams: [], scoutingActivity: self)
         self.screenTitles = parser.getScreenTitles()
         self.screenTitles.append("QR Code")
         screenTitle.text = self.screenTitles[0]
@@ -140,11 +139,11 @@ class ScoutingActivity : UIViewController{
         let spacing = 2.5
         var startingX = 0.0
         let timeOnStart = "015"
-        let listOfTexts = ["M" + (self.matchEntry?.matchNumber ?? ""), self.matchEntry?.board, self.matchEntry?.teamNumber, timeOnStart]
+        let listOfTexts = ["M" + (self.matchEntry.matchNumber), self.matchEntry.board, self.matchEntry.teamNumber, timeOnStart]
         let listOfLabelWidth = [50, 30.0, 50.0, 35.0]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i] ?? "")
+            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
             label.text = listOfTexts[i]
             view.addSubview(self.createIcon(x: startingX, y: 3.5, width: iconsWidth, height: 28, iconName: listOfIconNames[i]))
             
@@ -194,7 +193,8 @@ class ScoutingActivity : UIViewController{
             
             self.dataTimer.startTimer(scoutingActivity: self)
             
-            isTimerEnabled = true
+            self.matchEntry.isScouted = true
+            
             
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
@@ -216,6 +216,8 @@ class ScoutingActivity : UIViewController{
             alert.addTextField{
                 (UITextField) in UITextField.placeholder = "Enter comment"
                 UITextField.text = self.comment
+                self.qrEntry.comment = self.comment
+                self.matchEntry.scoutedData = self.qrEntry.getQRData()
             }
             
             let getComment = UIAlertAction(title: "OK", style: .default){
@@ -256,28 +258,23 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            if (indexPath.row < self.numberOfScreens - 1){
-            let currentTeams = self.matchEntry?.teamNumber.components(separatedBy: " ") ?? []
-            let opposingTeams = self.matchEntry?.opposingTeamNumber.components(separatedBy: " ") ?? []
+        if (indexPath.row < self.numberOfScreens - 1){
+            let currentTeams = self.matchEntry.teamNumber.components(separatedBy: " ")
+            let opposingTeams = self.matchEntry.opposingTeamNumber.components(separatedBy: " ")
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.scoutingCellsID, for: indexPath) as? ScoutingScreenCell
-            parser.getLayoutForScreenWithBoard(board: self.matchEntry?.board ?? "", index : indexPath.row, currentTeams: currentTeams, opposingTeams: opposingTeams)
+            parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index : indexPath.row, currentTeams: currentTeams, opposingTeams: opposingTeams, scoutingActivity : self)
             cell?.listOfFieldData = parser.listOfFieldData
             cell?.index = indexPath.row
-            if (!isCreated){
-                self.listOfInputControls.append(contentsOf : cell?.listOfInputControl ?? [])
-            }
+            self.listOfInputControls.append(contentsOf : cell?.listOfInputControl ?? [])
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
+            QRcell?.scoutingActivity = self
             QRcell?.setUpQRImage()
-            if (QRImageCellMade.count < 1){
-                QRImageCellMade.append(QRcell!)
-            }
-            self.isCreated = true
-            
             return QRcell!
         }
+        
         
     }
     

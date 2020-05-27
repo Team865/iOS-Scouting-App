@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EventsCore" representedClassName="EventsCore" syncable="YES" codeGenerationType="class">
+        <attribute name="infoCore" optional="YES" attributeType="String"/>
+        <attribute name="keyCore" optional="YES" attributeType="String"/>
+        <attribute name="nameCore" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="MatchScheduleCore" representedClassName="MatchScheduleCore" syncable="YES" codeGenerationType="class">
+        <attribute name="blueAllianceCore" optional="YES" attributeType="String"/>
+        <attribute name="boardCore" optional="YES" attributeType="String"/>
+        <attribute name="imageNameCore" optional="YES" attributeType="String"/>
+        <attribute name="isScoutedCore" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="matchNumberCore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="redAllianceCore" optional="YES" attributeType="String"/>
+        <attribute name="scoutedDataCore" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="MatchScheduleCore" positionX="-63" positionY="-18" width="128" height="148"/>
+        <element name="EventsCore" positionX="-54" positionY="45" width="128" height="88"/>
+    </elements>
+</model>

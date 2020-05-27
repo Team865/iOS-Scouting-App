@@ -9,29 +9,14 @@
 import Foundation
 import UIKit
 class CheckBoxField : UIView, InputControl{
+    var scoutingActivity = ScoutingActivity()
     
-    func onTimerStarted() {
-        self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-        self.checkBox.isEnabled = true
-    }
-    
-    var entry : Entry!
-    var title : String?
-    var value = 0
-    var checkBox = UIButton()
-    let label = UILabel()
-    override init(frame: CGRect) {
-        super.init(frame : frame)
-    }
-    
-    required init(coder: NSCoder) {
-        fatalError("The check box is null")
-    }
-    
-    func setUpCheckBox(data : fieldData) {
+    func setUpView(data : FieldData) {
         addSubview(label)
         addSubview(checkBox)
         backgroundColor = UIColor.systemGray5
+        
+        self.scoutingActivity = data.scoutingActivity
         
         label.text = data.name
         label.numberOfLines = 0
@@ -57,7 +42,25 @@ class CheckBoxField : UIView, InputControl{
         checkBox.trailingAnchor.constraint(equalTo: label.leadingAnchor, constant: -5).isActive = true
         checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.15).isActive = true
         checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/4).isActive = true
-        
+    }
+    
+    
+    func onTimerStarted() {
+        self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        self.checkBox.isEnabled = true
+    }
+    
+    var entry : Entry!
+    var title : String?
+    var value = 0
+    var checkBox = UIButton()
+    let label = UILabel()
+    override init(frame: CGRect) {
+        super.init(frame : frame)
+    }
+    
+    required init(coder: NSCoder) {
+        fatalError("The check box is null")
     }
     
     @objc func activateCheckBox(sender : UIButton){
@@ -68,6 +71,11 @@ class CheckBoxField : UIView, InputControl{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
+        
+        let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        
+        self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
     }
 }
 

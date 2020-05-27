@@ -11,14 +11,19 @@ import UIKit
 var times = 0
 class ScoutingScreenCell : UICollectionViewCell {
     var reusing = false
-    var listOfFieldData : [[fieldData]] = []
-    let scoutingView = UIStackView()
-    let blankView = UIView()
-    
+    var listOfFieldData : [[FieldData]] = []
+    var listOfInputControl : [InputControl] = []
+    var scoutingView = UIStackView()
     override init(frame: CGRect) {
         super.init(frame : frame)
+    }
+    
+    var index : Int?{
+    willSet{
         configureBlankView()
         configureScoutingStackView()
+        setUpScoutingScreen()
+    }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -26,12 +31,14 @@ class ScoutingScreenCell : UICollectionViewCell {
     }
     
     func configureBlankView(){
+        let blankView = UIView()
         contentView.addSubview(blankView)
         blankView.frame = CGRect(x : 0, y : 0, width : contentView.frame.width, height: contentView.frame.height)
         blankView.backgroundColor = UIColor.white
     }
     
     func configureScoutingStackView(){
+        scoutingView = UIStackView()
         contentView.addSubview(scoutingView)
         contentView.backgroundColor = UIColor.white
         scoutingView.axis = .vertical
@@ -40,44 +47,40 @@ class ScoutingScreenCell : UICollectionViewCell {
         scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
     }
     
-    func setUpScoutingScreen() -> [InputControl]{
-        var listOfInputControl : [InputControl] = []
-        
+    func setUpScoutingScreen() {
         for i in 0..<self.listOfFieldData.count{
             let scoutingRow = UIStackView()
             scoutingRow.axis = .horizontal
             scoutingRow.distribution = .fillEqually
             scoutingRow.spacing = 2.5
             for j in 0..<self.listOfFieldData[i].count{
+                var item : InputControl?
+
                 switch self.listOfFieldData[i][j].type {
                 case "Button":
-                    let item = ButtonField()
-                    item.setUpButtonField(data: listOfFieldData[i][j])
-                    listOfInputControl.append(item)
-                    scoutingRow.addArrangedSubview(item)
+                    item = ButtonField()
+                    item?.setUpView(data: listOfFieldData[i][j])
                 case "Switch":
-                    let item = SwitchField()
-                    item.setUpSwitchField(data: listOfFieldData[i][j])
-                    listOfInputControl.append(item)
-                    scoutingRow.addArrangedSubview(item)
+                    item = SwitchField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                   
                 case "MultiToggle":
-                    let item = MultiToggleField()
-                    item.setUpToggleField(data: listOfFieldData[i][j])
-                    listOfInputControl.append(item)
-                    scoutingRow.addArrangedSubview(item)
+                    item = MultiToggleField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                    
                 case "Checkbox":
-                    let item = CheckBoxField()
-                    item.setUpCheckBox(data: listOfFieldData[i][j])
-                    listOfInputControl.append(item)
-                    scoutingRow.addArrangedSubview(item)
+                    item = CheckBoxField()
+                    item?.setUpView(data: listOfFieldData[i][j])
                 default:
-                    print("O")
+                    item = UnknownField()
                 }
+                
+                listOfInputControl.append(item!)
+                scoutingRow.addArrangedSubview(item!)
             }
             scoutingView.addArrangedSubview(scoutingRow)
         }
         
-        return listOfInputControl
     }
     
 }

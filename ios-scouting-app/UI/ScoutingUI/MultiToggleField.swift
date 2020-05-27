@@ -11,7 +11,6 @@ import UIKit
 
 public class ToggleButton : UIButton{
     var value = 0
-    
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -22,22 +21,9 @@ public class ToggleButton : UIButton{
 }
 
 class MultiToggleField : UIView, InputControl{
-    func onTimerStarted() {
-        //MultiToggle does not have any action when the timer is started
-    }
-    
-    var toggleButton = ToggleButton()
-    var defaultValue = 0
-    
-    override init(frame: CGRect) {
-        super.init(frame : frame)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setUpToggleField(data : fieldData){
+    var scoutingActivity = ScoutingActivity()
+
+    func setUpView(data: FieldData) {
         backgroundColor = UIColor.systemGray5
         
         let label = UILabel()
@@ -45,6 +31,8 @@ class MultiToggleField : UIView, InputControl{
         
         addSubview(label)
         addSubview(toggleButtons)
+        
+        self.scoutingActivity = data.scoutingActivity
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -85,6 +73,22 @@ class MultiToggleField : UIView, InputControl{
             toggleButtons.addArrangedSubview(toggleButton)
         }
     }
+    
+    func onTimerStarted() {
+        //MultiToggle does not have any action when the timer is started
+    }
+    
+    var toggleButton = ToggleButton()
+    var defaultValue = 0
+    
+    override init(frame: CGRect) {
+        super.init(frame : frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
         self.defaultValue = sender.value

@@ -9,13 +9,15 @@
 import Foundation
 class Parser {
     var screenLayout : ScoutingScreenLayout!
-    var listOfFieldData = [[fieldData]]()
+    var scoutingActivity : ScoutingActivity?
+    var listOfFieldData = [[FieldData]]()
     var board = ""
     var index = 0
     var currentTeams : [String] = []
     var opposingTeams : [String] = []
     var screens : [screens] = []
-    func getLayoutForScreenWithBoard(board : String, index : Int, currentTeams : [String], opposingTeams : [String]){
+    func getLayoutForScreenWithBoard(board : String, index : Int, currentTeams : [String], opposingTeams : [String], scoutingActivity : ScoutingActivity){
+        self.scoutingActivity = scoutingActivity
         self.board = board
         self.index = index
         self.currentTeams = currentTeams
@@ -55,16 +57,19 @@ class Parser {
         
         var formatted = ""
         
-        for i in 0..<arr.count{
-            if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = currentTeam[index - 1]
-            } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
-                let index = Int(arr[i].suffix(1)) ?? 0
-                arr[i] = opposingTeam[index - 1]
+        if (currentTeam.count != 0 && opposingTeam.count != 0){
+            for i in 0..<arr.count{
+                if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
+                    let teamIndex = Int(arr[i].suffix(1)) ?? 0
+                    arr[i] = currentTeam[teamIndex - 1]
+                } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
+                    let index = Int(arr[i].suffix(1)) ?? 0
+                    arr[i] = opposingTeam[index - 1]
+                }
+                formatted += (arr[i] + "_")
             }
-            formatted += (arr[i] + "_")
         }
+        
         
         formatted = self.formatTitleOfItem(string: formatted)
         
@@ -101,7 +106,7 @@ class Parser {
         var tag = lookUpTag(screen : screens)
         
         for k in 0..<layout[self.index].layout.count{
-            var itemsInRow : [fieldData] = []
+            var itemsInRow : [FieldData] = []
             for j in 0..<layout[self.index].layout[k].count{
                 let currentItem = layout[self.index].layout[k][j]
                 
@@ -109,7 +114,12 @@ class Parser {
                 
                 let choice = (self.board == "BX" || self.board == "RX") ? formatTeamChoices(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
                 
-                let fieldItem = fieldData(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice)
+                var value = currentItem.default_choice
+                if (currentItem.is_lite ?? false){
+                    value = 1
+                }
+                
+                let fieldItem = FieldData(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice, value: value ?? 0, scoutingActivity: self.scoutingActivity!)
                 tag += 1
                 itemsInRow.append(fieldItem)
             }
