@@ -11,7 +11,6 @@ import UIKit
 
 public class ButtonField : UIView, InputControl{
     var scoutingActivity = ScoutingActivity()
-
     
     func setUpView(data: FieldData) {
         counterField.text = String(self.counter)
@@ -71,7 +70,6 @@ public class ButtonField : UIView, InputControl{
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
-        
         
     }
 }

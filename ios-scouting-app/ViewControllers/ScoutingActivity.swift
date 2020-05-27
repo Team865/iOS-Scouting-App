@@ -70,10 +70,7 @@ class ScoutingActivity : UIViewController {
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
         
-        print(self.qrEntry.eventKey)
-        
-        self.matchEntry.scoutedData = self.qrEntry.getQRData()
-        
+        self.matchEntry.scoutedData = self.qrEntry.getQRData()   
     }
     
     //UI Configurations
