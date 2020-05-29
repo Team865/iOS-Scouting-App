@@ -71,7 +71,8 @@ class TBAParser {
                                 
                                 json[u].alliances.red.team_keys[p] = String(parsedRed)
                             }
-                            let match = MatchSchedule(imageName : "layers", matchNumber: i, redAlliance:  json[u].alliances.red.team_keys, blueAlliance: json[u].alliances.blue.team_keys, board: "B1", isScouted: false, scoutedData: "")
+                            let match = MatchSchedule()
+                            match.setUpMatchSchedule(imageName : "layers", matchNumber: i, redAlliance:  json[u].alliances.red.team_keys, blueAlliance: json[u].alliances.blue.team_keys, board: "B1", isScouted: false, scoutedData: "")
                             tempArr.append(match)
                         }
                     }

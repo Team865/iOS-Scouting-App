@@ -40,6 +40,11 @@ class QRImageCell : UICollectionViewCell{
     @objc func displayEncodedData(sender : UIButton){
         let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
         
+        alert.addTextField {
+            (UITextField) in
+            UITextField.text = self.scoutingActivity.qrEntry.getQRData()
+        }
+        
         let getData = UIAlertAction(title: "OK", style: .default){
             alert in
             

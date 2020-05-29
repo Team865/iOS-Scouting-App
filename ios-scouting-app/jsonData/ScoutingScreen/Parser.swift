@@ -114,18 +114,13 @@ class Parser {
                 
                 let choice = (self.board == "BX" || self.board == "RX") ? formatTeamChoices(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
                 
-                var value = currentItem.default_choice
-                if (currentItem.is_lite ?? false){
-                    value = 1
-                }
-                
-                let fieldItem = FieldData(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice, value: value ?? 0, scoutingActivity: self.scoutingActivity!)
+                let fieldItem = FieldData()
+                fieldItem.setUpField(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice ?? 0, scoutingActivity: self.scoutingActivity!)
                 tag += 1
                 itemsInRow.append(fieldItem)
             }
             self.listOfFieldData.append(itemsInRow)
         }
-        
         
     }
     

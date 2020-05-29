@@ -11,14 +11,21 @@ import UIKit
 
 public class ButtonField : UIView, InputControl{
     var scoutingActivity = ScoutingActivity()
+    let counterField = UILabel()
+    var button = UIButton()
+    var counter = 0
+    var fieldData = FieldData()
     
     func setUpView(data: FieldData) {
-        counterField.text = String(self.counter)
+        self.fieldData = data
+        self.scoutingActivity = data.scoutingActivity
+        
+        self.counter = self.scoutingActivity.listOfUIContent[data.name] ?? 0
+            
+        counterField.text = String(counter)
         backgroundColor = UIColor.systemGray5
         addSubview(button)
         addSubview(counterField)
-        
-        self.scoutingActivity = data.scoutingActivity
         
         button.setTitle(data.name, for: .normal)
         button.setTitleColor(UIColor.systemGray, for: .normal)
@@ -49,11 +56,10 @@ public class ButtonField : UIView, InputControl{
         self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
     }
     
-    let counterField = UILabel()
-    var button = UIButton()
-    var value = 1
-    var counter = 0
-    var buttonTitle = ""
+    func onItemClicked(){
+        
+    }
+    
     override init (frame : CGRect){
         super.init(frame : frame)
         
@@ -64,10 +70,14 @@ public class ButtonField : UIView, InputControl{
     }
     
     @objc func updateCounter(sender : UIButton){
-        counter += 1
-        counterField.text = String(counter)
+        self.counter += 1
+        self.counterField.text = String(counter)
+
+        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.counter
         
-        let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        let dataPoint = DataPoint(type_index: sender.tag, value: 1, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        
+        self.scoutingActivity.scoutingView.reloadData()
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         

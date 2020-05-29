@@ -10,13 +10,17 @@ import Foundation
 import UIKit
 class CheckBoxField : UIView, InputControl{
     var scoutingActivity = ScoutingActivity()
-    
+    var fieldData = FieldData()
     func setUpView(data : FieldData) {
+        self.fieldData = data
+        
         addSubview(label)
         addSubview(checkBox)
         backgroundColor = UIColor.systemGray5
         
         self.scoutingActivity = data.scoutingActivity
+        
+        
         
         label.text = data.name
         label.numberOfLines = 0
@@ -63,6 +67,17 @@ class CheckBoxField : UIView, InputControl{
         fatalError("The check box is null")
     }
     
+    func onItemClicked(){
+        if (self.value == 1){
+            checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        } else {
+            checkBox.backgroundColor = UIColor.systemGray5
+        }
+        
+        self.value = self.scoutingActivity.listOfUIContent[self.fieldData.name] ?? 0
+
+    }
+    
     @objc func activateCheckBox(sender : UIButton){
         if (self.value == 0){
             checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
@@ -71,6 +86,10 @@ class CheckBoxField : UIView, InputControl{
             checkBox.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
+        
+        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.value
+        
+        self.scoutingActivity.scoutingView.reloadData()
         
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         

@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 class DataTimer {
     var timeStamp : Float = 0
-    var isStarted = false
-    
     func setTimeStamp(timeStamp : Float){
         self.timeStamp = timeStamp
     }
@@ -33,11 +31,9 @@ class DataTimer {
             
             self.updateTimer(scoutingActivity: scoutingActivity)
             
-            self.isStarted = true
             
-            for i in 0..<scoutingActivity.listOfInputControls.count{
-                scoutingActivity.listOfInputControls[i].onTimerStarted()
-            }
+            scoutingActivity.isStarted = true
+            
         }
     }
     
@@ -49,6 +45,10 @@ class DataTimer {
         scoutingActivity.progressBar.value = scoutingActivity.totalProgress
         
         self.setTimeStamp(timeStamp: scoutingActivity.totalProgress)
+        
+        for i in 0..<scoutingActivity.listOfInputControls.count{
+            scoutingActivity.listOfInputControls[i].onTimerStarted()
+        }
     }
     
     func resumeTimer(scoutingActivity : ScoutingActivity){
@@ -59,9 +59,12 @@ class DataTimer {
                 return
             }
             
-            self.updateTimer(scoutingActivity: scoutingActivity)
+            scoutingActivity.totalProgress = (scoutingActivity.totalProgress * 165 + 0.01) / 165
+            
             scoutingActivity.progressBar.value = scoutingActivity.totalProgress
             scoutingActivity.progressBar.isEnabled = false
+            self.updateTimer(scoutingActivity: scoutingActivity)
+            
         }
     }
     
@@ -90,6 +93,10 @@ class DataTimer {
         
         scoutingActivity.listOfLabels[3].text = timeLeft
         scoutingActivity.listOfLabels[3].textColor = color
+        
+        for i in 0..<scoutingActivity.listOfInputControls.count{
+            scoutingActivity.listOfInputControls[i].onTimerStarted()
+        }
         
         self.setTimeStamp(timeStamp: scoutingActivity.totalProgress)
     }

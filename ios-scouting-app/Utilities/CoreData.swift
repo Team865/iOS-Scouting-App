@@ -138,7 +138,8 @@ class CoreData{
             let bA = matchSchedules[i].value(forKey: self.idsAndKeys.blueAlliance) as! String
             let blueAlliance = bA.components(separatedBy: " ")
             
-            let matchSchedule = MatchSchedule.init(imageName: matchSchedules[i].value(forKey: self.idsAndKeys.imageName) as! String, matchNumber: matchSchedules[i].value(forKey: self.idsAndKeys.matchNumber) as! Int, redAlliance: redAlliance, blueAlliance: blueAlliance, board: matchSchedules[i].value(forKey: self.idsAndKeys.boards) as! String, isScouted: matchSchedules[i].value(forKey: self.idsAndKeys.isScouted) as! Bool, scoutedData: matchSchedules[i].value(forKey: self.idsAndKeys.scoutedData) as! String)
+            let matchSchedule = MatchSchedule()
+            matchSchedule.setUpMatchSchedule(imageName: matchSchedules[i].value(forKey: self.idsAndKeys.imageName) as! String, matchNumber: matchSchedules[i].value(forKey: self.idsAndKeys.matchNumber) as! Int, redAlliance: redAlliance, blueAlliance: blueAlliance, board: matchSchedules[i].value(forKey: self.idsAndKeys.boards) as! String, isScouted: matchSchedules[i].value(forKey: self.idsAndKeys.isScouted) as! Bool, scoutedData: matchSchedules[i].value(forKey: self.idsAndKeys.scoutedData) as! String)
             
             tempArr.append(matchSchedule)
         }
