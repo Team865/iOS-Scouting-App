@@ -204,45 +204,48 @@ class ViewController: UIViewController {
     func updateScoutedEntries(matchEntry : MatchEntry){
         let index = matchEntry.atIndex
         
-        var matchSchedule = MatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
-        
-        if (self.listOfMatches.count != 0){
-        matchSchedule = MatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: self.listOfMatches[index].redAlliance, blueAlliance: self.listOfMatches[index].blueAlliance, board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
-        } else {
-            
-        }
+        let matchSchedule = MatchSchedule()
+        matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: self.listOfMatches[index].redAlliance, blueAlliance: self.listOfMatches[index].redAlliance, board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
         
         if (matchEntry.addedEntry){
             let emptyBoi = "_ _ _"
-            matchSchedule.imageName = "addicon"
-            
-            if (matchSchedule.board.prefix(1) == "B"){
-                matchSchedule.redAlliance = [emptyBoi, emptyBoi, emptyBoi]
+            let imageName = "addicon"
+            var redAlliance : [String] = []
+            var blueAlliance : [String] = []
+            let boardNumber = Int(matchSchedule.board.suffix(1)) ?? 1
+            if (matchEntry.board.prefix(1) == "B"){
+                redAlliance = [emptyBoi, emptyBoi, emptyBoi]
                 
                 for i in 0..<3{
-                    if (i == Int(matchSchedule.board.suffix(1))){
-                        matchSchedule.blueAlliance.append(matchEntry.teamNumber)
+                    if (i == boardNumber - 1){
+                        blueAlliance.append(matchEntry.teamNumber)
                     } else {
-                        matchSchedule.blueAlliance.append(emptyBoi)
+                        blueAlliance.append(emptyBoi)
                     }
                 }
             } else {
-                matchSchedule.blueAlliance = [emptyBoi, emptyBoi, emptyBoi]
+                blueAlliance = [emptyBoi, emptyBoi, emptyBoi]
                 
                 for i in 0..<3{
-                    if (i == Int(matchSchedule.board.suffix(1))){
-                        matchSchedule.redAlliance.append(matchEntry.teamNumber)
+                    if (i == boardNumber - 1){
+                        redAlliance.append(matchEntry.teamNumber)
                     } else {
-                        matchSchedule.redAlliance.append(emptyBoi)
+                        redAlliance.append(emptyBoi)
                     }
                 }
             }
+            
+            matchSchedule.imageName = imageName
+            matchSchedule.blueAlliance = blueAlliance
+            matchSchedule.redAlliance = redAlliance
+            
         }
         
         if (matchEntry.isScouted){
             self.listOfMatches.append(matchSchedule)
             self.updateDataInCore()
         }
+        
         self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
     }
     

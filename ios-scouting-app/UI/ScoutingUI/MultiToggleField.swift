@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 public class ToggleButton : UIButton{
-    var value = 0
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -22,17 +21,25 @@ public class ToggleButton : UIButton{
 
 class MultiToggleField : UIView, InputControl{
     var scoutingActivity = ScoutingActivity()
-
+    var toggleButton = ToggleButton()
+    var listOfToggleButtons = [ToggleButton]()
+    var defaultValue = 0
+    var fieldData = FieldData()
+    let label = UILabel()
+    let toggleButtons = UIStackView()
     func setUpView(data: FieldData) {
+        self.fieldData = data
+        
         backgroundColor = UIColor.systemGray5
         
-        let label = UILabel()
-        let toggleButtons = UIStackView()
+        self.tag = data.tag
         
         addSubview(label)
         addSubview(toggleButtons)
         
         self.scoutingActivity = data.scoutingActivity
+        
+        self.defaultValue = self.scoutingActivity.listOfUIContent[data.name] ?? (data.default_choice)
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -53,16 +60,15 @@ class MultiToggleField : UIView, InputControl{
         toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        let choice = data.choice?.count ?? 0
+        let choice = self.fieldData.choice.count
         
         for i in 0..<choice{
             toggleButton = ToggleButton()
-            toggleButton.setTitle(data.choice?[i], for: .normal)
+            toggleButton.setTitle(self.fieldData.choice[i], for: .normal)
             toggleButton.titleLabel?.textAlignment = .center
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
-            toggleButton.tag = self.tag
-            toggleButton.value = i
-            if (i == data.default_choice){
+            toggleButton.tag = i
+            if (i == self.defaultValue){
                 toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                 toggleButton.setTitleColor(UIColor.white, for: .normal)
             } else {
@@ -70,16 +76,20 @@ class MultiToggleField : UIView, InputControl{
                 toggleButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             }
             
-            toggleButtons.addArrangedSubview(toggleButton)
+                self.listOfToggleButtons.append(toggleButton)
+                self.toggleButtons.addArrangedSubview(toggleButton)
+            
         }
     }
     
-    func onTimerStarted() {
-        //MultiToggle does not have any action when the timer is started
+    func onItemClicked(){
+        
     }
     
-    var toggleButton = ToggleButton()
-    var defaultValue = 0
+    
+    func onTimerStarted() {
+        //Toggle field does not do anything on timer started
+    }
     
     override init(frame: CGRect) {
         super.init(frame : frame)
@@ -91,7 +101,28 @@ class MultiToggleField : UIView, InputControl{
     
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
-        self.defaultValue = sender.value
+        self.defaultValue = sender.tag
+        
+        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.defaultValue
+        
+            for i in 0..<self.listOfToggleButtons.count{
+                if (i == self.defaultValue){
+                    self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                    self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
+                } else {
+                    self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
+                    self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+                }
+                
+                self.scoutingActivity.scoutingView.reloadData()
+            }
+        
+
+        
+        let dataPoint = DataPoint(type_index: self.tag, value: sender.tag, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        
+        self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
     }
     
 }

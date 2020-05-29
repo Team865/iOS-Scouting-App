@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 class MatchSchedule{
-    var imageName : String
-    var matchNumber : Int
+    var imageName : String = ""
+    var matchNumber : Int = 0
     var redAlliance : [String] = []
     var blueAlliance : [String] = []
-    var board : String
-    var isScouted : Bool
-    var scoutedData : String
-    init(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String, isScouted : Bool, scoutedData : String){
+    var board : String = ""
+    var isScouted : Bool = false
+    var scoutedData : String = ""
+    func setUpMatchSchedule(imageName : String, matchNumber : Int, redAlliance : [String], blueAlliance : [String], board : String, isScouted : Bool, scoutedData : String){
         self.imageName = imageName
         self.matchNumber = matchNumber
         self.board = board

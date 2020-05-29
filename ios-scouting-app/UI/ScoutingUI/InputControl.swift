@@ -11,4 +11,5 @@ import UIKit
 protocol InputControl : UIView{
     func onTimerStarted()
     func setUpView(data : FieldData)
+    func onItemClicked()
 }

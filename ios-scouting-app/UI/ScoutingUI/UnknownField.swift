@@ -9,6 +9,14 @@
 import Foundation
 import UIKit
 class UnknownField : UIView, InputControl{
+    func onItemClicked() {
+        //Do stuff
+    }
+    
+    func getFieldContent() -> Int {
+        return 0 
+    }
+    
     func onTimerStarted() {
         //Bruh
     }

@@ -11,11 +11,14 @@ import UIKit
 
 class ScoutingActivity : UIViewController {
     var listOfInputControls : [InputControl] = []
+    var listOfIdenticalControls : [InputControl] = []
     var matchEntry = MatchEntry()
     var qrEntry = Entry()
     var parser = Parser()
     var listOfFieldData : [FieldData] = []
+    var listOfIdenticalFieldElements : [FieldData] = []
     let dataTimer = DataTimer()
+    var listOfUIContent : [String : Int] = [:]
     var comment = ""
     
     var idsAndKeys = IDsAndKeys()
@@ -31,12 +34,9 @@ class ScoutingActivity : UIViewController {
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     
     var listOfLabels : [UILabel] = []
-    var itemTags = 0
     let images = ["timer", "team", "paste", "layers2"]
     
     var screenTitles : [String] = []
-    var isCreated = false
-    var numberOfScreens = 4
     
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
@@ -61,6 +61,7 @@ class ScoutingActivity : UIViewController {
     
     //ScoutingScreen variables
     var QRImageCellMade : [QRImageCell] = []
+    var isStarted = false
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
@@ -70,14 +71,11 @@ class ScoutingActivity : UIViewController {
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
         
-        self.matchEntry.scoutedData = self.qrEntry.getQRData()   
+        self.matchEntry.scoutedData = self.qrEntry.getQRData()
     }
     
     //UI Configurations
     func configureScoutingView(){
-        if (self.matchEntry.board.suffix(1) == "X"){
-            self.numberOfScreens = 5
-        }
         self.parser.scoutingActivity = self
         parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: [], opposingTeams: [], scoutingActivity: self)
         self.screenTitles = parser.getScreenTitles()
@@ -254,11 +252,11 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.numberOfScreens
+        return self.screenTitles.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if (indexPath.row < self.numberOfScreens - 1){
+        if (indexPath.row < self.screenTitles.count - 1){
             let currentTeams = self.matchEntry.teamNumber.components(separatedBy: " ")
             let opposingTeams = self.matchEntry.opposingTeamNumber.components(separatedBy: " ")
             
@@ -267,6 +265,13 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.listOfFieldData = parser.listOfFieldData
             cell?.index = indexPath.row
             self.listOfInputControls.append(contentsOf : cell?.listOfInputControl ?? [])
+            
+            if (self.isStarted){
+                for i in 0..<self.listOfInputControls.count{
+                    self.listOfInputControls[i].onTimerStarted()
+                }
+            }
+            
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
