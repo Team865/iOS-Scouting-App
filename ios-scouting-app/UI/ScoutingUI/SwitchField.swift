@@ -35,9 +35,8 @@ public class SwitchField : UIView, InputControl {
             switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
             backgroundColor = UIColor.systemGray5
             switchButton.isEnabled = true
-            self.value = 1
         } else {
-            switchButton.setTitleColor(UIColor.systemGray, for: .normal)
+            switchButton.setTitleColor(UIColor.white, for: .normal)
             backgroundColor = UIColor.systemGray5
             switchButton.isEnabled = false
         }
@@ -58,11 +57,7 @@ public class SwitchField : UIView, InputControl {
         
         
     }
-    
-    func onItemClicked(){
-        
-    }
-    
+ 
     func onTimerStarted() {
         self.switchButton.isEnabled = true
         self.switchButton.setTitleColor(UIColor(red: 0.35, green: 0.76, blue: 0.00, alpha: 1.00), for: .normal)
@@ -86,7 +81,7 @@ public class SwitchField : UIView, InputControl {
             
             if (self.lite){
                 self.switchButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                self.switchButton.setTitleColor(UIColor.systemGray5, for: .normal)
+                self.switchButton.setTitleColor(UIColor.white, for: .normal)
             }
             
             self.value = 1
@@ -98,7 +93,7 @@ public class SwitchField : UIView, InputControl {
         }
         
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.value
-        
+        self.scoutingActivity.matchEntry.isScouted = true
         self.scoutingActivity.scoutingView.reloadData()
         
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())

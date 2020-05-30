@@ -24,7 +24,6 @@ class SettingsViewController: UIViewController {
         navigationItem.title = "Settings"
         settingsActionSection = createActionSettingsSection()
         settingsInfoSection = createInfoSettingsSection()
-        
     }
     
     
@@ -35,11 +34,10 @@ class SettingsViewController: UIViewController {
         
         if let currentEvent = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String{
             selectedEvent = currentEvent
-            print(currentEvent)
         }
         
         tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
-        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration", description : "Vibrate when the app successfully complete an action",
+        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration - Currently Unavailable", description : "Vibrate when the app successfully complete an action",
                                     hideSwitch : false))
         
         return tempSection

@@ -37,8 +37,14 @@ public class Entry {
         self.data_point.append(dp)
     }
     
-    func updateComment(comment : String){
+    func formatString(string : String) -> String{
+        let arr = string.components(separatedBy : " ")
+        var formmated = ""
+        for i in 0..<arr.count{
+            formmated += arr[i] + "_"
+        }
         
+        return formmated
     }
     
     func formatDataPointsToString(){
@@ -56,8 +62,8 @@ public class Entry {
         let timeToHexaDecimals = String(format:"%02X", String(self.referenceTime))
         
         let first = self.eventKey + "_" + self.match + ":"
-        let second = self.team + ":" + self.scout + ":" + self.board + ":"
-        let third = timeToHexaDecimals + ":" + self.encodedDataPoints + ":" + self.comment
+        let second = self.team + ":" + self.formatString(string : self.scout) + ":" + self.board + ":"
+        let third = timeToHexaDecimals + ":" + self.encodedDataPoints + ":" + self.formatString(string : self.comment)
 
         return (first + second + third)
     }

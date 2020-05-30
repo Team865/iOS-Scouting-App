@@ -235,7 +235,6 @@
 			children = (
 				25CEF679240338B900034E12 /* MatchSchedule.swift */,
 				25F9648824237AE90095A6DF /* MatchScheduleCells.swift */,
-				256CD2C7247BF86D0031BEA1 /* TBAParser.swift */,
 			);
 			path = Matches;
 			sourceTree = "<group>";
@@ -262,6 +261,7 @@
 		258A91CD242AB30300901361 /* tba */ = {
 			isa = PBXGroup;
 			children = (
+				256CD2C7247BF86D0031BEA1 /* TBAParser.swift */,
 				25F96486242104F10095A6DF /* TBAKey.swift */,
 				2599A5DC241DE88A0001DF68 /* jsonEvents.swift */,
 				25AED09B2418B5C8005BB069 /* jsonMatchScheduleStructure.swift */,

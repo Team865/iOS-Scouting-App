@@ -82,11 +82,6 @@ class MultiToggleField : UIView, InputControl{
         }
     }
     
-    func onItemClicked(){
-        
-    }
-    
-    
     func onTimerStarted() {
         //Toggle field does not do anything on timer started
     }
@@ -104,7 +99,7 @@ class MultiToggleField : UIView, InputControl{
         self.defaultValue = sender.tag
         
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.defaultValue
-        
+        self.scoutingActivity.matchEntry.isScouted = true
             for i in 0..<self.listOfToggleButtons.count{
                 if (i == self.defaultValue){
                     self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)

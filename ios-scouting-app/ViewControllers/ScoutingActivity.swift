@@ -19,7 +19,9 @@ class ScoutingActivity : UIViewController {
     var listOfIdenticalFieldElements : [FieldData] = []
     let dataTimer = DataTimer()
     var listOfUIContent : [String : Int] = [:]
+    
     var comment = ""
+    var commentOptions : [String] = []
     
     var idsAndKeys = IDsAndKeys()
     
@@ -33,9 +35,7 @@ class ScoutingActivity : UIViewController {
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     
-    var listOfLabels : [UILabel] = []
-    let images = ["timer", "team", "paste", "layers2"]
-    
+    var listOfTextViews : [UITextView] = []
     var screenTitles : [String] = []
     
     //UIs
@@ -70,6 +70,8 @@ class ScoutingActivity : UIViewController {
         configureScoutingView()
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
+        
+        print(self.commentOptions)
         
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
     }
@@ -107,52 +109,71 @@ class ScoutingActivity : UIViewController {
         self.progressBar.isEnabled = false
     }
     
-    func createLabels(x : Double, y : Double, width : Double, height : Double, fontSize : CGFloat, text : String) -> UILabel{
-        let label = UILabel(frame : CGRect(x : x, y : y, width : width, height : height))
-        label.font = label.font.withSize(fontSize)
-        label.textAlignment = .left
+    func createTextView(x : Double, text : String) -> UITextView{
+        let textView = UITextView()
+        textView.textAlignment = .center
+        textView.backgroundColor = UIColor.systemGray6
+        textView.isUserInteractionEnabled = false
+        textView.text = text
+        textView.font = textView.font?.withSize(15)
+        textView.sizeToFit()
+        textView.frame = CGRect(x: x, y: 5.0, width: Double(textView.contentSize.width), height: 43)
         
         switch (text.prefix(1)){
         case "B":
-            label.textColor = UIColor.blue
+            textView.textColor = UIColor.blue
         case "R":
-            label.textColor = UIColor.red
+            textView.textColor = UIColor.red
         default :
-            label.textColor = UIColor.black
+            textView.textColor = UIColor.black
         }
         
-        return label
+        return textView
     }
     
-    func createIcon(x : Double, y : Double, width : Double, height : Double, iconName : String) -> UIImageView{
-        let icon = UIImageView(frame : CGRect(x : x, y : y, width : width, height : height))
+    func createIcon(x : Double, width : Double, iconName : String) -> UIImageView{
+        let icon = UIImageView(frame : CGRect(x : x, y : 0.0, width : width, height : 43))
         icon.image = UIImage(named : iconName)
         icon.contentMode = .scaleAspectFit
         return icon
     }
     
     func createNavBarView() -> UIView{
-        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: 341, height : 34))
-        let iconsWidth = 34.0
-        let spacing = 2.5
-        var startingX = 0.0
-        let timeOnStart = "015"
-        let listOfTexts = ["M" + (self.matchEntry.matchNumber), self.matchEntry.board, self.matchEntry.teamNumber, timeOnStart]
-        let listOfLabelWidth = [50, 30.0, 50.0, 35.0]
+        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: (UIScreen.main.bounds.width) * 0.8, height : 43))
+        
+        let viewWidth = Double(UIScreen.main.bounds.width - 5)
+        let listOfTexts = ["M" + (self.matchEntry.matchNumber), self.matchEntry.board, self.matchEntry.teamNumber, "015"]
         let listOfIconNames = ["layers2", "paste", "users", "timer"]
+        
+        var xCoordinate = Double(UIScreen.main.bounds.width) * 0.05
+        
+        if (self.matchEntry.board.suffix(1) == "X"){
+            xCoordinate = 0.0
+        }
+        
+        
         for i in 0..<listOfTexts.count{
-            let label = self.createLabels(x: startingX + iconsWidth + spacing, y: 0.0, width: listOfLabelWidth[i], height: 34, fontSize: 18, text : listOfTexts[i])
-            label.text = listOfTexts[i]
-            view.addSubview(self.createIcon(x: startingX, y: 3.5, width: iconsWidth, height: 28, iconName: listOfIconNames[i]))
+            let icon = self.createIcon(x : xCoordinate, width: viewWidth / 15, iconName : listOfIconNames[i])
             
-            if(i == 3){
-                label.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
+            xCoordinate += viewWidth / 15
+            
+            view.addSubview(icon)
+            
+            let textView = self.createTextView(x : xCoordinate, text : listOfTexts[i])
+            
+            if (i == listOfTexts.count - 1){
+                textView.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             }
             
-            view.addSubview(label)
-            startingX += iconsWidth + listOfLabelWidth[i] + spacing * 3.0
-            self.listOfLabels.append(label)
+            xCoordinate += Double(textView.contentSize.width) + 2.5
+            
+            view.addSubview(textView)
+            
+            self.listOfTextViews.append(textView)
+            
+            
         }
+        
         return view
     }
     
@@ -191,9 +212,6 @@ class ScoutingActivity : UIViewController {
             
             self.dataTimer.startTimer(scoutingActivity: self)
             
-            self.matchEntry.isScouted = true
-            
-            
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
             PauseButton.isHidden = true
@@ -214,17 +232,16 @@ class ScoutingActivity : UIViewController {
             alert.addTextField{
                 (UITextField) in UITextField.placeholder = "Enter comment"
                 UITextField.text = self.comment
-                self.qrEntry.comment = self.comment
-                self.matchEntry.scoutedData = self.qrEntry.getQRData()
+                
             }
             
             let getComment = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
                 let textField = alert?.textFields![0]
                 self.comment = textField!.text ?? ""
-                if (self.QRImageCellMade.count == 1){
-                    self.QRImageCellMade[0].setUpQRImage()
-                }
+                self.qrEntry.comment = self.comment
+                self.matchEntry.scoutedData = self.qrEntry.getQRData()
+                self.scoutingView.reloadData()
             }
             
             let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)

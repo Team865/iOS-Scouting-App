@@ -77,10 +77,10 @@ class DataTimer {
             color = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
         } else if (165 * scoutingActivity.totalProgress >= 15 && 165 * scoutingActivity.totalProgress < 135.0){
             totalTime = 135
-            color = UIColor.green
+            color = UIColor.systemGreen
         } else if (165 * scoutingActivity.totalProgress >= 135){
             totalTime = 165
-            color = UIColor.red
+            color = UIColor.systemRed
         }
         
         var timeLeft = String(totalTime - round(165 * scoutingActivity.totalProgress))
@@ -91,8 +91,8 @@ class DataTimer {
         
         timeLeft = numberOf0s + String(timeLeft.prefix(timeLeft.count - 2))
         
-        scoutingActivity.listOfLabels[3].text = timeLeft
-        scoutingActivity.listOfLabels[3].textColor = color
+        scoutingActivity.listOfTextViews[3].text = timeLeft
+        scoutingActivity.listOfTextViews[3].textColor = color
         
         for i in 0..<scoutingActivity.listOfInputControls.count{
             scoutingActivity.listOfInputControls[i].onTimerStarted()

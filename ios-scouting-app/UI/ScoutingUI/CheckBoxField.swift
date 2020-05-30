@@ -11,6 +11,9 @@ import UIKit
 class CheckBoxField : UIView, InputControl{
     var scoutingActivity = ScoutingActivity()
     var fieldData = FieldData()
+    var checkBox = UIButton()
+    var value = 0
+    let label = UILabel()
     func setUpView(data : FieldData) {
         self.fieldData = data
         
@@ -19,12 +22,12 @@ class CheckBoxField : UIView, InputControl{
         backgroundColor = UIColor.systemGray5
         
         self.scoutingActivity = data.scoutingActivity
-        
+        self.value = self.scoutingActivity.listOfUIContent[data.name] ?? 0
         
         
         label.text = data.name
         label.numberOfLines = 0
-        label.lineBreakMode = .byClipping
+        label.lineBreakMode = .byWordWrapping
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         label.textColor = UIColor.systemGray
@@ -46,6 +49,12 @@ class CheckBoxField : UIView, InputControl{
         checkBox.trailingAnchor.constraint(equalTo: label.leadingAnchor, constant: -5).isActive = true
         checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.15).isActive = true
         checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/4).isActive = true
+        
+        if (self.value == 1){
+            checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        } else {
+            checkBox.backgroundColor = UIColor.systemGray5
+        }
     }
     
     
@@ -54,11 +63,7 @@ class CheckBoxField : UIView, InputControl{
         self.checkBox.isEnabled = true
     }
     
-    var entry : Entry!
-    var title : String?
-    var value = 0
-    var checkBox = UIButton()
-    let label = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame : frame)
     }
@@ -67,27 +72,17 @@ class CheckBoxField : UIView, InputControl{
         fatalError("The check box is null")
     }
     
-    func onItemClicked(){
-        if (self.value == 1){
-            checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-        } else {
-            checkBox.backgroundColor = UIColor.systemGray5
-        }
-        
-        self.value = self.scoutingActivity.listOfUIContent[self.fieldData.name] ?? 0
-
-    }
-    
     @objc func activateCheckBox(sender : UIButton){
         if (self.value == 0){
-            checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            sender.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             self.value = 1
         } else if (self.value == 1){
-            checkBox.backgroundColor = UIColor.systemGray5
+            sender.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
         
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.value
+        self.scoutingActivity.matchEntry.isScouted = true
         
         self.scoutingActivity.scoutingView.reloadData()
         

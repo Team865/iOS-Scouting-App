@@ -16,6 +16,7 @@ class Parser {
     var currentTeams : [String] = []
     var opposingTeams : [String] = []
     var screens : [screens] = []
+    var tags : [String] = []
     func getLayoutForScreenWithBoard(board : String, index : Int, currentTeams : [String], opposingTeams : [String], scoutingActivity : ScoutingActivity){
         self.scoutingActivity = scoutingActivity
         self.board = board
@@ -29,10 +30,22 @@ class Parser {
             screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
             
             self.screens = screenLayout.robot_scout.screens
+            self.tags = screenLayout.robot_scout.tags
             
             if (board == "BX" || board == "RX"){
                 self.screens = screenLayout.super_scout.screens
+                self.tags = screenLayout.super_scout.tags
+                
+                for i in 0..<self.tags.count{
+                    self.scoutingActivity?.commentOptions.append(self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams))
+                }
+            } else {
+                for i in 0..<self.tags.count{
+                    self.scoutingActivity?.commentOptions.append(self.formatTitleOfItem(string: self.tags[i]))
+                }
             }
+            
+            
             
             convertLayoutToItems(layout: self.screens)
         } catch let err{
@@ -60,23 +73,22 @@ class Parser {
         if (currentTeam.count != 0 && opposingTeam.count != 0){
             for i in 0..<arr.count{
                 if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
-                    let teamIndex = Int(arr[i].suffix(1)) ?? 0
+                    let teamIndex = Int(arr[i].suffix(1)) ?? 1
                     arr[i] = currentTeam[teamIndex - 1]
                 } else if (arr[i].prefix(1) == "O" && (Int(arr[i].suffix(1)) != nil)){
-                    let index = Int(arr[i].suffix(1)) ?? 0
+                    let index = Int(arr[i].suffix(1)) ?? 1
                     arr[i] = opposingTeam[index - 1]
                 }
                 formatted += (arr[i] + "_")
             }
         }
         
-        
         formatted = self.formatTitleOfItem(string: formatted)
         
         return formatted
     }
     
-    func formatTeamChoices(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
+    func formatTitleArrays(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
         var mutatedArr = string
         
         for i in 0..<string.count{
@@ -85,6 +97,7 @@ class Parser {
                 mutatedArr[i] = currentTeam[index - 1]
             } else {
                 mutatedArr[i] = string[i]
+                mutatedArr[i] = mutatedArr[i].prefix(1).capitalized + mutatedArr[i].dropFirst() + " "
             }
             
         }
@@ -96,7 +109,6 @@ class Parser {
         var arr : [String] = []
         for i in 0..<screens.count{
             arr.append(screens[i].title)
-            
         }
         
         return arr
@@ -112,7 +124,7 @@ class Parser {
                 
                 let name = (self.board == "BX" || self.board == "RX") ? formatTeamTitles(string: currentItem.name, currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : formatTitleOfItem(string: currentItem.name)
                 
-                let choice = (self.board == "BX" || self.board == "RX") ? formatTeamChoices(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
+                let choice = (self.board == "BX" || self.board == "RX") ? formatTitleArrays(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
                 
                 let fieldItem = FieldData()
                 fieldItem.setUpField(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice ?? 0, scoutingActivity: self.scoutingActivity!)

@@ -56,10 +56,6 @@ public class ButtonField : UIView, InputControl{
         self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
     }
     
-    func onItemClicked(){
-        
-    }
-    
     override init (frame : CGRect){
         super.init(frame : frame)
         
@@ -74,6 +70,7 @@ public class ButtonField : UIView, InputControl{
         self.counterField.text = String(counter)
 
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.counter
+        self.scoutingActivity.matchEntry.isScouted = true
         
         let dataPoint = DataPoint(type_index: sender.tag, value: 1, time: self.scoutingActivity.dataTimer.getTimeStamp())
         

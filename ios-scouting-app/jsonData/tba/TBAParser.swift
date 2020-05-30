@@ -116,9 +116,9 @@ class TBAParser {
         
         for i in 0..<jsonEvents.count{
             if(jsonEvents[i].year == Int(year) ?? 0){
-                let info = jsonEvents[i].start_date + " in " + jsonEvents[i].city + ", " + jsonEvents[i].state_prov + ", " + jsonEvents[i].country
+                let info = String(jsonEvents[i].start_date ?? "") + " in " + String(jsonEvents[i].city ?? "") + ", " + String(jsonEvents[i].state_prov ?? "") + String(jsonEvents[i].country ?? "")
                 
-                let event = Events(name: jsonEvents[i].name, info : info, key : year + jsonEvents[i].event_code)
+                let event = Events(name: jsonEvents[i].name ?? "", info : info, key : (year) + (jsonEvents[i].event_code ?? ""))
                 tempCell.append(event)
                 
             }
