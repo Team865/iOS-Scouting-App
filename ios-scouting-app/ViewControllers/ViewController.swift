@@ -84,7 +84,7 @@ class ViewController: UIViewController {
         currentEventLabel.textColor = UIColor.blue
         currentEventLabel.textAlignment = .center
         
-        self.currentEvent = self.selectedEvent?.name ?? "Current Event : None"
+        self.currentEvent = self.selectedEvent?.name ?? ""
         
         currentEventLabel.text = currentEvent
         self.view.addSubview(currentEventLabel)
@@ -160,6 +160,7 @@ class ViewController: UIViewController {
         navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
     }
     
+    //These two functions updates the stored data in the core and load data from core. Consider whether to put this in CoreData class or not
     func updateDataInCore(){
         self.coreData.clearCoreData(entity : self.idsAndKeys.matchScheduleCoreID)
         self.coreData.saveUIElementsContent(viewController: self)
@@ -205,10 +206,11 @@ class ViewController: UIViewController {
         let index = matchEntry.atIndex
         
         let matchSchedule = MatchSchedule()
-        matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: self.listOfMatches[index].redAlliance, blueAlliance: self.listOfMatches[index].redAlliance, board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
+        
+         matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
         
         if (matchEntry.addedEntry){
-            let emptyBoi = "_ _ _"
+            let emptyBoi = "---"
             let imageName = "addicon"
             var redAlliance : [String] = []
             var blueAlliance : [String] = []
@@ -239,6 +241,11 @@ class ViewController: UIViewController {
             matchSchedule.blueAlliance = blueAlliance
             matchSchedule.redAlliance = redAlliance
             
+        } else {
+            if (self.listOfMatches.count != 0){
+            matchSchedule.blueAlliance = self.listOfMatches[index].blueAlliance
+            matchSchedule.redAlliance = self.listOfMatches[index].redAlliance
+            }
         }
         
         if (matchEntry.isScouted){

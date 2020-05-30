@@ -205,7 +205,7 @@ class CoreData{
     }
     
     func loadSelectedEventEntry() -> Events{
-        var event = Events(name: "None", info: "None", key: "None")
+        var event = Events(name: "Current Event : None", info: "", key: "")
         if let info = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventInfo) as? String,
             let name = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String,
             let key = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventKey) as? String {
@@ -213,4 +213,6 @@ class CoreData{
         }
         return event
     }
+    
+    
 }

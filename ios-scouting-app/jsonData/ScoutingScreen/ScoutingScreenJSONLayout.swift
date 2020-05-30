@@ -17,11 +17,14 @@ struct ScoutingScreenLayout : Decodable {
 
 struct super_scout : Decodable {
     var screens : [screens]
+    var tags : [String]
 }
 
 struct robot_scout : Decodable {
     var screens : [screens]
+    var tags : [String]
 }
+
 
 struct screens : Decodable{
     var title : String

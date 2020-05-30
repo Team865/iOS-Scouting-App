@@ -8,11 +8,11 @@
 
 import Foundation
 struct jsonEvents : Decodable{
-    var name : String
-    var start_date : String
-    var city : String
-    var country : String
-    var state_prov : String
-    var year : Int
-    var event_code : String
+    var name : String?
+    var start_date : String?
+    var city : String?
+    var country : String?
+    var state_prov : String?
+    var year : Int?
+    var event_code : String?
 }
