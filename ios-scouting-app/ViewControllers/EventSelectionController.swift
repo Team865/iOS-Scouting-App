@@ -129,8 +129,17 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         self.tbaParser.eventSelectionController = self
         
         self.coreData.clearCoreData(entity: self.idsAndKeys.eventsCoreID)
-        
+        self.tbaParser.eventSelectionController = self
         self.tbaParser.getJSONEvents {
+            let alert = UIAlertController(title: "Sucess", message: "", preferredStyle: .alert)
+            self.present(alert, animated: true, completion: nil)
+            
+            // change to desired number of seconds (in this case 5 seconds)
+            let when = DispatchTime.now() + 1
+            DispatchQueue.main.asyncAfter(deadline: when){
+                alert.dismiss(animated: true, completion: nil)
+            }
+            
             self.listOfEvents = self.tbaParser.createEventCells(jsonEvents : self.jsonListOfEvents, year: self.yearText.text ?? "")
             self.coreData.moveListOfEventsToCore(listOfEvents: self.listOfEvents)
             self.eventTable.reloadData()

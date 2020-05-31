@@ -24,6 +24,7 @@ public class SwitchField : UIView, InputControl {
         switchButton.contentHorizontalAlignment = .center
         switchButton.titleLabel?.textAlignment = .center
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
+        switchButton.titleLabel?.font = switchButton.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         switchButton.tag = data.tag
         self.lite = data.is_lite
         
@@ -36,6 +37,13 @@ public class SwitchField : UIView, InputControl {
         backgroundColor = UIColor.systemGray5
         
         if (data.is_lite){
+            if (self.value == 1){
+                self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
+                self.switchButton.setTitleColor(UIColor.white, for: .normal)
+            } else if (self.value == 0){
+                self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                self.switchButton.backgroundColor = UIColor.systemGray5
+            }
             switchButton.isEnabled = true
         } else {
             switchButton.isEnabled = false
@@ -46,22 +54,22 @@ public class SwitchField : UIView, InputControl {
         switchButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
         switchButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
         switchButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
-        
-        if (self.value == 0){
-            switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-            backgroundColor = UIColor.systemGray5
-        } else if (self.value == 1){
-            self.switchButton.backgroundColor = UIColor.red
-            self.switchButton.setTitleColor(UIColor.white, for: .normal)
-        }
+       
     }
  
     func onTimerStarted() {
         self.switchButton.isEnabled = true
         if (self.value == 0){
             self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+            self.switchButton.backgroundColor = UIColor.systemGray5
         } else if (self.value == 1){
+            self.switchButton.backgroundColor = UIColor.red
             self.switchButton.setTitleColor(UIColor.white, for: .normal)
+            
+            if (self.lite){
+                self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
+                self.switchButton.setTitleColor(UIColor.white, for: .normal)
+            }
         }
     }
     
@@ -74,19 +82,13 @@ public class SwitchField : UIView, InputControl {
     }
     
     @objc func activateSwitch(sender : UIButton){
-       
         if(self.value == 0){
             //Turn on
-            self.switchButton.backgroundColor = UIColor.green
             
-            if (self.lite){
-                self.switchButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-            }
             self.value = 1
         } else if (self.value == 1){
             //Turn off
-            self.switchButton.backgroundColor = UIColor.systemGray5
-            self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+            
             self.value = 0
         }
         

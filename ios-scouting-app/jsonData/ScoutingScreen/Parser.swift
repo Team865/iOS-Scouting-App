@@ -35,21 +35,31 @@ class Parser {
             if (board == "BX" || board == "RX"){
                 self.screens = screenLayout.super_scout.screens
                 self.tags = screenLayout.super_scout.tags
-                
-                for i in 0..<self.tags.count{
-                    self.scoutingActivity?.commentOptions.append(self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams))
-                }
-            } else {
-                for i in 0..<self.tags.count{
-                    self.scoutingActivity?.commentOptions.append(self.formatTitleOfItem(string: self.tags[i]))
-                }
             }
-            
-            
-            
             convertLayoutToItems(layout: self.screens)
         } catch let err{
             print(err)
+        }
+    }
+    
+    func getCommentOptions(index : Int){
+        self.index = index
+
+        var tags = self.lookUpTag(screen: screens)
+         if (self.board == "BX" || self.board == "RX"){
+            for i in 0..<self.tags.count{
+                let fieldData = FieldData()
+                fieldData.setUpField(name: self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
+                self.scoutingActivity?.commentOptions.append(fieldData)
+                tags += 1
+            }
+        } else {
+            for i in 0..<self.tags.count{
+                let fieldData = FieldData()
+                fieldData.setUpField(name: self.formatTitleOfItem(string: self.tags[i]), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
+                self.scoutingActivity?.commentOptions.append(fieldData)
+                tags += 1
+            }
         }
     }
     
@@ -58,7 +68,10 @@ class Parser {
         var title = ""
         
         for i in 0..<titleArr.count{
-            title += titleArr[i].prefix(1).capitalized + titleArr[i].dropFirst() + " "
+            title += titleArr[i].prefix(1).capitalized + titleArr[i].dropFirst()
+            if (i != titleArr.count - 1){
+                title += " "
+            }
         }
         
         return title
@@ -79,13 +92,16 @@ class Parser {
                     let index = Int(arr[i].suffix(1)) ?? 1
                     arr[i] = opposingTeam[index - 1]
                 }
-                formatted += (arr[i] + "_")
+                formatted += arr[i]
+                
+                if (i != arr.count - 1){
+                    formatted += "_"
+                }
             }
         }
         
-        formatted = self.formatTitleOfItem(string: formatted)
-        
-        return formatted
+        let newFormat = self.formatTitleOfItem(string: formatted)
+        return newFormat
     }
     
     func formatTitleArrays(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{

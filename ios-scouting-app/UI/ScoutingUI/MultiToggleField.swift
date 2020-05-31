@@ -46,6 +46,7 @@ class MultiToggleField : UIView, InputControl{
         label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3) .isActive = true
         label.topAnchor.constraint(equalTo: topAnchor).isActive = true
         label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         label.textAlignment = .center
         label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         label.text = data.name
@@ -66,6 +67,7 @@ class MultiToggleField : UIView, InputControl{
             toggleButton = ToggleButton()
             toggleButton.setTitle(self.fieldData.choice[i], for: .normal)
             toggleButton.titleLabel?.textAlignment = .center
+            toggleButton.titleLabel?.font = toggleButton.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
             toggleButton.tag = i
             if (i == self.defaultValue){
@@ -112,7 +114,7 @@ class MultiToggleField : UIView, InputControl{
                 self.scoutingActivity.scoutingView.reloadData()
             }
         
-
+        print(self.tag)
         
         let dataPoint = DataPoint(type_index: self.tag, value: sender.tag, time: self.scoutingActivity.dataTimer.getTimeStamp())
         

@@ -91,8 +91,8 @@ class DataTimer {
         
         timeLeft = numberOf0s + String(timeLeft.prefix(timeLeft.count - 2))
         
-        scoutingActivity.listOfTextViews[3].text = timeLeft
-        scoutingActivity.listOfTextViews[3].textColor = color
+        scoutingActivity.listOfLabels[3].text = timeLeft
+        scoutingActivity.listOfLabels[3].textColor = color
         
         for i in 0..<scoutingActivity.listOfInputControls.count{
             scoutingActivity.listOfInputControls[i].onTimerStarted()

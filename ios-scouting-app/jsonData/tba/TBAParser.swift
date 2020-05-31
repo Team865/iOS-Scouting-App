@@ -16,7 +16,7 @@ class TBAParser {
     func getTBAJson(completed : @escaping () -> ()){
         
         let url = URL(string: "https://www.thebluealliance.com/api/v3/event/" + (self.viewController?.selectedEvent?.key ?? "") + "/matches/simple")!
-
+        
         var request = URLRequest(url: url)
         request.setValue(self.key, forHTTPHeaderField: "X-TBA-Auth-Key")
         URLSession.shared.dataTask(with: request) {
@@ -27,7 +27,7 @@ class TBAParser {
                 let jsonListOfMatches = try decoder.decode([Matches].self, from: data)
                 self.viewController?.jsonListOfMatches = jsonListOfMatches
                 DispatchQueue.main.async {
-                   completed()
+                    completed()
                 }
                 
             } catch _ {
@@ -80,7 +80,7 @@ class TBAParser {
                 }
             }
         }
-            
+        
         return tempArr
         
     }

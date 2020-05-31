@@ -42,6 +42,7 @@
 		25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56B241F63780034432A /* EventSelectionController.swift */; };
 		25E0F56E241F6BFE0034432A /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56D241F6BFE0034432A /* Events.swift */; };
 		25E0F571241F6C1E0034432A /* EventCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F570241F6C1E0034432A /* EventCells.swift */; };
+		25EB64362482E949000C62EF /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EB64352482E949000C62EF /* CustomAlertViewController.swift */; };
 		25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC32400E60600CAA81D /* AppDelegate.swift */; };
 		25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC52400E60600CAA81D /* SceneDelegate.swift */; };
 		25F35CC82400E60600CAA81D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC72400E60600CAA81D /* ViewController.swift */; };
@@ -101,6 +102,7 @@
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
 		25E0F56D241F6BFE0034432A /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		25E0F570241F6C1E0034432A /* EventCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCells.swift; sourceTree = "<group>"; };
+		25EB64352482E949000C62EF /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
 		25F35CC02400E60600CAA81D /* Scouting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scouting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25F35CC32400E60600CAA81D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25F35CC52400E60600CAA81D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				2543F0B1247130ED00914B4F /* UIImageExtension.swift */,
+				25EB64352482E949000C62EF /* CustomAlertViewController.swift */,
 			);
 			path = UIExtensions;
 			sourceTree = "<group>";
@@ -467,6 +470,7 @@
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,
 				25ABA7142474C8D800329161 /* Timer.swift in Sources */,
 				25E0F562241EC1460034432A /* settingsCells.swift in Sources */,
+				25EB64362482E949000C62EF /* CustomAlertViewController.swift in Sources */,
 				251EF5D12429D16E006536F1 /* ScoutingScreenJSONLayout.swift in Sources */,
 				25B23D0C243FCA470065E7BB /* Encoder.swift in Sources */,
 				256CD2C8247BF86D0031BEA1 /* TBAParser.swift in Sources */,

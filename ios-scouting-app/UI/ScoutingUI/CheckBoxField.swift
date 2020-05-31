@@ -31,6 +31,7 @@ class CheckBoxField : UIView, InputControl{
         label.textAlignment = .left
         label.adjustsFontSizeToFitWidth = true
         label.textColor = UIColor.systemGray
+        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         
         checkBox.layer.borderColor = UIColor.black.cgColor
         checkBox.layer.borderWidth = 2

@@ -202,6 +202,21 @@
             </objects>
             <point key="canvasLocation" x="3308.6956521739135" y="97.098214285714278"/>
         </scene>
+        <!--Custom Alert Controller-->
+        <scene sceneID="qU3-Jq-NtA">
+            <objects>
+                <viewController storyboardIdentifier="AlertViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="VT2-Mc-hiy" customClass="CustomAlertController" customModule="Scouting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lMW-EA-ReD">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Jta-tu-XSo"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ozA-UN-mG4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4060.8695652173915" y="101.78571428571428"/>
+        </scene>
     </scenes>
     <resources>
         <image name="comments" width="32" height="32"/>

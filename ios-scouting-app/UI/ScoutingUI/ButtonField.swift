@@ -23,6 +23,7 @@ public class ButtonField : UIView, InputControl{
         self.counter = self.scoutingActivity.listOfUIContent[data.name] ?? 0
             
         counterField.text = String(counter)
+        counterField.font = counterField.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         backgroundColor = UIColor.systemGray5
         addSubview(button)
         addSubview(counterField)
@@ -33,6 +34,7 @@ public class ButtonField : UIView, InputControl{
         button.contentHorizontalAlignment = .center
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
+        button.titleLabel?.font = button.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
         button.tag = data.tag
         button.isEnabled = false
