@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 class QRImageCell : UICollectionViewCell{
     let image = UIImageView()
-    let view = UIButton()
+    let view = UITextView()
     var qrCodeGenerator = QRCodeGenerator()
     var scoutingActivity = ScoutingActivity()
     override init(frame: CGRect) {
@@ -19,11 +19,13 @@ class QRImageCell : UICollectionViewCell{
     
     func setUpQRImage(){
         view.frame = CGRect(x : 2.5, y : self.bounds.height / 1.5, width: self.bounds.width - 5, height :  self.bounds.height / 5)
-        view.titleLabel?.textAlignment = .center
-        view.setTitle(self.scoutingActivity.qrEntry.getQRData(), for: .normal)
-        view.addTarget(self, action: #selector(displayEncodedData(sender:)), for: .touchUpInside)
-        view.setTitleColor(UIColor.black, for: .normal)
-        
+        view.textAlignment = .center
+        view.text = self.scoutingActivity.qrEntry.getQRData()
+        view.textColor = UIColor.black
+        view.isUserInteractionEnabled = false
+        view.font = view.font?.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
+        view.contentSize = CGSize(width: self.view.contentSize.width, height: self.view.contentSize.height)
+
         let qrCode = self.qrCodeGenerator.generateQRCode(from: self.scoutingActivity.qrEntry.getQRData())
         
         image.image = qrCode
@@ -37,19 +39,5 @@ class QRImageCell : UICollectionViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func displayEncodedData(sender : UIButton){
-        let alert = UIAlertController(title: "", message: "", preferredStyle: .alert)
-        
-        alert.addTextField {
-            (UITextField) in
-            UITextField.text = self.scoutingActivity.qrEntry.getQRData()
-        }
-        
-        let getData = UIAlertAction(title: "OK", style: .default){
-            alert in
-            
-        }
-        alert.addAction(getData)
-        self.window?.rootViewController?.present(alert, animated: true)
-    }
+   
 }

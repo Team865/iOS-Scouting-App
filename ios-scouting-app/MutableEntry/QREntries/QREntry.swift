@@ -41,7 +41,10 @@ public class Entry {
         let arr = string.components(separatedBy : " ")
         var formmated = ""
         for i in 0..<arr.count{
-            formmated += arr[i] + "_"
+            formmated += arr[i]
+            if (i != arr.count - 1){
+                formmated += "_"
+            }
         }
         
         return formmated

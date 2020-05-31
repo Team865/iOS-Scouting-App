@@ -45,5 +45,6 @@ class IDsAndKeys {
     let scoutingActivity = "ScoutingActivity"
     let settingsViewController = "SettingsViewController"
     let eventSelectionController = "EventSelectionController"
+    let alertViewController = "AlertViewController"
     
 }

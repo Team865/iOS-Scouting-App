@@ -21,7 +21,7 @@ class ScoutingActivity : UIViewController {
     var listOfUIContent : [String : Int] = [:]
     
     var comment = ""
-    var commentOptions : [String] = []
+    var commentOptions : [FieldData] = []
     
     var idsAndKeys = IDsAndKeys()
     
@@ -35,7 +35,7 @@ class ScoutingActivity : UIViewController {
     let heightMultiplier = 0.6
     let buttonsWidth = UIScreen.main.bounds.width * 0.15
     
-    var listOfTextViews : [UITextView] = []
+    var listOfLabels : [UILabel] = []
     var screenTitles : [String] = []
     
     //UIs
@@ -71,17 +71,18 @@ class ScoutingActivity : UIViewController {
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
         
-        print(self.commentOptions)
-        
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
     }
     
     //UI Configurations
     func configureScoutingView(){
         self.parser.scoutingActivity = self
-        parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: [], opposingTeams: [], scoutingActivity: self)
+        let currentTeams = self.matchEntry.teamNumber.components(separatedBy: " ")
+        let opposingTeams = self.matchEntry.opposingTeamNumber.components(separatedBy: " ")
+        parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams, scoutingActivity: self)
         self.screenTitles = parser.getScreenTitles()
         self.screenTitles.append("QR Code")
+        parser.getCommentOptions(index : self.screenTitles.count - 1)
         screenTitle.text = self.screenTitles[0]
         self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
@@ -109,15 +110,11 @@ class ScoutingActivity : UIViewController {
         self.progressBar.isEnabled = false
     }
     
-    func createTextView(x : Double, text : String) -> UITextView{
-        let textView = UITextView()
+    func createTextView(text : String) -> UILabel{
+        let textView = UILabel()
         textView.textAlignment = .center
-        textView.backgroundColor = UIColor.systemGray6
         textView.isUserInteractionEnabled = false
         textView.text = text
-        textView.font = textView.font?.withSize(15)
-        textView.sizeToFit()
-        textView.frame = CGRect(x: x, y: 5.0, width: Double(textView.contentSize.width), height: 43)
         
         switch (text.prefix(1)){
         case "B":
@@ -131,45 +128,50 @@ class ScoutingActivity : UIViewController {
         return textView
     }
     
-    func createIcon(x : Double, width : Double, iconName : String) -> UIImageView{
-        let icon = UIImageView(frame : CGRect(x : x, y : 0.0, width : width, height : 43))
+    func createIcon(iconName : String) -> UIImageView{
+        let icon = UIImageView()
         icon.image = UIImage(named : iconName)
         icon.contentMode = .scaleAspectFit
         return icon
     }
     
-    func createNavBarView() -> UIView{
-        let view = UIView(frame : CGRect(x : 0.0, y : 0.0, width: (UIScreen.main.bounds.width) * 0.8, height : 43))
+    func createNavBarView() -> UIStackView{
+        let view = UIStackView()
         
-        let viewWidth = Double(UIScreen.main.bounds.width - 5)
-        let listOfTexts = ["M" + (self.matchEntry.matchNumber), self.matchEntry.board, self.matchEntry.teamNumber, "015"]
-        let listOfIconNames = ["layers2", "paste", "users", "timer"]
+        self.view.addSubview(view)
         
-        var xCoordinate = Double(UIScreen.main.bounds.width) * 0.05
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+        view.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier : 0.1).isActive = true
+        
+        view.distribution = .fillEqually
+        view.axis = .horizontal
+        view.spacing = 0
+        
+        var listOfTexts = ["M" + (self.matchEntry.matchNumber), self.matchEntry.board, self.matchEntry.teamNumber, "015"]
         
         if (self.matchEntry.board.suffix(1) == "X"){
-            xCoordinate = 0.0
+            listOfTexts[2] = "ALL"
         }
         
+        let listOfIconNames = ["layers2", "paste", "users", "timer"]
         
         for i in 0..<listOfTexts.count{
-            let icon = self.createIcon(x : xCoordinate, width: viewWidth / 15, iconName : listOfIconNames[i])
+            let icon = self.createIcon(iconName : listOfIconNames[i])
             
-            xCoordinate += viewWidth / 15
+            view.addArrangedSubview(icon)
             
-            view.addSubview(icon)
-            
-            let textView = self.createTextView(x : xCoordinate, text : listOfTexts[i])
+            let textView = self.createTextView(text : listOfTexts[i])
             
             if (i == listOfTexts.count - 1){
                 textView.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
             }
             
-            xCoordinate += Double(textView.contentSize.width) + 2.5
+            view.addArrangedSubview(textView)
             
-            view.addSubview(textView)
+            textView.sizeToFit()
             
-            self.listOfTextViews.append(textView)
+            self.listOfLabels.append(textView)
             
             
         }
@@ -227,29 +229,14 @@ class ScoutingActivity : UIViewController {
             //Undo button
         }
         else if (sender.tag == 5){
-            let alert = UIAlertController(title: "Comment", message: "Add a comment", preferredStyle: .alert)
+            let storyboard = UIStoryboard(name : "Main", bundle : nil)
+            let myAlert = storyboard.instantiateViewController(identifier: self.idsAndKeys.alertViewController) as? CustomAlertController
+            myAlert?.scoutingActivity = self
+            myAlert?.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
+            myAlert?.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
+            self.present(myAlert!, animated: true, completion: nil)
             
-            alert.addTextField{
-                (UITextField) in UITextField.placeholder = "Enter comment"
-                UITextField.text = self.comment
-                
-            }
-            
-            let getComment = UIAlertAction(title: "OK", style: .default){
-                [weak alert] (_) in
-                let textField = alert?.textFields![0]
-                self.comment = textField!.text ?? ""
-                self.qrEntry.comment = self.comment
-                self.matchEntry.scoutedData = self.qrEntry.getQRData()
-                self.scoutingView.reloadData()
-            }
-            
-            let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler: nil)
-            
-            alert.addAction(getComment)
-            alert.addAction(cancel)
-            
-            self.present(alert, animated : true, completion : nil)
+
         } else if (sender.tag == 6){
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
             vc.selectedMatchEntry = self.matchEntry
