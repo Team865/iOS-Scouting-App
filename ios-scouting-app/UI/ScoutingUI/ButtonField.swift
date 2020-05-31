@@ -21,7 +21,7 @@ public class ButtonField : UIView, InputControl{
         self.scoutingActivity = data.scoutingActivity
         
         self.counter = self.scoutingActivity.listOfUIContent[data.name] ?? 0
-            
+        
         counterField.text = String(counter)
         counterField.font = counterField.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         backgroundColor = UIColor.systemGray5
@@ -70,7 +70,7 @@ public class ButtonField : UIView, InputControl{
     @objc func updateCounter(sender : UIButton){
         self.counter += 1
         self.counterField.text = String(counter)
-
+        
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.counter
         self.scoutingActivity.matchEntry.isScouted = true
         

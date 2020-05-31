@@ -44,9 +44,9 @@ class Parser {
     
     func getCommentOptions(index : Int){
         self.index = index
-
+        
         var tags = self.lookUpTag(screen: screens)
-         if (self.board == "BX" || self.board == "RX"){
+        if (self.board == "BX" || self.board == "RX"){
             for i in 0..<self.tags.count{
                 let fieldData = FieldData()
                 fieldData.setUpField(name: self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)

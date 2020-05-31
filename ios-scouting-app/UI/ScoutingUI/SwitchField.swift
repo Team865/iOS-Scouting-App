@@ -14,7 +14,7 @@ public class SwitchField : UIView, InputControl {
     var lite = false
     var fieldData = FieldData()
     var switchButton = UIButton()
-
+    
     func setUpView(data: FieldData) {
         self.fieldData = data
         
@@ -54,9 +54,9 @@ public class SwitchField : UIView, InputControl {
         switchButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
         switchButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
         switchButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
-       
+        
     }
- 
+    
     func onTimerStarted() {
         self.switchButton.isEnabled = true
         if (self.value == 0){

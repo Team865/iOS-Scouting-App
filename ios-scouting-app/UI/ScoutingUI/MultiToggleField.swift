@@ -78,8 +78,8 @@ class MultiToggleField : UIView, InputControl{
                 toggleButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             }
             
-                self.listOfToggleButtons.append(toggleButton)
-                self.toggleButtons.addArrangedSubview(toggleButton)
+            self.listOfToggleButtons.append(toggleButton)
+            self.toggleButtons.addArrangedSubview(toggleButton)
             
         }
     }
@@ -102,19 +102,17 @@ class MultiToggleField : UIView, InputControl{
         
         self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.defaultValue
         self.scoutingActivity.matchEntry.isScouted = true
-            for i in 0..<self.listOfToggleButtons.count{
-                if (i == self.defaultValue){
-                    self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                    self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
-                } else {
-                    self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
-                    self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-                }
-                
-                self.scoutingActivity.scoutingView.reloadData()
+        for i in 0..<self.listOfToggleButtons.count{
+            if (i == self.defaultValue){
+                self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
+            } else {
+                self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
+                self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             }
-        
-        print(self.tag)
+            
+            self.scoutingActivity.scoutingView.reloadData()
+        }
         
         let dataPoint = DataPoint(type_index: self.tag, value: sender.tag, time: self.scoutingActivity.dataTimer.getTimeStamp())
         

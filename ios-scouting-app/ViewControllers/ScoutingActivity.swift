@@ -236,7 +236,7 @@ class ScoutingActivity : UIViewController {
             myAlert?.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
             self.present(myAlert!, animated: true, completion: nil)
             
-
+            
         } else if (sender.tag == 6){
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
             vc.selectedMatchEntry = self.matchEntry

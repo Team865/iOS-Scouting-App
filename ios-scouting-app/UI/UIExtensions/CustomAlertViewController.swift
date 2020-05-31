@@ -40,7 +40,7 @@ class CustomAlertController : UIViewController {
     
     func configureTextField()  {
         self.textField.placeholder = "Enter a comment"
-       
+        
         self.textFieldContainer.layer.borderColor = UIColor.blue.cgColor
         self.textFieldContainer.layer.borderWidth = 1
         self.textFieldContainer.layer.cornerRadius = 4
@@ -103,10 +103,10 @@ class CustomAlertController : UIViewController {
             let text = self.textField.text ?? ""
             
             if (text != ""){
-            self.scoutingActivity.qrEntry.comment += (text + "_")
-            self.scoutingActivity.scoutingView.reloadData()
-            
-            self.present(alert, animated: true, completion: nil)
+                self.scoutingActivity.qrEntry.comment += (text + "_")
+                self.scoutingActivity.scoutingView.reloadData()
+                
+                self.present(alert, animated: true, completion: nil)
                 let when = DispatchTime.now() + 1
                 DispatchQueue.main.asyncAfter(deadline: when){
                     alert.dismiss(animated: true, completion: nil)

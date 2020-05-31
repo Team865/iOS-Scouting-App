@@ -19,11 +19,11 @@ class ScoutingScreenCell : UICollectionViewCell {
     }
     
     var index : Int?{
-    willSet{
-        configureBlankView()
-        configureScoutingStackView()
-        setUpScoutingScreen()
-    }
+        willSet{
+            configureBlankView()
+            configureScoutingStackView()
+            setUpScoutingScreen()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -48,41 +48,41 @@ class ScoutingScreenCell : UICollectionViewCell {
     }
     
     func setUpScoutingScreen() {
-            for i in 0..<self.listOfFieldData.count{
-                       let scoutingRow = UIStackView()
-                       scoutingRow.axis = .horizontal
-                       scoutingRow.distribution = .fillEqually
-                       scoutingRow.spacing = 2.5
-                       for j in 0..<self.listOfFieldData[i].count{
-                           var item : InputControl?
-                           switch self.listOfFieldData[i][j].type {
-                           case "Button":
-                               item = ButtonField()
-                               item?.setUpView(data: listOfFieldData[i][j])
-                           case "Switch":
-                               item = SwitchField()
-                               item?.setUpView(data: listOfFieldData[i][j])
-                              
-                           case "MultiToggle":
-                               item = MultiToggleField()
-                               item?.setUpView(data: listOfFieldData[i][j])
-                               
-                           case "Checkbox":
-                               item = CheckBoxField()
-                               item?.setUpView(data: listOfFieldData[i][j])
-                               
-                           default:
-                               item = UnknownField()
-                           }
-                           
-                           listOfInputControl.append(item!)
-                           scoutingRow.addArrangedSubview(item!)
-                       }
-                       scoutingView.addArrangedSubview(scoutingRow)
-                   }
-                   
-               }
+        for i in 0..<self.listOfFieldData.count{
+            let scoutingRow = UIStackView()
+            scoutingRow.axis = .horizontal
+            scoutingRow.distribution = .fillEqually
+            scoutingRow.spacing = 2.5
+            for j in 0..<self.listOfFieldData[i].count{
+                var item : InputControl?
+                switch self.listOfFieldData[i][j].type {
+                case "Button":
+                    item = ButtonField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                case "Switch":
+                    item = SwitchField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                    
+                case "MultiToggle":
+                    item = MultiToggleField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                    
+                case "Checkbox":
+                    item = CheckBoxField()
+                    item?.setUpView(data: listOfFieldData[i][j])
+                    
+                default:
+                    item = UnknownField()
+                }
+                
+                listOfInputControl.append(item!)
+                scoutingRow.addArrangedSubview(item!)
+            }
+            scoutingView.addArrangedSubview(scoutingRow)
+        }
         
+    }
+    
 }
 
 
