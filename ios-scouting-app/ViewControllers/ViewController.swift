@@ -207,7 +207,7 @@ class ViewController: UIViewController {
         
         let matchSchedule = MatchSchedule()
         
-         matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
+        matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
         
         if (matchEntry.addedEntry){
             let emptyBoi = "---"
@@ -243,8 +243,8 @@ class ViewController: UIViewController {
             
         } else {
             if (self.listOfMatches.count != 0){
-            matchSchedule.blueAlliance = self.listOfMatches[index].blueAlliance
-            matchSchedule.redAlliance = self.listOfMatches[index].redAlliance
+                matchSchedule.blueAlliance = self.listOfMatches[index].blueAlliance
+                matchSchedule.redAlliance = self.listOfMatches[index].redAlliance
             }
         }
         

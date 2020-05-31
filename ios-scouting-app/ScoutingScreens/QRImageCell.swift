@@ -25,7 +25,7 @@ class QRImageCell : UICollectionViewCell{
         view.isUserInteractionEnabled = false
         view.font = view.font?.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         view.contentSize = CGSize(width: self.view.contentSize.width, height: self.view.contentSize.height)
-
+        
         let qrCode = self.qrCodeGenerator.generateQRCode(from: self.scoutingActivity.qrEntry.getQRData())
         
         image.image = qrCode
@@ -39,5 +39,5 @@ class QRImageCell : UICollectionViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     
-   
+    
 }
