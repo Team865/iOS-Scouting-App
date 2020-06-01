@@ -19,11 +19,11 @@ class CheckBoxField : UIView, InputControl{
         
         addSubview(label)
         addSubview(checkBox)
+        
         backgroundColor = UIColor.systemGray5
         
         self.scoutingActivity = data.scoutingActivity
         self.value = self.scoutingActivity.listOfUIContent[data.name] ?? 0
-        
         
         label.text = data.name
         label.numberOfLines = 0
@@ -51,17 +51,39 @@ class CheckBoxField : UIView, InputControl{
         checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.15).isActive = true
         checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/4).isActive = true
         
+        
+    }
+    
+    func configureCheckBoxForCommentOptions(){
+        self.backgroundColor = UIColor.white
+        
+        label.textColor = UIColor.black
+        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
+        
+        checkBox.layer.borderWidth = 1
+        checkBox.backgroundColor = UIColor.white
+        checkBox.isEnabled = true
+        
+        checkBox.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: (UIScreen.main.bounds.width * 0.05)).isActive = true
+        checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.075).isActive = true
+        checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
+        
+        label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        label.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: -(UIScreen.main.bounds.width * 0.1)).isActive = true
+        label.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.6).isActive = true
+        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
+    }
+    
+    func onTimerStarted() {
+        self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        self.checkBox.isEnabled = true
+        
         if (self.value == 1){
             checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         } else {
             checkBox.backgroundColor = UIColor.systemGray5
         }
-    }
-    
-    
-    func onTimerStarted() {
-        self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-        self.checkBox.isEnabled = true
     }
     
     
@@ -75,10 +97,8 @@ class CheckBoxField : UIView, InputControl{
     
     @objc func activateCheckBox(sender : UIButton){
         if (self.value == 0){
-            sender.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             self.value = 1
         } else if (self.value == 1){
-            sender.backgroundColor = UIColor.systemGray5
             self.value = 0
         }
         

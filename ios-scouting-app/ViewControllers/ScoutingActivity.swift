@@ -115,7 +115,7 @@ class ScoutingActivity : UIViewController {
         textView.textAlignment = .center
         textView.isUserInteractionEnabled = false
         textView.text = text
-        
+        textView.font = textView.font.withSize((UIScreen.main.bounds.height * 0.02))
         switch (text.prefix(1)){
         case "B":
             textView.textColor = UIColor.blue
@@ -229,12 +229,11 @@ class ScoutingActivity : UIViewController {
             //Undo button
         }
         else if (sender.tag == 5){
-            let storyboard = UIStoryboard(name : "Main", bundle : nil)
-            let myAlert = storyboard.instantiateViewController(identifier: self.idsAndKeys.alertViewController) as? CustomAlertController
-            myAlert?.scoutingActivity = self
-            myAlert?.modalPresentationStyle = UIModalPresentationStyle.overCurrentContext
-            myAlert?.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
-            self.present(myAlert!, animated: true, completion: nil)
+            let myAlert = CustomAlertController()
+            myAlert.scoutingActivity = self
+            myAlert.modalPresentationStyle = UIModalPresentationStyle.overFullScreen
+            myAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
+            self.present(myAlert, animated: true, completion: nil)
             
             
         } else if (sender.tag == 6){
