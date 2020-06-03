@@ -18,6 +18,23 @@ class DataTimer {
         return self.timeStamp
     }
     
+    func onHold(scoutingActivity : ScoutingActivity){
+        let progress = Progress(totalUnitCount: 50000)
+        
+        scoutingActivity.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+            (timer) in
+            guard progress.isFinished == false else {
+                timer.invalidate()
+                return
+            }
+            
+            for i in 0..<scoutingActivity.listOfInputControls.count{
+                scoutingActivity.listOfInputControls[i].updateControlState()
+            }
+            
+        }
+    }
+    
     func startTimer(scoutingActivity : ScoutingActivity){
         scoutingActivity.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
             (timer) in
@@ -31,9 +48,10 @@ class DataTimer {
             
             self.updateTimer(scoutingActivity: scoutingActivity)
             
-            
             scoutingActivity.isStarted = true
-            
+        }
+        for i in 0..<scoutingActivity.listOfInputControls.count{
+            scoutingActivity.listOfInputControls[i].onTimerStarted()
         }
     }
     
@@ -49,6 +67,8 @@ class DataTimer {
         for i in 0..<scoutingActivity.listOfInputControls.count{
             scoutingActivity.listOfInputControls[i].onTimerStarted()
         }
+        
+        updateTimer(scoutingActivity: scoutingActivity)
     }
     
     func resumeTimer(scoutingActivity : ScoutingActivity){
@@ -72,6 +92,9 @@ class DataTimer {
         var totalTime : Float = 0
         var numberOf0s = ""
         var color = UIColor()
+        
+        self.setTimeStamp(timeStamp: (165 * scoutingActivity.totalProgress))
+        
         if(165 * scoutingActivity.totalProgress < 15.0){
             totalTime = 15
             color = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
@@ -95,9 +118,7 @@ class DataTimer {
         scoutingActivity.listOfLabels[3].textColor = color
         
         for i in 0..<scoutingActivity.listOfInputControls.count{
-            scoutingActivity.listOfInputControls[i].onTimerStarted()
+            scoutingActivity.listOfInputControls[i].updateControlState()
         }
-        
-        self.setTimeStamp(timeStamp: scoutingActivity.totalProgress)
     }
 }

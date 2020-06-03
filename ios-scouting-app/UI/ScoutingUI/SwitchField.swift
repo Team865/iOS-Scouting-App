@@ -18,6 +18,8 @@ public class SwitchField : UIView, InputControl {
     func setUpView(data: FieldData) {
         self.fieldData = data
         
+        self.tag = data.tag
+        
         addSubview(switchButton)
         switchButton.setTitle(data.name, for: .normal)
         switchButton.titleLabel?.numberOfLines = 0
@@ -26,28 +28,14 @@ public class SwitchField : UIView, InputControl {
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
         switchButton.titleLabel?.font = switchButton.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         switchButton.tag = data.tag
+        switchButton.setTitleColor(UIColor.systemGray, for: .normal)
+        switchButton.isEnabled = false
+        switchButton.backgroundColor = UIColor.systemGray5
+        
         self.lite = data.is_lite
         
         self.scoutingActivity = data.scoutingActivity
         switchButton.addTarget(self, action: #selector(activateSwitch(sender:)), for: .touchUpInside)
-        
-        self.value = self.scoutingActivity.listOfUIContent[data.name] ?? 0
-        
-        switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-        backgroundColor = UIColor.systemGray5
-        
-        if (data.is_lite){
-            if (self.value == 1){
-                self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
-                self.switchButton.setTitleColor(UIColor.white, for: .normal)
-            } else if (self.value == 0){
-                self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-                self.switchButton.backgroundColor = UIColor.systemGray5
-            }
-            switchButton.isEnabled = true
-        } else {
-            switchButton.isEnabled = false
-        }
         
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         switchButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
@@ -55,22 +43,46 @@ public class SwitchField : UIView, InputControl {
         switchButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0).isActive = true
         switchButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = true
         
+        updateControlState()
     }
     
     func onTimerStarted() {
         self.switchButton.isEnabled = true
-        if (self.value == 0){
+        self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+    }
+    
+    func setSwitchState(){
+        if (self.scoutingActivity.isStarted){
+            self.switchButton.isEnabled = true
+                   if (self.value == 1){
+                       if (self.fieldData.is_lite){
+                       self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
+                       self.switchButton.setTitleColor(UIColor.white, for: .normal)
+                       } else {
+                       self.switchButton.backgroundColor = UIColor.red
+                       self.switchButton.setTitleColor(UIColor.white, for: .normal)
+                       }
+                   } else if (self.value == 0){
+                       self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                       self.switchButton.backgroundColor = UIColor.systemGray5
+                   }
+
+                  
+               }
+    }
+    
+    func updateControlState() {
+        if (self.lite){
+            switchButton.isEnabled = true
             self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-            self.switchButton.backgroundColor = UIColor.systemGray5
-        } else if (self.value == 1){
-            self.switchButton.backgroundColor = UIColor.red
-            self.switchButton.setTitleColor(UIColor.white, for: .normal)
-            
-            if (self.lite){
-                self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
-                self.switchButton.setTitleColor(UIColor.white, for: .normal)
-            }
         }
+        
+        let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
+        if (self.value != newPosition){
+            self.value = newPosition
+            setSwitchState()
+        }
+
     }
     
     override init(frame: CGRect) {
@@ -82,22 +94,18 @@ public class SwitchField : UIView, InputControl {
     }
     
     @objc func activateSwitch(sender : UIButton){
-        if(self.value == 0){
-            //Turn on
-            
+        if (self.value == 0){
             self.value = 1
-        } else if (self.value == 1){
-            //Turn off
-            
+        } else {
             self.value = 0
         }
         
-        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.value
         self.scoutingActivity.matchEntry.isScouted = true
-        self.scoutingActivity.scoutingView.reloadData()
         
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
+        setSwitchState()
     }
 }

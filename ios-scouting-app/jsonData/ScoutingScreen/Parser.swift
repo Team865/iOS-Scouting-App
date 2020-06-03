@@ -10,6 +10,7 @@ import Foundation
 class Parser {
     var screenLayout : ScoutingScreenLayout!
     var scoutingActivity : ScoutingActivity?
+    var commentCustomAlert : CustomAlertController?
     var listOfFieldData = [[FieldData]]()
     var board = ""
     var index = 0
@@ -42,25 +43,27 @@ class Parser {
         }
     }
     
-    func getCommentOptions(index : Int){
+    func getCommentOptions(index : Int) -> [FieldData]{
         self.index = index
         
         var tags = self.lookUpTag(screen: screens)
+        var commentOptions : [FieldData] = []
         if (self.board == "BX" || self.board == "RX"){
             for i in 0..<self.tags.count{
                 let fieldData = FieldData()
                 fieldData.setUpField(name: self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
-                self.scoutingActivity?.commentOptions.append(fieldData)
+                commentOptions.append(fieldData)
                 tags += 1
             }
         } else {
             for i in 0..<self.tags.count{
                 let fieldData = FieldData()
                 fieldData.setUpField(name: self.formatTitleOfItem(string: self.tags[i]), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
-                self.scoutingActivity?.commentOptions.append(fieldData)
+                commentOptions.append(fieldData)
                 tags += 1
             }
         }
+        return commentOptions
     }
     
     func formatTitleOfItem(string : String) -> String{

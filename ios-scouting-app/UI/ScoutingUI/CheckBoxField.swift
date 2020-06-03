@@ -23,7 +23,8 @@ class CheckBoxField : UIView, InputControl{
         backgroundColor = UIColor.systemGray5
         
         self.scoutingActivity = data.scoutingActivity
-        self.value = self.scoutingActivity.listOfUIContent[data.name] ?? 0
+        
+        self.tag = data.tag
         
         label.text = data.name
         label.numberOfLines = 0
@@ -34,9 +35,8 @@ class CheckBoxField : UIView, InputControl{
         label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         
         checkBox.layer.borderColor = UIColor.black.cgColor
-        checkBox.layer.borderWidth = 2
+        checkBox.layer.borderWidth = 1
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
-        checkBox.tag = data.tag
         checkBox.isEnabled = false
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +51,7 @@ class CheckBoxField : UIView, InputControl{
         checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.15).isActive = true
         checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/4).isActive = true
         
-        
+        updateControlState()
     }
     
     func configureCheckBoxForCommentOptions(){
@@ -60,7 +60,6 @@ class CheckBoxField : UIView, InputControl{
         label.textColor = UIColor.black
         label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
         
-        checkBox.layer.borderWidth = 1
         checkBox.backgroundColor = UIColor.white
         checkBox.isEnabled = true
         
@@ -78,14 +77,32 @@ class CheckBoxField : UIView, InputControl{
     func onTimerStarted() {
         self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         self.checkBox.isEnabled = true
-        
-        if (self.value == 1){
-            checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-        } else {
-            checkBox.backgroundColor = UIColor.systemGray5
-        }
+  }
+    
+    func setCheckBoxState(){
+        if (self.scoutingActivity.isStarted){
+            self.checkBox.isEnabled = true
+            if (self.value == 1){
+                self.checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            } else {
+                self.checkBox.backgroundColor = UIColor.systemGray5
+            }
+           }
     }
     
+    func updateControlState() {
+        if (self.scoutingActivity.isStarted){
+            self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                   self.checkBox.isEnabled = true
+        }
+        
+         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
+               if (self.value != newPosition){
+                   self.value = newPosition
+                   setCheckBoxState()
+               }
+        
+    }
     
     override init(frame: CGRect) {
         super.init(frame : frame)
@@ -98,19 +115,16 @@ class CheckBoxField : UIView, InputControl{
     @objc func activateCheckBox(sender : UIButton){
         if (self.value == 0){
             self.value = 1
-        } else if (self.value == 1){
+        } else {
             self.value = 0
         }
         
-        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.value
         self.scoutingActivity.matchEntry.isScouted = true
-        
-        self.scoutingActivity.scoutingView.reloadData()
-        
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
+        setCheckBoxState()
     }
 }
 

@@ -14,6 +14,13 @@ public class ToggleButton : UIButton{
         super.init(frame : frame)
     }
     
+    func setUpToggleButton(tagOfToggle : Int, name : String){
+        setTitle(name, for: .normal)
+        titleLabel?.textAlignment = .center
+        titleLabel?.font = titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
+        tag = tagOfToggle
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -27,6 +34,9 @@ class MultiToggleField : UIView, InputControl{
     var fieldData = FieldData()
     let label = UILabel()
     let toggleButtons = UIStackView()
+    
+    var checkedPosition = -1
+    
     func setUpView(data: FieldData) {
         self.fieldData = data
         
@@ -38,8 +48,6 @@ class MultiToggleField : UIView, InputControl{
         addSubview(toggleButtons)
         
         self.scoutingActivity = data.scoutingActivity
-        
-        self.defaultValue = self.scoutingActivity.listOfUIContent[data.name] ?? (data.default_choice)
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -55,37 +63,47 @@ class MultiToggleField : UIView, InputControl{
         toggleButtons.distribution = .fillEqually
         toggleButtons.spacing = 0
         
+        for i in 0..<self.fieldData.choice.count{
+            toggleButton = ToggleButton()
+            toggleButton.setUpToggleButton(tagOfToggle: i, name: self.fieldData.choice[i])
+            toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
+            self.toggleButtons.addArrangedSubview(toggleButton)
+            self.listOfToggleButtons.append(toggleButton)
+        }
+        
         toggleButtons.translatesAutoresizingMaskIntoConstraints = false
         toggleButtons.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         toggleButtons.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
         toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.7).isActive = true
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
-        let choice = self.fieldData.choice.count
-        
-        for i in 0..<choice{
-            toggleButton = ToggleButton()
-            toggleButton.setTitle(self.fieldData.choice[i], for: .normal)
-            toggleButton.titleLabel?.textAlignment = .center
-            toggleButton.titleLabel?.font = toggleButton.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
-            toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
-            toggleButton.tag = i
-            if (i == self.defaultValue){
-                toggleButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                toggleButton.setTitleColor(UIColor.white, for: .normal)
-            } else {
-                toggleButton.backgroundColor = UIColor.systemGray5
-                toggleButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-            }
-            
-            self.listOfToggleButtons.append(toggleButton)
-            self.toggleButtons.addArrangedSubview(toggleButton)
-            
-        }
+        updateControlState()
     }
     
     func onTimerStarted() {
         //Toggle field does not do anything on timer started
+    }
+    
+    func setCheckedPosition(){
+        for i in 0..<listOfToggleButtons.count{
+            if (i == self.checkedPosition){
+                self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
+            } else {
+                self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
+                self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+            }
+        }
+    }
+    
+    func updateControlState(){
+        let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? self.fieldData.default_choice
+        
+        if(checkedPosition != newPosition){
+            checkedPosition = newPosition
+            setCheckedPosition()
+        }
+        
     }
     
     override init(frame: CGRect) {
@@ -98,26 +116,15 @@ class MultiToggleField : UIView, InputControl{
     
     
     @objc func getSelectedToggleButton(sender : ToggleButton){
-        self.defaultValue = sender.tag
-        
-        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.defaultValue
+        self.checkedPosition = sender.tag
         self.scoutingActivity.matchEntry.isScouted = true
-        for i in 0..<self.listOfToggleButtons.count{
-            if (i == self.defaultValue){
-                self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
-            } else {
-                self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
-                self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-            }
-            
-            self.scoutingActivity.scoutingView.reloadData()
-        }
         
-        let dataPoint = DataPoint(type_index: self.tag, value: sender.tag, time: self.scoutingActivity.dataTimer.getTimeStamp())
+        let dataPoint = DataPoint(type_index: self.tag, value: self.checkedPosition, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
+        setCheckedPosition()
+        
+        
     }
-    
 }

@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 class CustomAlertController : UIViewController {
     var scoutingActivity = ScoutingActivity()
+    var commentOptions : [FieldData] = []
     let stackView = UIStackView()
     let label = UILabel()
     let textField = UITextField()
@@ -24,9 +25,9 @@ class CustomAlertController : UIViewController {
         self.configureStackView()
         configureTextField()
         
-        for i in 0..<self.scoutingActivity.commentOptions.count{
+        for i in 0..<self.commentOptions.count{
             let checkbox = CheckBoxField()
-            checkbox.setUpView(data: self.scoutingActivity.commentOptions[i])
+            checkbox.setUpView(data: self.commentOptions[i])
             checkbox.configureCheckBoxForCommentOptions()
             self.stackView.addArrangedSubview(checkbox)
         }
