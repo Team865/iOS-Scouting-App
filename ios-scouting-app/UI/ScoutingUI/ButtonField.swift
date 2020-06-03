@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 public class ButtonField : UIView, InputControl{
+    
+    
     var scoutingActivity = ScoutingActivity()
     let counterField = UILabel()
     var button = UIButton()
@@ -19,8 +21,6 @@ public class ButtonField : UIView, InputControl{
     func setUpView(data: FieldData) {
         self.fieldData = data
         self.scoutingActivity = data.scoutingActivity
-        
-        self.counter = self.scoutingActivity.listOfUIContent[data.name] ?? 0
         
         counterField.text = String(counter)
         counterField.font = counterField.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
@@ -51,6 +51,8 @@ public class ButtonField : UIView, InputControl{
         counterField.leadingAnchor.constraint(equalToSystemSpacingAfter: self.leadingAnchor, multiplier: 0.5).isActive = true
         counterField.trailingAnchor.constraint(equalToSystemSpacingAfter: self.trailingAnchor, multiplier: 0).isActive = false
         counterField.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0).isActive = false
+        
+        updateControlState()
     }
     
     func onTimerStarted() {
@@ -63,22 +65,25 @@ public class ButtonField : UIView, InputControl{
         
     }
     
+    func updateControlState() {
+       if (self.scoutingActivity.isStarted){
+            self.button.isEnabled = true
+            self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+        }
+        
+        self.counterField.text = String(self.scoutingActivity.qrEntry.count(type: self.fieldData.tag))
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     @objc func updateCounter(sender : UIButton){
-        self.counter += 1
-        self.counterField.text = String(counter)
-        
-        self.scoutingActivity.listOfUIContent[self.fieldData.name] = self.counter
         self.scoutingActivity.matchEntry.isScouted = true
-        
         let dataPoint = DataPoint(type_index: sender.tag, value: 1, time: self.scoutingActivity.dataTimer.getTimeStamp())
-        
-        self.scoutingActivity.scoutingView.reloadData()
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
+        updateControlState()
     }
 }

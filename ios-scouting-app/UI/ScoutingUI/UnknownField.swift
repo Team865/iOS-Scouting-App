@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 class UnknownField : UIView, InputControl{
+   	 func updateControlState() {
+        //Do stuff
+    }
+    
     func onItemClicked() {
         //Do stuff
     }

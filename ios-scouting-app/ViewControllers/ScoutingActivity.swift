@@ -5,20 +5,16 @@
 //  Created by DUC LOC on 3/22/20.
 //  Copyright © 2020 Warp7. All rights reserved.
 //
-
 import Foundation
 import UIKit
 
 class ScoutingActivity : UIViewController {
     var listOfInputControls : [InputControl] = []
-    var listOfIdenticalControls : [InputControl] = []
     var matchEntry = MatchEntry()
     var qrEntry = Entry()
     var parser = Parser()
     var listOfFieldData : [FieldData] = []
-    var listOfIdenticalFieldElements : [FieldData] = []
     let dataTimer = DataTimer()
-    var listOfUIContent : [String : Int] = [:]
     
     var comment = ""
     var commentOptions : [FieldData] = []
@@ -70,8 +66,10 @@ class ScoutingActivity : UIViewController {
         configureScoutingView()
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
-        
+        self.qrEntry.scoutingActivity = self
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
+        
+        self.dataTimer.onHold(scoutingActivity: self)
     }
     
     //UI Configurations
@@ -82,7 +80,6 @@ class ScoutingActivity : UIViewController {
         parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams, scoutingActivity: self)
         self.screenTitles = parser.getScreenTitles()
         self.screenTitles.append("QR Code")
-        parser.getCommentOptions(index : self.screenTitles.count - 1)
         screenTitle.text = self.screenTitles[0]
         self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
@@ -115,7 +112,7 @@ class ScoutingActivity : UIViewController {
         textView.textAlignment = .center
         textView.isUserInteractionEnabled = false
         textView.text = text
-        textView.font = textView.font.withSize((UIScreen.main.bounds.height * 0.02))
+        textView.font = textView.font.withSize((UIScreen.main.bounds.height * 0.0175))
         switch (text.prefix(1)){
         case "B":
             textView.textColor = UIColor.blue
@@ -168,8 +165,6 @@ class ScoutingActivity : UIViewController {
             }
             
             view.addArrangedSubview(textView)
-            
-            textView.sizeToFit()
             
             self.listOfLabels.append(textView)
             
@@ -226,11 +221,17 @@ class ScoutingActivity : UIViewController {
             self.dataTimer.resumeTimer(scoutingActivity: self)
             
         } else if (sender.tag == 4){
-            //Undo button
+            let dataPoint = self.qrEntry.undo()
+            
+            if (dataPoint != nil){
+                
+            }
+            
         }
         else if (sender.tag == 5){
             let myAlert = CustomAlertController()
             myAlert.scoutingActivity = self
+            myAlert.commentOptions = parser.getCommentOptions(index : self.screenTitles.count - 1)
             myAlert.modalPresentationStyle = UIModalPresentationStyle.overFullScreen
             myAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
             self.present(myAlert, animated: true, completion: nil)
@@ -269,17 +270,12 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             cell?.index = indexPath.row
             self.listOfInputControls.append(contentsOf : cell?.listOfInputControl ?? [])
             
-            if (self.isStarted){
-                for i in 0..<self.listOfInputControls.count{
-                    self.listOfInputControls[i].onTimerStarted()
-                }
-            }
-            
             return cell!
         } else {
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
             QRcell?.scoutingActivity = self
             QRcell?.setUpQRImage()
+            
             return QRcell!
         }
         
@@ -296,5 +292,5 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             }
         }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
-    }
+}
 }
