@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 public class SwitchField : UIView, InputControl {
     var scoutingActivity = ScoutingActivity()
-    var value = 0
+    var value = -1
     var lite = false
     var fieldData = FieldData()
     var switchButton = UIButton()
@@ -28,9 +28,6 @@ public class SwitchField : UIView, InputControl {
         switchButton.titleLabel?.lineBreakMode = .byWordWrapping
         switchButton.titleLabel?.font = switchButton.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         switchButton.tag = data.tag
-        switchButton.setTitleColor(UIColor.systemGray, for: .normal)
-        switchButton.isEnabled = false
-        switchButton.backgroundColor = UIColor.systemGray5
         
         self.lite = data.is_lite
         
@@ -68,13 +65,23 @@ public class SwitchField : UIView, InputControl {
                    }
 
                   
-               }
+        } else {
+            if (self.lite){
+                 self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                self.switchButton.backgroundColor = UIColor.systemGray5
+                switchButton.isEnabled = true
+            } else {
+                switchButton.setTitleColor(UIColor.systemGray, for: .normal)
+                switchButton.isEnabled = false
+                switchButton.backgroundColor = UIColor.systemGray5
+            }
+            
+        }
     }
     
     func updateControlState() {
-        if (self.lite){
-            switchButton.isEnabled = true
-            self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+        if (self.scoutingActivity.isStarted){
+            self.switchButton.isEnabled = true
         }
         
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
@@ -105,6 +112,8 @@ public class SwitchField : UIView, InputControl {
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
+        self.scoutingActivity.playSoundOnAction()
         
         setSwitchState()
     }

@@ -6,6 +6,8 @@
 //  Copyright © 2020 Warp7. All rights reserved.
 //
 import Foundation
+import AudioToolbox
+import AVFoundation
 import UIKit
 
 class ScoutingActivity : UIViewController {
@@ -15,25 +17,14 @@ class ScoutingActivity : UIViewController {
     var parser = Parser()
     var listOfFieldData : [FieldData] = []
     let dataTimer = DataTimer()
-    
+    var coreData = CoreData()
     var comment = ""
     var commentOptions : [FieldData] = []
-    
     var idsAndKeys = IDsAndKeys()
-    
-    let navBarWidth = UIScreen.main.bounds.width
-    let navBarHeight = Double(UIScreen.main.bounds.height * 0.1)
-    
-    let screenHeight = UIScreen.main.bounds.height
-    let screenWidth = UIScreen.main.bounds.width
-    
-    let Ymultiplier = 1.325
-    let heightMultiplier = 0.6
-    let buttonsWidth = UIScreen.main.bounds.width * 0.15
     
     var listOfLabels : [UILabel] = []
     var screenTitles : [String] = []
-    
+   
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
     @IBOutlet weak var PlayButton: UIButton!
@@ -60,16 +51,25 @@ class ScoutingActivity : UIViewController {
     var isStarted = false
     override func viewDidLoad() {
         super.viewDidLoad()
+        AppUtility.lockOrientation(.portrait, andRotateTo: .portrait)
+        
         setUpNavigationBar()
         configureButtons()
         configureProgressBar()
         configureScoutingView()
+        
         
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
         self.qrEntry.scoutingActivity = self
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
         
         self.dataTimer.onHold(scoutingActivity: self)
+    }
+    
+    func playSoundOnAction(){
+        if (self.coreData.isPlayingSounds()){
+            AudioServicesPlaySystemSound(SystemSoundID(1105))
+        }
     }
     
     //UI Configurations
@@ -206,37 +206,36 @@ class ScoutingActivity : UIViewController {
             PauseButton.isHidden = false
             PlayButton.isHidden = true
             UndoButton.isHidden = false
-            
+            playSoundOnAction()
+
             self.dataTimer.startTimer(scoutingActivity: self)
             
         } else if (sender.tag == 2){
             PlayButton.isHidden = false
             PauseButton.isHidden = true
-            
+            playSoundOnAction()
             self.dataTimer.pauseTimer(scoutingActivity: self)
         } else if (sender.tag == 3){
             PlayButton.isHidden = true
             PauseButton.isHidden = false
-            
+            playSoundOnAction()
+
             self.dataTimer.resumeTimer(scoutingActivity: self)
             
         } else if (sender.tag == 4){
             let dataPoint = self.qrEntry.undo()
-            
             if (dataPoint != nil){
-                
+                playSoundOnAction()
             }
-            
         }
         else if (sender.tag == 5){
+            playSoundOnAction()
             let myAlert = CustomAlertController()
             myAlert.scoutingActivity = self
             myAlert.commentOptions = parser.getCommentOptions(index : self.screenTitles.count - 1)
             myAlert.modalPresentationStyle = UIModalPresentationStyle.overFullScreen
             myAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
             self.present(myAlert, animated: true, completion: nil)
-            
-            
         } else if (sender.tag == 6){
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
             vc.selectedMatchEntry = self.matchEntry

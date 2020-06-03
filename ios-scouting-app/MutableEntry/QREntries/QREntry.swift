@@ -105,6 +105,8 @@ public class Entry {
         return nil
     }
     
+    
+    
     func getNextIndexRelavtiveToTime() -> Int{
         let currentTime = self.scoutingActivity?.dataTimer.getTimeStamp() ?? 0
         

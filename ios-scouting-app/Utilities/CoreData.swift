@@ -20,6 +20,7 @@ class CoreData{
     var listOfEvents : [NSManagedObject] = []
     var idsAndKeys = IDsAndKeys()
     
+    //Move
     func moveListOfEventsToCore(listOfEvents : [Events]){
         self.listOfEvents.removeAll()
         for i in 0..<listOfEvents.count{
@@ -35,6 +36,81 @@ class CoreData{
             
             self.saveMatchScheduleToCore(redAlliance: redAlliance, blueAlliance: blueAlliance, matchNumber: matchSchedule[i].matchNumber, imageName: matchSchedule[i].imageName, board: matchSchedule[i].board, isScouted: matchSchedule[i].isScouted, scoutedData: matchSchedule[i].scoutedData)
         }
+    }
+    
+    //Load
+    func loadMatchScheduleFromCore() -> [MatchSchedule]{
+           var tempArr : [MatchSchedule] = []
+           
+           for i in 0..<self.matchSchedules.count{
+               let rA = matchSchedules[i].value(forKey: self.idsAndKeys.redAlliance) as! String
+               let redAlliance = rA.components(separatedBy: " ")
+               
+               let bA = matchSchedules[i].value(forKey: self.idsAndKeys.blueAlliance) as! String
+               let blueAlliance = bA.components(separatedBy: " ")
+               
+               let matchSchedule = MatchSchedule()
+               matchSchedule.setUpMatchSchedule(imageName: matchSchedules[i].value(forKey: self.idsAndKeys.imageName) as! String, matchNumber: matchSchedules[i].value(forKey: self.idsAndKeys.matchNumber) as! Int, redAlliance: redAlliance, blueAlliance: blueAlliance, board: matchSchedules[i].value(forKey: self.idsAndKeys.boards) as! String, isScouted: matchSchedules[i].value(forKey: self.idsAndKeys.isScouted) as! Bool, scoutedData: matchSchedules[i].value(forKey: self.idsAndKeys.scoutedData) as! String)
+               
+               tempArr.append(matchSchedule)
+           }
+           
+           return tempArr
+       }
+    
+    func loadSelectedEventEntry() -> Events{
+        var event = Events(name: "Current Event : None", info: "", key: "")
+        if let info = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventInfo) as? String,
+            let name = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String,
+            let key = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventKey) as? String {
+            event = Events(name: name, info: info, key: key)
+        }
+        return event
+    }
+       
+       func loadListOfEventsFromCore() -> [Events] {
+           var tempArr : [Events] = []
+           
+           for i in 0..<self.listOfEvents.count{
+               let event = Events(name: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventNames) as! String, info: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventInfos) as! String, key: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventKeys) as! String)
+               tempArr.append(event)
+           }
+           
+           return tempArr
+       }
+    
+    func isPlayingSounds() -> Bool{
+        if let isUsingVibration = UserDefaults.standard.object(forKey: self.idsAndKeys.vibratorState) as? Bool {
+            return isUsingVibration
+        }
+        return false
+    }
+    
+    //This includes currentEventLabel.text, selectedBoard, and scoutName
+    func loadUIElementsContent(viewController : ViewController){
+        if let selectedBoard = UserDefaults.standard.object(forKey: self.idsAndKeys.selectedBoard) as? String {
+            viewController.selectedBoard = selectedBoard
+        }
+        
+        if let scoutName = UserDefaults.standard.object(forKey: self.idsAndKeys.scoutName) as? String {
+            viewController.scoutName = scoutName
+        }
+    }
+    
+    //Save
+    func saveUIElementsContent(viewController : ViewController){
+        UserDefaults.standard.set(viewController.selectedBoard, forKey: self.idsAndKeys.selectedBoard)
+        UserDefaults.standard.set(viewController.scoutName, forKey: self.idsAndKeys.scoutName)
+    }
+    
+    func saveIsPlayingSoundsOption(state : Bool){
+        UserDefaults.standard.set(state, forKey: self.idsAndKeys.vibratorState)
+    }
+    
+    func saveSelectedEventEntry(viewController : ViewController){
+        UserDefaults.standard.set(viewController.selectedEvent?.info, forKey: self.idsAndKeys.currentEventInfo)
+        UserDefaults.standard.set(viewController.selectedEvent?.name, forKey: self.idsAndKeys.currentEventName)
+        UserDefaults.standard.set(viewController.selectedEvent?.key, forKey: self.idsAndKeys.currentEventKey)
     }
     
     func saveListOfEventsToCore(name : String, info : String, key : String){
@@ -106,58 +182,7 @@ class CoreData{
         }
     }
     
-    func clearCoreData(entity : String){
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-                return
-        }
-        
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
-        let managedContext = appDelegate.persistentContainer.viewContext
-        fetchRequest.returnsObjectsAsFaults = false
-        do {
-            let results = try managedContext.fetch(fetchRequest)
-            for object in results {
-                guard let objectData = object as? NSManagedObject else {continue}
-                managedContext.delete(objectData)
-            }
-        } catch let error {
-            print("Detele all data in \(entity) error :", error)
-        }
-        
-       
-    }
-    
-    func loadMatchScheduleFromCore() -> [MatchSchedule]{
-        var tempArr : [MatchSchedule] = []
-        
-        for i in 0..<self.matchSchedules.count{
-            let rA = matchSchedules[i].value(forKey: self.idsAndKeys.redAlliance) as! String
-            let redAlliance = rA.components(separatedBy: " ")
-            
-            let bA = matchSchedules[i].value(forKey: self.idsAndKeys.blueAlliance) as! String
-            let blueAlliance = bA.components(separatedBy: " ")
-            
-            let matchSchedule = MatchSchedule()
-            matchSchedule.setUpMatchSchedule(imageName: matchSchedules[i].value(forKey: self.idsAndKeys.imageName) as! String, matchNumber: matchSchedules[i].value(forKey: self.idsAndKeys.matchNumber) as! Int, redAlliance: redAlliance, blueAlliance: blueAlliance, board: matchSchedules[i].value(forKey: self.idsAndKeys.boards) as! String, isScouted: matchSchedules[i].value(forKey: self.idsAndKeys.isScouted) as! Bool, scoutedData: matchSchedules[i].value(forKey: self.idsAndKeys.scoutedData) as! String)
-            
-            tempArr.append(matchSchedule)
-        }
-        
-        return tempArr
-    }
-    
-    func loadListOfEventsFromCore() -> [Events] {
-        var tempArr : [Events] = []
-        
-        for i in 0..<self.listOfEvents.count{
-            let event = Events(name: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventNames) as! String, info: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventInfos) as! String, key: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventKeys) as! String)
-            tempArr.append(event)
-        }
-        
-        return tempArr
-    }
-    
+    //Fetch
     func fetchDataFromCore(){
         //1
         guard let appDelegate =
@@ -182,37 +207,28 @@ class CoreData{
         }
     }
     
-    func saveUIElementsContent(viewController : ViewController){
-        UserDefaults.standard.set(viewController.selectedBoard, forKey: self.idsAndKeys.selectedBoard)
-        UserDefaults.standard.set(viewController.scoutName, forKey: self.idsAndKeys.scoutName)
-    }
-    
-    //This includes currentEventLabel.text, selectedBoard, and scoutName
-    func loadUIElementsContent(viewController : ViewController){
-        if let selectedBoard = UserDefaults.standard.object(forKey: self.idsAndKeys.selectedBoard) as? String {
-            viewController.selectedBoard = selectedBoard
+    func clearCoreData(entity : String){
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
         }
         
-        if let scoutName = UserDefaults.standard.object(forKey: self.idsAndKeys.scoutName) as? String {
-            viewController.scoutName = scoutName
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        let managedContext = appDelegate.persistentContainer.viewContext
+        fetchRequest.returnsObjectsAsFaults = false
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            for object in results {
+                guard let objectData = object as? NSManagedObject else {continue}
+                managedContext.delete(objectData)
+            }
+        } catch let error {
+            print("Detele all data in \(entity) error :", error)
         }
+        
+       
     }
     
-    func saveSelectedEventEntry(viewController : ViewController){
-        UserDefaults.standard.set(viewController.selectedEvent?.info, forKey: self.idsAndKeys.currentEventInfo)
-        UserDefaults.standard.set(viewController.selectedEvent?.name, forKey: self.idsAndKeys.currentEventName)
-        UserDefaults.standard.set(viewController.selectedEvent?.key, forKey: self.idsAndKeys.currentEventKey)
-    }
-    
-    func loadSelectedEventEntry() -> Events{
-        var event = Events(name: "Current Event : None", info: "", key: "")
-        if let info = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventInfo) as? String,
-            let name = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String,
-            let key = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventKey) as? String {
-            event = Events(name: name, info: info, key: key)
-        }
-        return event
-    }
     
     
 }

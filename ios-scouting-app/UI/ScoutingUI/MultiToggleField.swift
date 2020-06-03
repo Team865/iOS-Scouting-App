@@ -123,8 +123,9 @@ class MultiToggleField : UIView, InputControl{
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
-        setCheckedPosition()
+        self.scoutingActivity.playSoundOnAction()
         
+        setCheckedPosition()
         
     }
 }
