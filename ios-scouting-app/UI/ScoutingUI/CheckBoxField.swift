@@ -93,7 +93,7 @@ class CheckBoxField : UIView, InputControl{
     func updateControlState() {
         if (self.scoutingActivity.isStarted){
             self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                   self.checkBox.isEnabled = true
+            self.checkBox.isEnabled = true
         }
         
          let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
@@ -123,6 +123,8 @@ class CheckBoxField : UIView, InputControl{
         let dataPoint = DataPoint(type_index: self.tag, value: self.value, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
+        self.scoutingActivity.playSoundOnAction()
         
         setCheckBoxState()
     }

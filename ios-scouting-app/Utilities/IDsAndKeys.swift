@@ -22,6 +22,7 @@ class IDsAndKeys {
     let selectedBoard = "SelectedBoard"
     let scoutName = "scoutName"
     let numberOfAddedEntriesIndices = "addedMatches"
+    let vibratorState = "VibratorState"
     
     let eventKeys = "keyCore"
     let eventInfos = "infoCore"

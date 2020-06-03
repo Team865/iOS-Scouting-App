@@ -13,11 +13,9 @@ class SettingsViewController: UIViewController {
     var tableView : UITableView!
     var settingsActionSection = [Settings]()
     var settingsInfoSection = [Settings]()
-    
     let idsAndKeys = IDsAndKeys()
-    
     var sectionTitle : [String] = ["Configurations", "About"]
-    
+    var isUsingVibration = true
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
@@ -37,8 +35,7 @@ class SettingsViewController: UIViewController {
         }
         
         tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
-        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Use Vibration - Currently Unavailable", description : "Vibrate when the app successfully complete an action",
-                                    hideSwitch : false))
+        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Play Sound", description : "Play a sound when the app successfully complete an action", hideSwitch : false))
         
         return tempSection
     }
@@ -57,7 +54,7 @@ class SettingsViewController: UIViewController {
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = UIScreen.main.bounds.height * 0.1
+        tableView.rowHeight = UIScreen.main.bounds.height * 0.15
         
         tableView.register(SettingsCell.self, forCellReuseIdentifier: self.idsAndKeys.settingsCell)
         view.addSubview(tableView)

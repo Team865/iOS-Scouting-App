@@ -48,8 +48,10 @@ class DataTimer {
             
             self.updateTimer(scoutingActivity: scoutingActivity)
             
-            scoutingActivity.isStarted = true
         }
+
+        scoutingActivity.isStarted = true
+
         for i in 0..<scoutingActivity.listOfInputControls.count{
             scoutingActivity.listOfInputControls[i].onTimerStarted()
         }

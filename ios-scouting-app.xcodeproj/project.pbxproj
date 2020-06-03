@@ -42,6 +42,7 @@
 		25E0F56E241F6BFE0034432A /* Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56D241F6BFE0034432A /* Events.swift */; };
 		25E0F571241F6C1E0034432A /* EventCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F570241F6C1E0034432A /* EventCells.swift */; };
 		25EB64362482E949000C62EF /* CustomAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EB64352482E949000C62EF /* CustomAlertViewController.swift */; };
+		25EB643C24878768000C62EF /* OrientationLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25EB643B24878767000C62EF /* OrientationLock.swift */; };
 		25F35CC42400E60600CAA81D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC32400E60600CAA81D /* AppDelegate.swift */; };
 		25F35CC62400E60600CAA81D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC52400E60600CAA81D /* SceneDelegate.swift */; };
 		25F35CC82400E60600CAA81D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F35CC72400E60600CAA81D /* ViewController.swift */; };
@@ -101,6 +102,7 @@
 		25E0F56D241F6BFE0034432A /* Events.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Events.swift; sourceTree = "<group>"; };
 		25E0F570241F6C1E0034432A /* EventCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCells.swift; sourceTree = "<group>"; };
 		25EB64352482E949000C62EF /* CustomAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertViewController.swift; sourceTree = "<group>"; };
+		25EB643B24878767000C62EF /* OrientationLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationLock.swift; sourceTree = "<group>"; };
 		25F35CC02400E60600CAA81D /* Scouting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scouting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25F35CC32400E60600CAA81D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25F35CC52400E60600CAA81D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			children = (
 				2543F0AF24710DF500914B4F /* IDsAndKeys.swift */,
 				255332B8247C13FB00F01B96 /* CoreData.swift */,
+				25EB643B24878767000C62EF /* OrientationLock.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				25322E0C24309F930089AEA6 /* CheckBoxField.swift in Sources */,
 				25F9648924237AE90095A6DF /* MatchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
+				25EB643C24878768000C62EF /* OrientationLock.swift in Sources */,
 				25C21E81245693ED00070D16 /* QRImageCell.swift in Sources */,
 				25ABA7182474D81100329161 /* InputControl.swift in Sources */,
 				25AED09C2418B5C8005BB069 /* jsonMatchScheduleStructure.swift in Sources */,

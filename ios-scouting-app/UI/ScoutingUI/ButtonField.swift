@@ -11,25 +11,22 @@ import UIKit
 
 public class ButtonField : UIView, InputControl{
     
-    
+    var isBeingFocused = false
     var scoutingActivity = ScoutingActivity()
     let counterField = UILabel()
     var button = UIButton()
-    var counter = 0
     var fieldData = FieldData()
     
     func setUpView(data: FieldData) {
         self.fieldData = data
         self.scoutingActivity = data.scoutingActivity
         
-        counterField.text = String(counter)
         counterField.font = counterField.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         backgroundColor = UIColor.systemGray5
         addSubview(button)
         addSubview(counterField)
         
         button.setTitle(data.name, for: .normal)
-        button.setTitleColor(UIColor.systemGray, for: .normal)
         button.titleLabel?.numberOfLines = 0
         button.contentHorizontalAlignment = .center
         button.titleLabel?.textAlignment = .center
@@ -37,8 +34,6 @@ public class ButtonField : UIView, InputControl{
         button.titleLabel?.font = button.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
         button.tag = data.tag
-        button.isEnabled = false
-        backgroundColor = UIColor.systemGray5
         
         button.translatesAutoresizingMaskIntoConstraints = false
         button.topAnchor.constraint(equalToSystemSpacingBelow: self.topAnchor, multiplier: 0).isActive = true
@@ -60,6 +55,21 @@ public class ButtonField : UIView, InputControl{
         self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
     }
     
+    func isFocused(){
+        let progress = Progress(totalUnitCount: 100)
+        Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+        (timer) in
+            guard progress.isFinished == false else {
+            timer.invalidate()
+                self.isBeingFocused = false
+            return
+        }
+            progress.completedUnitCount += 1
+            self.isBeingFocused = true
+    }
+
+    }
+    
     override init (frame : CGRect){
         super.init(frame : frame)
         
@@ -68,8 +78,21 @@ public class ButtonField : UIView, InputControl{
     func updateControlState() {
        if (self.scoutingActivity.isStarted){
             self.button.isEnabled = true
+        if (self.isBeingFocused){
+            self.button.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            self.button.setTitleColor(UIColor.systemGray5, for: .normal)
+            counterField.textColor = UIColor.systemGray5
+        } else {
+            counterField.textColor = UIColor.black
+            self.button.backgroundColor = UIColor.systemGray5
             self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         }
+       } else {
+        self.button.isEnabled = false
+        self.button.setTitleColor(UIColor.systemGray, for: .normal)
+        }
+        
+        
         
         self.counterField.text = String(self.scoutingActivity.qrEntry.count(type: self.fieldData.tag))
     }
@@ -83,6 +106,10 @@ public class ButtonField : UIView, InputControl{
         let dataPoint = DataPoint(type_index: sender.tag, value: 1, time: self.scoutingActivity.dataTimer.getTimeStamp())
         
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
+        
+        self.scoutingActivity.playSoundOnAction()
+        
+        self.isFocused()
         
         updateControlState()
     }

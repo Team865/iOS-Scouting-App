@@ -7,14 +7,13 @@
 //
 
 import UIKit
-class SettingsCell :UITableViewCell{
-    
-    let cellHeight = UIScreen.main.bounds.height * 0.1
+class SettingsCell : UITableViewCell{
+    let cellHeight = UIScreen.main.bounds.height * 0.15
     let cellWidth = UIScreen.main.bounds.width
-    
+    let coreData = CoreData()
     lazy var switchControl: UISwitch = {
         let switchControl = UISwitch()
-        switchControl.isOn = true
+        switchControl.isOn = coreData.isPlayingSounds()
         switchControl.onTintColor = UIColor(red: 55/255, green: 120/255, blue: 250/255, alpha: 1)
         switchControl.translatesAutoresizingMaskIntoConstraints = false
         switchControl.addTarget(self, action: #selector(handleSwitchAction), for: .valueChanged)
@@ -37,7 +36,7 @@ class SettingsCell :UITableViewCell{
     }()
     
     private lazy var descriptionLabel : UILabel = {
-        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.45), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.5)))
+        let label = UILabel(frame : CGRect(x : Double(self.cellWidth * 0.2), y : Double(self.cellHeight * 0.4), width : Double(self.cellWidth * 0.6), height : Double(self.cellHeight * 0.5)))
         label.textAlignment = .left
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
@@ -83,9 +82,9 @@ class SettingsCell :UITableViewCell{
     
     @objc func handleSwitchAction(sender: UISwitch) {
         if sender.isOn {
-            print("Turned on")
+            self.coreData.saveIsPlayingSoundsOption(state : true)
         } else {
-            print("Turned off")
+            self.coreData.saveIsPlayingSoundsOption(state : false)
         }
     }
 }
