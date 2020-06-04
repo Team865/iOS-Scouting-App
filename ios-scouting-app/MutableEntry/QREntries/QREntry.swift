@@ -43,7 +43,7 @@ public class Entry {
         var formmated = ""
         for i in 0..<arr.count{
             formmated += arr[i]
-            if (i != arr.count - 1){
+            if (i != arr.count - 1 && arr[i] != ""){
                 formmated += "_"
             }
         }
