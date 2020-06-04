@@ -301,16 +301,27 @@ class ViewController: UIViewController {
         }
         if(srcObj.tag == editNameTag){
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
+            
+            let arr = self.scoutName.components(separatedBy: " ")
+            
             alert.addTextField {
-                (UITextField) in UITextField.placeholder = "First L"
-                UITextField.text = self.scoutName
+                (UITextField) in UITextField.placeholder = "Initial"
+                UITextField.text = arr[0]
+            }
+            
+            alert.addTextField {
+                (UITextField) in UITextField.placeholder = "Last"
+                UITextField.delegate = self
+                UITextField.text = arr[1]
+                
             }
             
             let getName = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
-                let textField = alert?.textFields![0]
-                self.scoutName = textField!.text ?? ""
-                UserDefaults.standard.set(self.scoutName, forKey: "scoutName")
+                let initial = alert?.textFields![0]
+                let last = alert?.textFields![1]
+                self.scoutName = (initial!.text ?? "") + " " + (last!.text ?? "")
+                UserDefaults.standard.set(self.scoutName, forKey: self.idsAndKeys.scoutName)
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
                 self.updateDataInCore()
             }
@@ -405,6 +416,21 @@ class ViewController: UIViewController {
     }
     
 }
+
+extension ViewController : UITextFieldDelegate{
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            
+            let currentText = textField.text ?? ""
+            guard let stringRange = Range(range, in: currentText) else {
+                return false
+            }
+            
+            let updateText = currentText.replacingCharacters(in: stringRange, with: string)
+            
+            return updateText.count < 2
+        }
+}
+
 extension ViewController : UITableViewDataSource, UITableViewDelegate
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

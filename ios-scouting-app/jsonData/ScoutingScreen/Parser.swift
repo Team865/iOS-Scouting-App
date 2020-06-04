@@ -17,7 +17,11 @@ class Parser {
     var currentTeams : [String] = []
     var opposingTeams : [String] = []
     var screens : [screens] = []
-    var tags : [String] = []
+    var commentTags : [String] = []
+
+    var typeIndex : [String : Int] = [:]
+    var firstIndex = 1
+    
     func getLayoutForScreenWithBoard(board : String, index : Int, currentTeams : [String], opposingTeams : [String], scoutingActivity : ScoutingActivity){
         self.scoutingActivity = scoutingActivity
         self.board = board
@@ -31,11 +35,11 @@ class Parser {
             screenLayout = try JSONDecoder().decode(ScoutingScreenLayout.self, from : jsonData)
             
             self.screens = screenLayout.robot_scout.screens
-            self.tags = screenLayout.robot_scout.tags
+            self.commentTags = screenLayout.robot_scout.tags
             
             if (board == "BX" || board == "RX"){
                 self.screens = screenLayout.super_scout.screens
-                self.tags = screenLayout.super_scout.tags
+                self.commentTags = screenLayout.super_scout.tags
             }
             convertLayoutToItems(layout: self.screens)
         } catch let err{
@@ -43,24 +47,23 @@ class Parser {
         }
     }
     
-    func getCommentOptions(index : Int) -> [FieldData]{
-        self.index = index
+    func getCommentOptions() -> [FieldData]{
+        createTagsForCorrespondingButton(screen: self.screens)
         
-        var tags = self.lookUpTag(screen: screens)
         var commentOptions : [FieldData] = []
         if (self.board == "BX" || self.board == "RX"){
-            for i in 0..<self.tags.count{
+            for i in 0..<self.commentTags.count{
                 let fieldData = FieldData()
-                fieldData.setUpField(name: self.formatTeamTitles(string: self.tags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
+                fieldData.setUpField(name: self.formatTeamTitles(string: self.commentTags[i], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams), type: "Checkbox", choice: [], is_lite: false, tag: self.firstIndex, default_choice: 0, scoutingActivity: self.scoutingActivity!)
                 commentOptions.append(fieldData)
-                tags += 1
+                self.firstIndex += 1
             }
         } else {
-            for i in 0..<self.tags.count{
+            for i in 0..<self.commentTags.count{
                 let fieldData = FieldData()
-                fieldData.setUpField(name: self.formatTitleOfItem(string: self.tags[i]), type: "Checkbox", choice: [], is_lite: false, tag: tags, default_choice: 0, scoutingActivity: self.scoutingActivity!)
+                fieldData.setUpField(name: self.formatTitleOfItem(string: self.commentTags[i]), type: "Checkbox", choice: [], is_lite: false, tag: self.firstIndex, default_choice: 0, scoutingActivity: self.scoutingActivity!)
                 commentOptions.append(fieldData)
-                tags += 1
+                self.firstIndex += 1
             }
         }
         return commentOptions
@@ -134,7 +137,7 @@ class Parser {
     }
     
     func convertLayoutToItems(layout : [screens]){
-        var tag = lookUpTag(screen : screens)
+        createTagsForCorrespondingButton(screen: layout)
         
         for k in 0..<layout[self.index].layout.count{
             var itemsInRow : [FieldData] = []
@@ -146,8 +149,7 @@ class Parser {
                 let choice = (self.board == "BX" || self.board == "RX") ? formatTitleArrays(string: currentItem.choices ?? [], currentTeam: self.currentTeams, opposingTeam: self.opposingTeams) : currentItem.choices ?? []
                 
                 let fieldItem = FieldData()
-                fieldItem.setUpField(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: tag, default_choice : currentItem.default_choice ?? 0, scoutingActivity: self.scoutingActivity!)
-                tag += 1
+                fieldItem.setUpField(name: name, type: currentItem.type, choice: choice, is_lite: currentItem.is_lite ?? false, tag: self.typeIndex[currentItem.name] ?? 1, default_choice : currentItem.default_choice ?? 0, scoutingActivity: self.scoutingActivity!)
                 itemsInRow.append(fieldItem)
             }
             self.listOfFieldData.append(itemsInRow)
@@ -155,19 +157,21 @@ class Parser {
         
     }
     
-    func lookUpTag(screen : [screens]) -> Int {
-        var prevTag = 0
+    func createTagsForCorrespondingButton(screen : [screens]){
+        self.firstIndex = 0
         
-        for i in 0..<self.index{
+        for i in 0..<screen.count{
             for k in 0..<screen[i].layout.count{
-                for _ in 0..<screen[i].layout[k].count{
-                    prevTag += 1
+                for j in 0..<screen[i].layout[k].count{
+                    if (self.typeIndex[screen[i].layout[k][j].name] == nil){
+                        self.typeIndex[screen[i].layout[k][j].name] = firstIndex
+                    }
+                    firstIndex += 1
                 }
-            }
         }
-        
-        return prevTag
     }
+    }
+    
 }
 
 

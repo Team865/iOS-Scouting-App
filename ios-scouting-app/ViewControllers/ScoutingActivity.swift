@@ -232,7 +232,7 @@ class ScoutingActivity : UIViewController {
             playSoundOnAction()
             let myAlert = CustomAlertController()
             myAlert.scoutingActivity = self
-            myAlert.commentOptions = parser.getCommentOptions(index : self.screenTitles.count - 1)
+            myAlert.commentOptions = parser.getCommentOptions()
             myAlert.modalPresentationStyle = UIModalPresentationStyle.overFullScreen
             myAlert.modalTransitionStyle = UIModalTransitionStyle.crossDissolve
             self.present(myAlert, animated: true, completion: nil)
