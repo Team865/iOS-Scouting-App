@@ -28,6 +28,8 @@ class CustomAlertController : UIViewController {
         for i in 0..<self.commentOptions.count{
             let checkbox = CheckBoxField()
             checkbox.setUpView(data: self.commentOptions[i])
+            
+            //Calling this function will cause Unable to simultaneously satisfy constraints error, but it will not affect the behaviour of the app for the time being. 
             checkbox.configureCheckBoxForCommentOptions()
             self.stackView.addArrangedSubview(checkbox)
         }

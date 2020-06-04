@@ -14,6 +14,7 @@ class CheckBoxField : UIView, InputControl{
     var checkBox = UIButton()
     var value = 0
     let label = UILabel()
+    var isCommentOption = false
     func setUpView(data : FieldData) {
         self.fieldData = data
         
@@ -39,6 +40,7 @@ class CheckBoxField : UIView, InputControl{
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
         checkBox.isEnabled = false
         
+        
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         label.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 30).isActive = true
@@ -62,6 +64,8 @@ class CheckBoxField : UIView, InputControl{
         
         checkBox.backgroundColor = UIColor.white
         checkBox.isEnabled = true
+        
+        self.isCommentOption = true
         
         checkBox.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: (UIScreen.main.bounds.width * 0.05)).isActive = true
@@ -87,7 +91,13 @@ class CheckBoxField : UIView, InputControl{
             } else {
                 self.checkBox.backgroundColor = UIColor.systemGray5
             }
-           }
+        } else if (isCommentOption){
+            if (self.value == 1){
+                self.checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+            } else {
+                self.checkBox.backgroundColor = UIColor.systemGray5
+            }
+        }
     }
     
     func updateControlState() {
