@@ -27,10 +27,12 @@ class CustomAlertController : UIViewController {
         
         for i in 0..<self.commentOptions.count{
             let checkbox = CheckBoxField()
+            checkbox.isCommentOption = true
             checkbox.setUpView(data: self.commentOptions[i])
-            
-            //Calling this function will cause Unable to simultaneously satisfy constraints error, but it will not affect the behaviour of the app for the time being. 
             checkbox.configureCheckBoxForCommentOptions()
+            checkbox.value = self.scoutingActivity.qrEntry.lastValue(type: self.commentOptions[i].tag)?.value ?? 0
+            checkbox.setCheckBoxState()
+            //Calling this function will cause Unable to simultaneously satisfy constraints error, but it will not affect the behaviour of the app for the time being.
             self.stackView.addArrangedSubview(checkbox)
         }
         
@@ -73,7 +75,7 @@ class CustomAlertController : UIViewController {
         stackView.spacing = 0
         
         let titles = ["OK", "Cancel"]
-        let colors = [UIColor.blue, UIColor.red]
+        let colors = [UIColor.init(red: 0.24, green: 0.36, blue: 0.58, alpha: 1.00), UIColor.red]
         for i in 0..<titles.count{
             stackView.addArrangedSubview(self.configureButton(text: titles[i], color: colors[i], tag: i))
         }
@@ -101,6 +103,7 @@ class CustomAlertController : UIViewController {
         
         textField.placeholder = "Comments"
         textField.backgroundColor = UIColor.white
+        textField.text = self.scoutingActivity.qrEntry.comment
         
         let comment = UIImageView()
         comment.image = UIImage(named: "comments")
@@ -134,25 +137,17 @@ class CustomAlertController : UIViewController {
     @objc func actionHandler(sender : UIButton){
         if (sender.tag == 0){
             //OK
-            let alert = UIAlertController(title: "Comment added", message: "", preferredStyle: .alert)
-            
             let text = self.textField.text ?? ""
             
-            if (text != ""){
-                self.scoutingActivity.qrEntry.comment += (text + "_")
-                self.scoutingActivity.scoutingView.reloadData()
-                
-                self.present(alert, animated: true, completion: nil)
-                let when = DispatchTime.now() + 1
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    alert.dismiss(animated: true, completion: nil)
-                    self.dismiss(animated: true, completion: nil)
-                }
-            } else {
-                self.dismiss(animated: true, completion: nil)
-            }
+            self.scoutingActivity.qrEntry.comment = text
+            
+            self.dismiss(animated: true, completion: nil)
+            
+            self.scoutingActivity.scoutingView.reloadData()
+            self.scoutingActivity.playSoundOnAction()
         } else if (sender.tag == 1){
             self.dismiss(animated: true, completion: nil)
+            self.scoutingActivity.playSoundOnAction()
         }
     }
 }

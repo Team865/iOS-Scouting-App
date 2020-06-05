@@ -89,7 +89,7 @@ class Parser {
         
         var formatted = ""
         
-        if (currentTeam.count != 0 && opposingTeam.count != 0){
+        if (currentTeam.count == 3 && opposingTeam.count == 3){
             for i in 0..<arr.count{
                 if (arr[i].prefix(1) == "A" && (Int(arr[i].suffix(1)) != nil)){
                     let teamIndex = Int(arr[i].suffix(1)) ?? 1
@@ -113,15 +113,17 @@ class Parser {
     func formatTitleArrays(string : [String], currentTeam : [String], opposingTeam : [String]) -> [String]{
         var mutatedArr = string
         
-        for i in 0..<string.count{
-            if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
-                let index = Int(string[i].suffix(1)) ?? 0
-                mutatedArr[i] = currentTeam[index - 1]
-            } else {
-                mutatedArr[i] = string[i]
-                mutatedArr[i] = mutatedArr[i].prefix(1).capitalized + mutatedArr[i].dropFirst() + " "
+        if (currentTeam.count != 1 && opposingTeam.count != 1){
+            for i in 0..<string.count{
+                if (string[i].prefix(1) == "A" && Int(string[i].suffix(1)) != nil){
+                    let index = Int(string[i].suffix(1)) ?? 0
+                    mutatedArr[i] = currentTeam[index - 1]
+                } else {
+                    mutatedArr[i] = string[i]
+                    mutatedArr[i] = mutatedArr[i].prefix(1).capitalized + mutatedArr[i].dropFirst() + " "
+                }
+                
             }
-            
         }
         
         return mutatedArr

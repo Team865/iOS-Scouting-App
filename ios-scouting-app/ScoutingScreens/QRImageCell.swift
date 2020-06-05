@@ -26,13 +26,18 @@ class QRImageCell : UICollectionViewCell{
         view.font = view.font?.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.0175))
         view.contentSize = CGSize(width: self.view.contentSize.width, height: self.view.contentSize.height)
 
-        let qrCode = self.qrCodeGenerator.generateQRCode(from: self.scoutingActivity.qrEntry.getQRData())
-        
-        image.image = qrCode
         image.frame = CGRect(x : 2.5, y : 0, width: self.bounds.width - 5, height: self.bounds.height / 1.5)
         
         addSubview(image)
         addSubview(view)
+        
+        updateQRCode()
+    }
+    
+    
+    func updateQRCode(){
+        let qrCode = self.qrCodeGenerator.generateQRCode(from: self.scoutingActivity.qrEntry.getQRData())
+        image.image = qrCode
     }
     
     required init?(coder: NSCoder) {

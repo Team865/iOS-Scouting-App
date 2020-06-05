@@ -277,16 +277,22 @@ class ViewController: UIViewController {
                 (UITextField) in UITextField.placeholder = "Team"
             }
             
+            alert.addTextField {
+                (UITextField) in UITextField.placeholder = "Opposing teams - Super scout only"
+            }
+            
             let getName = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
                 let match = alert?.textFields?[0].text ?? ""
                 let team = alert?.textFields?[1].text ?? ""
+                let opposingTeam = alert?.textFields?[2].text ?? ""
                 
                 let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
                 let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: self.idsAndKeys.scoutingActivity) as! ScoutingActivity
                 
                 let entry = MatchEntry()
-                entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: "", teamNumber: team, eventKey: self.selectedEvent?.key ?? "", atIndex : 0, isScouted: false, addedEntry : true, scoutedData: "")
+                entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: opposingTeam
+                    , teamNumber: team, eventKey: self.selectedEvent?.key ?? "", atIndex : 0, isScouted: false, addedEntry : true, scoutedData: "")
                 scoutingVC.matchEntry = entry
                 
                 self.navigationController?.pushViewController(scoutingVC, animated: true)
@@ -302,25 +308,15 @@ class ViewController: UIViewController {
         if(srcObj.tag == editNameTag){
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
             
-            let arr = self.scoutName.components(separatedBy: " ")
-            
             alert.addTextField {
-                (UITextField) in UITextField.placeholder = "Initial"
-                UITextField.text = arr[0]
+                (UITextField) in UITextField.placeholder = "First L"
+                UITextField.text = self.scoutName
             }
             
-            alert.addTextField {
-                (UITextField) in UITextField.placeholder = "Last"
-                UITextField.delegate = self
-                UITextField.text = arr[1]
-                
-            }
-            
-            let getName = UIAlertAction(title: "OK", style: .default){
+             let getName = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
-                let initial = alert?.textFields![0]
-                let last = alert?.textFields![1]
-                self.scoutName = (initial!.text ?? "") + " " + (last!.text ?? "")
+                let scoutName = alert?.textFields![0]
+                self.scoutName = scoutName!.text ?? ""
                 UserDefaults.standard.set(self.scoutName, forKey: self.idsAndKeys.scoutName)
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
                 self.updateDataInCore()
@@ -330,6 +326,15 @@ class ViewController: UIViewController {
             
             alert.addAction(getName)
             alert.addAction(cancel)
+            
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
+            queue: OperationQueue.main) { (notification) -> Void in
+                                                            
+                let textFieldName = alert.textFields?[0]
+                getName.isEnabled = self.isValidScoutName(scoutName: textFieldName?.text ?? "") && !(textFieldName?.text?.isEmpty ?? false)
+            }
+            
+            
             self.present(alert, animated: true, completion: nil)
         }
         
@@ -353,6 +358,25 @@ class ViewController: UIViewController {
             alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         }
+    }
+    
+    private func isValidScoutName(scoutName : String) -> Bool{
+        
+        if (scoutName.count == 0){
+            return false
+        }
+        
+        let trim = scoutName.trim()
+        
+        let arr = trim.components(separatedBy: " ")
+        
+        for i in 1..<arr.count{
+            if (arr[i].containsSpecialCharacter || arr[i].containsNumber || arr[i].count > 1){
+                return false
+            }
+        }
+        
+        return true
     }
     
     private func updateListOfSelectedTeams(list : [MatchSchedule], index : Int, board : String){
@@ -415,20 +439,6 @@ class ViewController: UIViewController {
         self.matchTable.reloadData()
     }
     
-}
-
-extension ViewController : UITextFieldDelegate{
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            
-            let currentText = textField.text ?? ""
-            guard let stringRange = Range(range, in: currentText) else {
-                return false
-            }
-            
-            let updateText = currentText.replacingCharacters(in: stringRange, with: string)
-            
-            return updateText.count < 2
-        }
 }
 
 extension ViewController : UITableViewDataSource, UITableViewDelegate
