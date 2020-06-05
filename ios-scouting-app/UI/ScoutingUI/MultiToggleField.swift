@@ -56,7 +56,7 @@ class MultiToggleField : UIView, InputControl{
         label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
         label.textAlignment = .center
-        label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        label.textColor = UIColor.black
         label.text = data.name
         
         toggleButtons.axis = .horizontal

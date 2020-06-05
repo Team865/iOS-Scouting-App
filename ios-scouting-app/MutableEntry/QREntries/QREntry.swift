@@ -63,10 +63,19 @@ public class Entry {
         formatDataPointsToString()
         //Swift compiler cannot recognize the string if not broken down into smaller sub-expressions
         //https://stackoverflow.com/questions/52382645/the-compiler-is-unable-to-type-check-this-expression-swift-4
-        let timeToHexaDecimals = String(format:"%02X", String(self.referenceTime))
+        let convertedTimeInterval = Int(self.referenceTime)
+        
+        let timeToHexaDecimals = String(format : "%02X", convertedTimeInterval)
+        
+        var formatTeam = self.formatString(string: self.team)
+        
+        if (self.board.suffix(1) == "X"){
+            formatTeam = self.formatString(string: self.team + (" " + (self.scoutingActivity?.matchEntry.opposingTeamNumber ?? "")))
+        }
+        
         
         let first = self.eventKey + "_" + self.match + ":"
-        let second = self.team + ":" + self.formatString(string : self.scout) + ":" + self.board + ":"
+        let second = formatTeam + ":" + self.formatString(string : self.scout) + ":" + self.board + ":"
         let third = timeToHexaDecimals + ":" + self.encodedDataPoints + ":" + self.formatString(string : self.comment)
 
         return (first + second + third)
@@ -95,7 +104,7 @@ public class Entry {
     func lastValue(type: Int) -> DataPoint? {
         let nextIndex = self.getNextIndexRelavtiveToTime()
         
-            for i in stride(from: nextIndex - 1, to: -1, by: -1) {
+            for i in stride(from: nextIndex - 1, to: 0, by: -1) {
                 let dp = dataPoints[i]
                 if (dp.type_index == type) {
                     return dp

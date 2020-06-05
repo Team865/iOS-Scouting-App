@@ -36,6 +36,7 @@
 		25C21E832458901C00070D16 /* QRCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C21E822458901C00070D16 /* QRCodeGenerator.swift */; };
 		25CEF67A240338B900034E12 /* MatchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* MatchSchedule.swift */; };
 		25D4C53F245C39C70062D363 /* EncoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D4C53E245C39C70062D363 /* EncoderTest.swift */; };
+		25D9DAE5248A187100967245 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D9DAE4248A187100967245 /* StringExtension.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
 		25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56B241F63780034432A /* EventSelectionController.swift */; };
@@ -96,6 +97,7 @@
 		25D4C53C245C39C70062D363 /* EncoderTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EncoderTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		25D4C53E245C39C70062D363 /* EncoderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderTest.swift; sourceTree = "<group>"; };
 		25D4C540245C39C70062D363 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		25D9DAE4248A187100967245 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				2543F0AF24710DF500914B4F /* IDsAndKeys.swift */,
 				255332B8247C13FB00F01B96 /* CoreData.swift */,
 				25EB643B24878767000C62EF /* OrientationLock.swift */,
+				25D9DAE4248A187100967245 /* StringExtension.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -462,6 +465,7 @@
 				25C21E7F244EE9DB00070D16 /* ScoutingScreenCell.swift in Sources */,
 				25B23D0E24429D360065E7BB /* ButtonField.swift in Sources */,
 				25322E0C24309F930089AEA6 /* CheckBoxField.swift in Sources */,
+				25D9DAE5248A187100967245 /* StringExtension.swift in Sources */,
 				25F9648924237AE90095A6DF /* MatchScheduleCells.swift in Sources */,
 				25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */,
 				25EB643C24878768000C62EF /* OrientationLock.swift in Sources */,

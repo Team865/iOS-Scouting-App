@@ -49,7 +49,7 @@ public class SwitchField : UIView, InputControl {
     }
     
     func setSwitchState(){
-        if (self.scoutingActivity.isStarted){
+        if (self.scoutingActivity.isStarted || self.lite){
             self.switchButton.isEnabled = true
                    if (self.value == 1){
                        if (self.fieldData.is_lite){
@@ -63,19 +63,9 @@ public class SwitchField : UIView, InputControl {
                        self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
                        self.switchButton.backgroundColor = UIColor.systemGray5
                    }
-
-                  
         } else {
-            if (self.lite){
-                 self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-                self.switchButton.backgroundColor = UIColor.systemGray5
-                switchButton.isEnabled = true
-            } else {
-                switchButton.setTitleColor(UIColor.systemGray, for: .normal)
-                switchButton.isEnabled = false
-                switchButton.backgroundColor = UIColor.systemGray5
-            }
-            
+            self.switchButton.backgroundColor = UIColor.systemGray5
+            self.switchButton.setTitleColor(UIColor.systemGray, for: .normal)
         }
     }
     

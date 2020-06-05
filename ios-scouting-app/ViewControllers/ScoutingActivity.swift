@@ -74,13 +74,20 @@ class ScoutingActivity : UIViewController {
     
     //UI Configurations
     func configureScoutingView(){
+        
+        //Set up team numbers and layouts
         self.parser.scoutingActivity = self
         let currentTeams = self.matchEntry.teamNumber.components(separatedBy: " ")
         let opposingTeams = self.matchEntry.opposingTeamNumber.components(separatedBy: " ")
         parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams, scoutingActivity: self)
+        
+        //Get screen titles
         self.screenTitles = parser.getScreenTitles()
         self.screenTitles.append("QR Code")
         screenTitle.text = self.screenTitles[0]
+        screenTitle.font = screenTitle.font.withSize(UIScreen.main.bounds.height * 0.035)
+        
+        //Configure Scouting view UI
         self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
         self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.idsAndKeys.QRCellID)
@@ -275,6 +282,8 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             QRcell?.scoutingActivity = self
             QRcell?.setUpQRImage()
             
+            self.QRImageCellMade.append(QRcell!)
+            
             return QRcell!
         }
         
@@ -285,11 +294,11 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         let visibleRect = CGRect(origin: scoutingView.contentOffset, size: scoutingView.bounds.size)
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         let visibleIndexPath = scoutingView.indexPathForItem(at: visiblePoint)
-        if (visibleIndexPath?[1] ?? 0 == 3){
-            if (QRImageCellMade.count == 1){
-                QRImageCellMade[0].setUpQRImage()
-            }
+        
+        if (visibleIndexPath?[1] ?? 0 == (self.screenTitles.count - 1)){
+            self.scoutingView.reloadData()
         }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
+        
 }
 }

@@ -66,10 +66,6 @@ class DataTimer {
         
         self.setTimeStamp(timeStamp: scoutingActivity.totalProgress)
         
-        for i in 0..<scoutingActivity.listOfInputControls.count{
-            scoutingActivity.listOfInputControls[i].onTimerStarted()
-        }
-        
         updateTimer(scoutingActivity: scoutingActivity)
     }
     
