@@ -51,18 +51,18 @@ public class SwitchField : UIView, InputControl {
     func setSwitchState(){
         if (self.scoutingActivity.isStarted || self.lite){
             self.switchButton.isEnabled = true
-                   if (self.value == 1){
-                       if (self.fieldData.is_lite){
-                       self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
-                       self.switchButton.setTitleColor(UIColor.white, for: .normal)
-                       } else {
-                       self.switchButton.backgroundColor = UIColor.red
-                       self.switchButton.setTitleColor(UIColor.white, for: .normal)
-                       }
-                   } else if (self.value == 0){
-                       self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
-                       self.switchButton.backgroundColor = UIColor.systemGray5
-                   }
+            if (self.value == 1){
+                if (self.fieldData.is_lite){
+                    self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
+                    self.switchButton.setTitleColor(UIColor.white, for: .normal)
+                } else {
+                    self.switchButton.backgroundColor = UIColor.red
+                    self.switchButton.setTitleColor(UIColor.white, for: .normal)
+                }
+            } else if (self.value == 0){
+                self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                self.switchButton.backgroundColor = UIColor.systemGray5
+            }
         } else {
             self.switchButton.backgroundColor = UIColor.systemGray5
             self.switchButton.setTitleColor(UIColor.systemGray, for: .normal)
@@ -70,16 +70,12 @@ public class SwitchField : UIView, InputControl {
     }
     
     func updateControlState() {
-        if (self.scoutingActivity.isStarted){
-            self.switchButton.isEnabled = true
-        }
-        
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
         if (self.value != newPosition){
             self.value = newPosition
             setSwitchState()
         }
-
+        
     }
     
     override init(frame: CGRect) {
