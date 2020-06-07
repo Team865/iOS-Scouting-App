@@ -77,7 +77,7 @@ public class Entry {
         let first = self.eventKey + "_" + self.match + ":"
         let second = formatTeam + ":" + self.formatString(string : self.scout) + ":" + self.board + ":"
         let third = timeToHexaDecimals + ":" + self.encodedDataPoints + ":" + self.formatString(string : self.comment)
-
+        
         return (first + second + third)
     }
     
@@ -95,21 +95,21 @@ public class Entry {
         var count = 0
         for i in 0..<nextIndex {
             if (dataPoints[i].type_index == type){
-               count += 1
+                count += 1
             }
         }
         return count
     }
-
+    
     func lastValue(type: Int) -> DataPoint? {
         let nextIndex = self.getNextIndexRelavtiveToTime()
         
-            for i in stride(from: nextIndex - 1, to: 0, by: -1) {
-                let dp = dataPoints[i]
-                if (dp.type_index == type) {
-                    return dp
-                }
+        for i in stride(from: nextIndex - 1, to: -1, by: -1) {
+            let dp = dataPoints[i]
+            if (dp.type_index == type) {
+                return dp
             }
+        }
         
         return nil
     }
@@ -120,34 +120,34 @@ public class Entry {
         let currentTime = self.scoutingActivity?.dataTimer.getTimeStamp() ?? 0
         
         if (dataPoints.count == 0) {
-                return 0
-            }
-
-            // Fix: Don't use <= because we want the last of data points with first time
-            if (currentTime < dataPoints[0].time) {
-                return 1
-            }
-
-        if (currentTime >= dataPoints[dataPoints.count - 1].time) {
-                return dataPoints.count
-            }
-
-            var low = 0
-            var high = dataPoints.count - 1
-
-            // To get the element that we want, use a binary search algorithm
-            // instead of iterating over a for-loop. A binary search is O(log(n))
-            // whereas searching using a loop is O(n).
-
-            while (low != high) {
-                let mid = (low + high) / 2
-                if (dataPoints[mid].time <= currentTime) {
-                    low = mid + 1
-                } else {
-                    high = mid
-                }
-            }
-
-            return low
+            return 0
         }
+        
+        // Fix: Don't use <= because we want the last of data points with first time
+        if (currentTime < dataPoints[0].time) {
+            return 1
+        }
+        
+        if (currentTime >= dataPoints[dataPoints.count - 1].time) {
+            return dataPoints.count
+        }
+        
+        var low = 0
+        var high = dataPoints.count - 1
+        
+        // To get the element that we want, use a binary search algorithm
+        // instead of iterating over a for-loop. A binary search is O(log(n))
+        // whereas searching using a loop is O(n).
+        
+        while (low != high) {
+            let mid = (low + high) / 2
+            if (dataPoints[mid].time <= currentTime) {
+                low = mid + 1
+            } else {
+                high = mid
+            }
+        }
+        
+        return low
+    }
 }

@@ -37,6 +37,7 @@
 		25CEF67A240338B900034E12 /* MatchSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CEF679240338B900034E12 /* MatchSchedule.swift */; };
 		25D4C53F245C39C70062D363 /* EncoderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D4C53E245C39C70062D363 /* EncoderTest.swift */; };
 		25D9DAE5248A187100967245 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D9DAE4248A187100967245 /* StringExtension.swift */; };
+		25D9DAE7248D8AB300967245 /* Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D9DAE6248D8AB300967245 /* Sharing.swift */; };
 		25E0F562241EC1460034432A /* settingsCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F561241EC1460034432A /* settingsCells.swift */; };
 		25E0F564241EC1610034432A /* settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F563241EC1610034432A /* settings.swift */; };
 		25E0F56C241F63780034432A /* EventSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E0F56B241F63780034432A /* EventSelectionController.swift */; };
@@ -98,6 +99,7 @@
 		25D4C53E245C39C70062D363 /* EncoderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderTest.swift; sourceTree = "<group>"; };
 		25D4C540245C39C70062D363 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		25D9DAE4248A187100967245 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		25D9DAE6248D8AB300967245 /* Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharing.swift; sourceTree = "<group>"; };
 		25E0F561241EC1460034432A /* settingsCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsCells.swift; sourceTree = "<group>"; };
 		25E0F563241EC1610034432A /* settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settings.swift; sourceTree = "<group>"; };
 		25E0F56B241F63780034432A /* EventSelectionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSelectionController.swift; sourceTree = "<group>"; };
@@ -203,6 +205,7 @@
 				255332B8247C13FB00F01B96 /* CoreData.swift */,
 				25EB643B24878767000C62EF /* OrientationLock.swift */,
 				25D9DAE4248A187100967245 /* StringExtension.swift */,
+				25D9DAE6248D8AB300967245 /* Sharing.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -456,6 +459,7 @@
 				254B4E1C243A78EA002B6239 /* DataPoint.swift in Sources */,
 				25619D662438C7BE0057BC76 /* MultiToggleField.swift in Sources */,
 				2543F0B2247130ED00914B4F /* UIImageExtension.swift in Sources */,
+				25D9DAE7248D8AB300967245 /* Sharing.swift in Sources */,
 				255332B9247C13FB00F01B96 /* CoreData.swift in Sources */,
 				255332BE247DCAC400F01B96 /* UnknownField.swift in Sources */,
 				256ACB3C24763201009D9D84 /* MatchEntry.swift in Sources */,

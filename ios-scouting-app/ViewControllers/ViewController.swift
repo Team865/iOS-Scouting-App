@@ -313,7 +313,7 @@ class ViewController: UIViewController {
                 UITextField.text = self.scoutName
             }
             
-             let getName = UIAlertAction(title: "OK", style: .default){
+            let getName = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
                 let scoutName = alert?.textFields![0]
                 self.scoutName = scoutName!.text ?? ""
@@ -328,10 +328,10 @@ class ViewController: UIViewController {
             alert.addAction(cancel)
             
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
-            queue: OperationQueue.main) { (notification) -> Void in
-                                                            
-                let textFieldName = alert.textFields?[0]
-                getName.isEnabled = self.isValidScoutName(scoutName: textFieldName?.text ?? "") && !(textFieldName?.text?.isEmpty ?? false)
+                                                   queue: OperationQueue.main) { (notification) -> Void in
+                                                    
+                                                    let textFieldName = alert.textFields?[0]
+                                                    getName.isEnabled = self.isValidScoutName(scoutName: textFieldName?.text ?? "") && !(textFieldName?.text?.isEmpty ?? false)
             }
             
             
@@ -481,6 +481,31 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
     }
     
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete){
+            
+            if(!self.listOfMatches[indexPath.row].isScouted){
+                let alert = UIAlertController(title: "Warning", message: "You cannot delete original matches", preferredStyle: .alert)
+                self.present(alert, animated: true, completion: nil)
+                
+                // change to desired number of seconds (in this case 5 seconds)
+                let when = DispatchTime.now() + 1
+                DispatchQueue.main.asyncAfter(deadline: when){
+                    alert.dismiss(animated: true, completion: nil)
+                }
+            } else {
+                self.listOfMatches.remove(at: indexPath.row)
+                self.matchTable.deleteRows(at: [indexPath], with: .automatic)
+                self.matchTable.reloadData()
+                self.updateDataInCore()
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
         let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: self.idsAndKeys.scoutingActivity) as! ScoutingActivity
@@ -515,6 +540,15 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             
             let cancel = UIAlertAction(title : "OK", style: .destructive)
             alert.addAction(cancel)
+            
+            let share = UIAlertAction(title : "Share", style : .default){
+                [weak alert] (_) in
+                let sharing = Sharing()
+                sharing.startSharingQRData(data: self.listOfMatches[indexPath.row].scoutedData, viewController : self)
+            }
+            
+            alert.addAction(share)
+            
             self.present(alert, animated: true, completion: nil)
         } else {
             var opposingTeamNumber = ""

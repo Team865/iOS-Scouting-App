@@ -24,7 +24,7 @@ class ScoutingActivity : UIViewController {
     
     var listOfLabels : [UILabel] = []
     var screenTitles : [String] = []
-   
+    
     //UIs
     @IBOutlet weak var screenTitle: UILabel!
     @IBOutlet weak var PlayButton: UIButton!
@@ -44,14 +44,16 @@ class ScoutingActivity : UIViewController {
     @IBOutlet weak var progressBar: UISlider!
     var progressBarTimer : Timer!
     var totalProgress : Float = 0
-    let progress = Progress(totalUnitCount: 16500)
+    let progress = Progress(totalUnitCount: 15000)
     
     //ScoutingScreen variables
     var QRImageCellMade : [QRImageCell] = []
     var isStarted = false
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         AppUtility.lockOrientation(.portrait, andRotateTo: .portrait)
+        NotificationCenter.default.addObserver(self, selector: #selector(pauseWhenBackgroundVisible(noti:)), name: UIApplication.didEnterBackgroundNotification  , object: nil)
         
         setUpNavigationBar()
         configureButtons()
@@ -63,12 +65,18 @@ class ScoutingActivity : UIViewController {
         self.qrEntry.scoutingActivity = self
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
         
-        self.dataTimer.onHold(scoutingActivity: self)
     }
     
     func playSoundOnAction(){
         if (self.coreData.isPlayingSounds()){
             AudioServicesPlaySystemSound(SystemSoundID(1105))
+        }
+    }
+    
+    //Background tasks handler
+    @objc func pauseWhenBackgroundVisible(noti : Notification){
+        if(self.isStarted){
+            self.dataTimer.pauseTimer(scoutingActivity: self)
         }
     }
     
@@ -209,26 +217,15 @@ class ScoutingActivity : UIViewController {
     
     @objc func clickHandler(sender : UIButton){
         if(sender.tag == 1){
-            StartTimerButton.isHidden = true
-            PauseButton.isHidden = false
-            PlayButton.isHidden = true
-            UndoButton.isHidden = false
             playSoundOnAction()
-
             self.dataTimer.startTimer(scoutingActivity: self)
-            
         } else if (sender.tag == 2){
-            PlayButton.isHidden = false
-            PauseButton.isHidden = true
+            
             playSoundOnAction()
             self.dataTimer.pauseTimer(scoutingActivity: self)
         } else if (sender.tag == 3){
-            PlayButton.isHidden = true
-            PauseButton.isHidden = false
             playSoundOnAction()
-
             self.dataTimer.resumeTimer(scoutingActivity: self)
-            
         } else if (sender.tag == 4){
             let dataPoint = self.qrEntry.undo()
             if (dataPoint != nil){
@@ -300,5 +297,5 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
         
-}
+    }
 }
