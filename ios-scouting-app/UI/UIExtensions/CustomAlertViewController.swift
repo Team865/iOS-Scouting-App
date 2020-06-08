@@ -25,6 +25,10 @@ class CustomAlertController : UIViewController {
         self.configureStackView()
         configureTextField()
         
+        //Handle view when keyboard is shown
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         for i in 0..<self.commentOptions.count{
             let checkbox = CheckBoxField()
             checkbox.isCommentOption = true
@@ -39,6 +43,21 @@ class CustomAlertController : UIViewController {
         configureCommentTextField()
         self.stackView.addArrangedSubview(self.configureButtonsStackView())
         
+    }
+    
+    //Functions to handle keyboard shown animation
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= (keyboardSize.height * 0.5)
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     func configureTextField()  {

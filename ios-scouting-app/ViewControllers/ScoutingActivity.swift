@@ -231,6 +231,7 @@ class ScoutingActivity : UIViewController {
             if (dataPoint != nil){
                 playSoundOnAction()
             }
+            self.scoutingView.reloadData()
         }
         else if (sender.tag == 5){
             playSoundOnAction()
@@ -242,6 +243,7 @@ class ScoutingActivity : UIViewController {
             self.present(myAlert, animated: true, completion: nil)
         } else if (sender.tag == 6){
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
+            self.matchEntry.scoutedData = self.qrEntry.getQRData()
             vc.selectedMatchEntry = self.matchEntry
             self.navigationController?.pushViewController(vc, animated: true)
         }

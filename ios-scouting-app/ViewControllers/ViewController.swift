@@ -203,60 +203,6 @@ class ViewController: UIViewController {
         }
     }
     
-    func updateScoutedEntries(matchEntry : MatchEntry){
-        let index = matchEntry.atIndex
-        
-        let matchSchedule = MatchSchedule()
-        
-        matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
-        
-        if (matchEntry.addedEntry){
-            let emptyBoi = "---"
-            let imageName = "addicon"
-            var redAlliance : [String] = []
-            var blueAlliance : [String] = []
-            let boardNumber = Int(matchSchedule.board.suffix(1)) ?? 1
-            if (matchEntry.board.prefix(1) == "B"){
-                redAlliance = [emptyBoi, emptyBoi, emptyBoi]
-                
-                for i in 0..<3{
-                    if (i == boardNumber - 1){
-                        blueAlliance.append(matchEntry.teamNumber)
-                    } else {
-                        blueAlliance.append(emptyBoi)
-                    }
-                }
-            } else {
-                blueAlliance = [emptyBoi, emptyBoi, emptyBoi]
-                
-                for i in 0..<3{
-                    if (i == boardNumber - 1){
-                        redAlliance.append(matchEntry.teamNumber)
-                    } else {
-                        redAlliance.append(emptyBoi)
-                    }
-                }
-            }
-            
-            matchSchedule.imageName = imageName
-            matchSchedule.blueAlliance = blueAlliance
-            matchSchedule.redAlliance = redAlliance
-            
-        } else {
-            if (self.listOfMatches.count != 0){
-                matchSchedule.blueAlliance = self.listOfMatches[index].blueAlliance
-                matchSchedule.redAlliance = self.listOfMatches[index].redAlliance
-            }
-        }
-        
-        if (matchEntry.isScouted){
-            self.listOfMatches.append(matchSchedule)
-            self.updateDataInCore()
-        }
-        
-        self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
-    }
-    
     //Handle clicking objects
     @objc func clickHandler(srcObj : UIButton) -> Void{
         if(srcObj.tag == settingsTag){
@@ -281,7 +227,7 @@ class ViewController: UIViewController {
                 (UITextField) in UITextField.placeholder = "Opposing teams - Super scout only"
             }
             
-            let getName = UIAlertAction(title: "OK", style: .default){
+            let addMatch = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
                 let match = alert?.textFields?[0].text ?? ""
                 let team = alert?.textFields?[1].text ?? ""
@@ -299,9 +245,32 @@ class ViewController: UIViewController {
                 
             }
             
+            addMatch.isEnabled = false
+            
+           NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
+                                                  queue: OperationQueue.main) { (notification) -> Void in
+                                                   
+                                                   let textFieldName = alert.textFields?[0].text
+                                                    addMatch.isEnabled = self.isValidEntry(match: textFieldName ?? "", team: alert.textFields?[1].text! ?? "", opposingTeam: alert.textFields?[2].text ?? "")
+           }
+            
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[1],
+                                                   queue: OperationQueue.main) { (notification) -> Void in
+                                                    
+                                                    let textFieldName = alert.textFields?[1].text
+                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text ?? "", team: textFieldName ?? "", opposingTeam: alert.textFields?[2].text ?? "")
+            }
+            
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[2],
+                                                   queue: OperationQueue.main) { (notification) -> Void in
+                                                    
+                                                    let textFieldName = alert.textFields?[2].text
+                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text! ?? "", team: alert.textFields?[1].text! ?? "", opposingTeam: textFieldName ?? "")
+            }
+            
             let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
             
-            alert.addAction(getName)
+            alert.addAction(addMatch)
             alert.addAction(cancel)
             self.present(alert, animated: true, completion: nil)
         }
@@ -360,6 +329,57 @@ class ViewController: UIViewController {
         }
     }
     
+    //String management
+    private func isValidEntry(match : String, team : String, opposingTeam : String) -> Bool{
+        var isMatchValid = false
+        var isTeamValid = false
+        var isOpposingTeamValid = true
+        
+        let arr1 = match.components(separatedBy: " ")
+        let arr2 = team.components(separatedBy: " ")
+        let arr3 = opposingTeam.components(separatedBy: " ")
+        
+        var count1 = 0
+        var count2 = 0
+        var count3 = 0
+        
+        for i in 0..<arr1.count{
+            if (arr1[i].isStringContainsOnlyNumbers() && arr1[i] != ""){
+                count1 += 1
+            }
+        }
+        
+        for k in 0..<arr2.count{
+            if (arr2[k].isStringContainsOnlyNumbers() && arr2[k] != ""){
+                count2 += 1
+            }
+        }
+        
+        if (self.selectedBoard.suffix(1) == "X"){
+            for j in 0..<arr3.count{
+                if (arr3[j].isStringContainsOnlyNumbers() && arr3[j] != ""){
+                    count3 += 1
+                }
+            }
+            if (count3 != arr3.count){
+                isOpposingTeamValid = false
+            }
+        }
+        
+        
+        
+        if (count1 == arr1.count && count2 == arr2.count){
+            isMatchValid = true
+            isTeamValid = true
+        }
+        
+        if ((isMatchValid && isTeamValid) && isOpposingTeamValid){
+            return true
+        }
+        
+        return false
+    }
+    
     private func isValidScoutName(scoutName : String) -> Bool{
         
         if (scoutName.count == 0){
@@ -379,6 +399,7 @@ class ViewController: UIViewController {
         return true
     }
     
+    //Update list of team that are selected so it can be displayed in the scoutingActivity later
     private func updateListOfSelectedTeams(list : [MatchSchedule], index : Int, board : String){
         var blueX : [String] = []
         var redX : [String] = []
@@ -437,6 +458,61 @@ class ViewController: UIViewController {
         self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
         
         self.matchTable.reloadData()
+    }
+    
+    //Update all scouted entries when the view returned from scouting activity
+    func updateScoutedEntries(matchEntry : MatchEntry){
+        let index = matchEntry.atIndex
+        
+        let matchSchedule = MatchSchedule()
+        
+        matchSchedule.setUpMatchSchedule(imageName: "check", matchNumber: Int(matchEntry.matchNumber) ?? 0, redAlliance: [], blueAlliance: [], board: matchEntry.board, isScouted: matchEntry.isScouted, scoutedData: matchEntry.scoutedData)
+        
+        if (matchEntry.addedEntry){
+            let emptyBoi = "---"
+            let imageName = "addicon"
+            var redAlliance : [String] = []
+            var blueAlliance : [String] = []
+            let boardNumber = Int(matchSchedule.board.suffix(1)) ?? 1
+            if (matchEntry.board.prefix(1) == "B"){
+                redAlliance = [emptyBoi, emptyBoi, emptyBoi]
+                
+                for i in 0..<3{
+                    if (i == boardNumber - 1){
+                        blueAlliance.append(matchEntry.teamNumber)
+                    } else {
+                        blueAlliance.append(emptyBoi)
+                    }
+                }
+            } else {
+                blueAlliance = [emptyBoi, emptyBoi, emptyBoi]
+                
+                for i in 0..<3{
+                    if (i == boardNumber - 1){
+                        redAlliance.append(matchEntry.teamNumber)
+                    } else {
+                        redAlliance.append(emptyBoi)
+                    }
+                }
+            }
+            
+            matchSchedule.imageName = imageName
+            matchSchedule.blueAlliance = blueAlliance
+            matchSchedule.redAlliance = redAlliance
+            
+        } else {
+            if (self.listOfMatches.count != 0){
+                matchSchedule.blueAlliance = self.listOfMatches[index].blueAlliance
+                matchSchedule.redAlliance = self.listOfMatches[index].redAlliance
+            }
+        }
+        
+        if (matchEntry.isScouted){
+            self.listOfMatches.append(matchSchedule)
+            self.updateDataInCore()
+        }
+        
+        self.listOfMatches.sort(by: { $0.matchNumber < $1.matchNumber })
     }
     
 }

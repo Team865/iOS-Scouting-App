@@ -24,7 +24,7 @@ class CoreData{
     func moveListOfEventsToCore(listOfEvents : [Events]){
         self.listOfEvents.removeAll()
         for i in 0..<listOfEvents.count{
-            saveListOfEventsToCore(name: listOfEvents[i].name, info: listOfEvents[i].info, key: listOfEvents[i].key)
+            saveListOfEventsToCore(name: listOfEvents[i].name, info: listOfEvents[i].info, key: listOfEvents[i].key, date : listOfEvents[i].date)
         }
     }
     
@@ -59,11 +59,11 @@ class CoreData{
        }
     
     func loadSelectedEventEntry() -> Events{
-        var event = Events(name: "Current Event : None", info: "", key: "")
+        var event = Events(name: "Current Event : None", info: "", key: "", date: "")
         if let info = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventInfo) as? String,
             let name = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventName) as? String,
-            let key = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventKey) as? String {
-            event = Events(name: name, info: info, key: key)
+            let key = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventKey) as? String, let date = UserDefaults.standard.object(forKey: self.idsAndKeys.currentEventDate) as? String {
+            event = Events(name: name, info: info, key: key, date : date)
         }
         return event
     }
@@ -72,7 +72,7 @@ class CoreData{
            var tempArr : [Events] = []
            
            for i in 0..<self.listOfEvents.count{
-               let event = Events(name: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventNames) as! String, info: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventInfos) as! String, key: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventKeys) as! String)
+            let event = Events(name: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventNames) as! String, info: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventInfos) as! String, key: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventKeys) as! String, date: self.listOfEvents[i].value(forKey: self.idsAndKeys.eventDates) as! String)
                tempArr.append(event)
            }
            
@@ -111,9 +111,10 @@ class CoreData{
         UserDefaults.standard.set(viewController.selectedEvent?.info, forKey: self.idsAndKeys.currentEventInfo)
         UserDefaults.standard.set(viewController.selectedEvent?.name, forKey: self.idsAndKeys.currentEventName)
         UserDefaults.standard.set(viewController.selectedEvent?.key, forKey: self.idsAndKeys.currentEventKey)
+        UserDefaults.standard.set(viewController.selectedEvent?.date, forKey: self.idsAndKeys.currentEventDate)
     }
     
-    func saveListOfEventsToCore(name : String, info : String, key : String){
+    func saveListOfEventsToCore(name : String, info : String, key : String, date : String){
         guard let appDelegate =
             UIApplication.shared.delegate as? AppDelegate else {
                 return
@@ -135,6 +136,7 @@ class CoreData{
         currentEvent.setValue(name, forKey: self.idsAndKeys.eventNames)
         currentEvent.setValue(info, forKeyPath: self.idsAndKeys.eventInfos)
         currentEvent.setValue(key, forKey: self.idsAndKeys.eventKeys)
+        currentEvent.setValue(date, forKey: self.idsAndKeys.eventDates)
         
         //4
         do {

@@ -131,7 +131,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         self.coreData.clearCoreData(entity: self.idsAndKeys.eventsCoreID)
         self.tbaParser.eventSelectionController = self
         self.tbaParser.getJSONEvents {
-            let alert = UIAlertController(title: "Sucess", message: "", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Success", message: "", preferredStyle: .alert)
             self.present(alert, animated: true, completion: nil)
             
             // change to desired number of seconds (in this case 5 seconds)

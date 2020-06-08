@@ -12,9 +12,11 @@ class Events {
     var name : String
     var info : String
     var key : String
-    init(name : String, info : String, key : String){
+    var date : String
+    init(name : String, info : String, key : String, date : String){
         self.name = name
         self.info = info
         self.key = key
+        self.date = date
     }
 }
