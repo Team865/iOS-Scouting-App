@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="EventsCore" representedClassName="EventsCore" syncable="YES" codeGenerationType="class">
+        <attribute name="dateCore" optional="YES" attributeType="String"/>
         <attribute name="infoCore" optional="YES" attributeType="String"/>
         <attribute name="keyCore" optional="YES" attributeType="String"/>
         <attribute name="nameCore" optional="YES" attributeType="String"/>
@@ -15,7 +16,7 @@
         <attribute name="scoutedDataCore" optional="YES" attributeType="String"/>
     </entity>
     <elements>
+        <element name="EventsCore" positionX="-54" positionY="45" width="128" height="103"/>
         <element name="MatchScheduleCore" positionX="-63" positionY="-18" width="128" height="148"/>
-        <element name="EventsCore" positionX="-54" positionY="45" width="128" height="88"/>
     </elements>
 </model>

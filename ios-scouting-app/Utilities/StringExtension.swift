@@ -13,6 +13,10 @@ extension String
         return self.trimmingCharacters(in : .whitespacesAndNewlines)
     }
     
+    func isStringContainsOnlyNumbers() -> Bool {
+           return self.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil
+       }
+    
     var containsSpecialCharacter: Bool {
         let regex = ".*[^A-Za-z0-9].*"
         let testString = NSPredicate(format:"SELF MATCHES %@", regex)
@@ -26,6 +30,7 @@ extension String
         
         return decimalRange != nil
     }
+    
 }
 
 

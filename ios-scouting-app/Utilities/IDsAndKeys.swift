@@ -27,12 +27,14 @@ class IDsAndKeys {
     let eventKeys = "keyCore"
     let eventInfos = "infoCore"
     let eventNames = "nameCore"
+    let eventDates = "dateCore"
     
     let eventCells = "EventCells"
     
     let currentEventName = "currentEventName"
     let currentEventInfo = "currentEventInfo"
     let currentEventKey = "currentEventKey"
+    let currentEventDate = "currentEventDate"
     
     let year = "year"
     let team = "team"
