@@ -77,6 +77,10 @@ class SettingsViewController: UIViewController {
                 guard let url = URL(string: "https://github.com/Team865/iOS-Scouting-App") else { return }
                 UIApplication.shared.open(url)
             }
+            if (indexPath.row == 2){
+                guard let url = URL(string: "https://github.com/Team865/iOS-Scouting-App/blob/master/LICENSE") else { return }
+                UIApplication.shared.open(url)
+            }
         }
     }
     
