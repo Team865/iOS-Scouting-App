@@ -188,7 +188,9 @@
 		256CD2CC247C0C980031BEA1 /* UIExtensions */ = {
 			isa = PBXGroup;
 			children = (
+				2575E64D249082390089F92B /* CATransitionExtension.swift */,
 				2543F0B1247130ED00914B4F /* UIImageExtension.swift */,
+				2575E64F249084FE0089F92B /* ButtonAnimation.swift */,
 				25EB64352482E949000C62EF /* CustomAlertViewController.swift */,
 			);
 			path = UIExtensions;
@@ -210,8 +212,6 @@
 				25EB643B24878767000C62EF /* OrientationLock.swift */,
 				25D9DAE4248A187100967245 /* StringExtension.swift */,
 				25D9DAE6248D8AB300967245 /* Sharing.swift */,
-				2575E64D249082390089F92B /* CATransitionExtension.swift */,
-				2575E64F249084FE0089F92B /* ButtonAnimation.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";

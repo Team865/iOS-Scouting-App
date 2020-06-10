@@ -282,7 +282,6 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
             let QRcell = collectionView.dequeueReusableCell(withReuseIdentifier: self.idsAndKeys.QRCellID, for: indexPath) as? QRImageCell
             QRcell?.scoutingActivity = self
             QRcell?.setUpQRImage()
-            
             self.QRImageCellMade.append(QRcell!)
             
             return QRcell!
@@ -298,6 +297,7 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         
         if (visibleIndexPath?[1] ?? 0 == (self.screenTitles.count - 1)){
             self.scoutingView.reloadData()
+            self.listOfInputControls.removeAll()
         }
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
         
