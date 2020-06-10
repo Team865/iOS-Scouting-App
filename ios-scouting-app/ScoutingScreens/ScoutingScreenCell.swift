@@ -44,7 +44,10 @@ class ScoutingScreenCell : UICollectionViewCell {
         scoutingView.axis = .vertical
         scoutingView.distribution = .fillEqually
         scoutingView.spacing = 2.5
-        scoutingView.frame = CGRect(x : 2.5, y : 0, width : contentView.frame.width - 5, height: contentView.frame.height)
+        
+        let screenWidth = UIScreen.main.bounds.width
+        
+        scoutingView.frame = CGRect(x : screenWidth * 0.025, y : 0, width : contentView.frame.width - screenWidth * 0.05, height: contentView.frame.height)
     }
     
     func setUpScoutingScreen() {

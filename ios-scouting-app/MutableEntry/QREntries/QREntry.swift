@@ -39,7 +39,7 @@ public class Entry {
     }
     
     func formatString(string : String) -> String{
-        let arr = string.components(separatedBy : " ")
+        let arr = string.trim().components(separatedBy : " ")
         var formmated = ""
         for i in 0..<arr.count{
             formmated += arr[i]

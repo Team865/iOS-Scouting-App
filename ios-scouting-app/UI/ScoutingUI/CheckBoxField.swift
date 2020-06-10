@@ -140,6 +140,8 @@ class CheckBoxField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
+        sender.pulsate()
+        
         setCheckBoxState()
     }
 }

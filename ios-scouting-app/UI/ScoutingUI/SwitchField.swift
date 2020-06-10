@@ -44,8 +44,11 @@ public class SwitchField : UIView, InputControl {
     }
     
     func onTimerStarted() {
-        self.switchButton.isEnabled = true
-        self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+        if (!self.fieldData.is_lite){
+            self.switchButton.isEnabled = true
+            self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+        }
+        
     }
     
     func setSwitchState(){
@@ -53,14 +56,19 @@ public class SwitchField : UIView, InputControl {
             self.switchButton.isEnabled = true
             if (self.value == 1){
                 if (self.fieldData.is_lite){
-                    self.switchButton.backgroundColor = UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00)
+                    //UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                    self.switchButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                     self.switchButton.setTitleColor(UIColor.white, for: .normal)
                 } else {
                     self.switchButton.backgroundColor = UIColor.red
                     self.switchButton.setTitleColor(UIColor.white, for: .normal)
                 }
             } else if (self.value == 0){
-                self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                if (self.fieldData.is_lite){
+                    self.switchButton.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for : .normal)
+                } else {
+                    self.switchButton.setTitleColor(UIColor(red: 0.12, green: 0.67, blue: 0.19, alpha: 1.00), for: .normal)
+                }
                 self.switchButton.backgroundColor = UIColor.systemGray5
             }
         } else {
@@ -100,6 +108,8 @@ public class SwitchField : UIView, InputControl {
         self.scoutingActivity.qrEntry.addDataPoint(dp: dataPoint)
         
         self.scoutingActivity.playSoundOnAction()
+        
+        sender.pulsate()
         
         setSwitchState()
     }

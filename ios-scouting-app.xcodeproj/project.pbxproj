@@ -23,6 +23,8 @@
 		256ACB3C24763201009D9D84 /* MatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256ACB3B24763201009D9D84 /* MatchEntry.swift */; };
 		256ACB42247A016B009D9D84 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256ACB41247A016B009D9D84 /* Parser.swift */; };
 		256CD2C8247BF86D0031BEA1 /* TBAParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256CD2C7247BF86D0031BEA1 /* TBAParser.swift */; };
+		2575E64E249082390089F92B /* CATransitionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2575E64D249082390089F92B /* CATransitionExtension.swift */; };
+		2575E650249084FE0089F92B /* ButtonAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2575E64F249084FE0089F92B /* ButtonAnimation.swift */; };
 		2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */; };
 		2599A5DD241DE88A0001DF68 /* jsonEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2599A5DC241DE88A0001DF68 /* jsonEvents.swift */; };
 		25ABA7142474C8D800329161 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25ABA7132474C8D800329161 /* Timer.swift */; };
@@ -83,6 +85,8 @@
 		256ACB3B24763201009D9D84 /* MatchEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchEntry.swift; sourceTree = "<group>"; };
 		256ACB41247A016B009D9D84 /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		256CD2C7247BF86D0031BEA1 /* TBAParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TBAParser.swift; sourceTree = "<group>"; };
+		2575E64D249082390089F92B /* CATransitionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CATransitionExtension.swift; sourceTree = "<group>"; };
+		2575E64F249084FE0089F92B /* ButtonAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonAnimation.swift; sourceTree = "<group>"; };
 		2599A5DA241DE1FB0001DF68 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2599A5DC241DE88A0001DF68 /* jsonEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = jsonEvents.swift; sourceTree = "<group>"; };
 		25ABA7132474C8D800329161 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
@@ -206,6 +210,8 @@
 				25EB643B24878767000C62EF /* OrientationLock.swift */,
 				25D9DAE4248A187100967245 /* StringExtension.swift */,
 				25D9DAE6248D8AB300967245 /* Sharing.swift */,
+				2575E64D249082390089F92B /* CATransitionExtension.swift */,
+				2575E64F249084FE0089F92B /* ButtonAnimation.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -461,6 +467,7 @@
 				2543F0B2247130ED00914B4F /* UIImageExtension.swift in Sources */,
 				25D9DAE7248D8AB300967245 /* Sharing.swift in Sources */,
 				255332B9247C13FB00F01B96 /* CoreData.swift in Sources */,
+				2575E650249084FE0089F92B /* ButtonAnimation.swift in Sources */,
 				255332BE247DCAC400F01B96 /* UnknownField.swift in Sources */,
 				256ACB3C24763201009D9D84 /* MatchEntry.swift in Sources */,
 				253343B2242C7228000E6409 /* QREntry.swift in Sources */,
@@ -488,6 +495,7 @@
 				2543F0B024710DF500914B4F /* IDsAndKeys.swift in Sources */,
 				2599A5DB241DE1FB0001DF68 /* SettingsViewController.swift in Sources */,
 				25F35CC82400E60600CAA81D /* ViewController.swift in Sources */,
+				2575E64E249082390089F92B /* CATransitionExtension.swift in Sources */,
 				251EF5CC24282855006536F1 /* ScoutingActivity.swift in Sources */,
 				25E0F571241F6C1E0034432A /* EventCells.swift in Sources */,
 				25CEF67A240338B900034E12 /* MatchSchedule.swift in Sources */,
