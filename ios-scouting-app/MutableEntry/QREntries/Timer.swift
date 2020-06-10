@@ -24,6 +24,8 @@ class DataTimer {
         scoutingActivity.PlayButton.isHidden = true
         scoutingActivity.UndoButton.isHidden = false
         
+        scoutingActivity.PauseButton.tintColor = UIColor.black
+        
         scoutingActivity.progressBarTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
             (timer) in
             guard scoutingActivity.progress.isFinished == false else {
@@ -50,6 +52,8 @@ class DataTimer {
         
         scoutingActivity.PlayButton.isHidden = false
         scoutingActivity.PauseButton.isHidden = true
+        
+        scoutingActivity.PauseButton.tintColor = UIColor.black
         
         scoutingActivity.progressBarTimer.invalidate()
         scoutingActivity.totalProgress = scoutingActivity.progressBar.value

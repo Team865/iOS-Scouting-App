@@ -18,7 +18,6 @@ class CheckBoxField : UIView, InputControl{
     func setUpView(data : FieldData) {
         self.fieldData = data
         
-        addSubview(label)
         addSubview(checkBox)
         
         backgroundColor = UIColor.systemGray5
@@ -27,43 +26,29 @@ class CheckBoxField : UIView, InputControl{
         
         self.tag = data.tag
         
-        label.text = data.name
-        label.numberOfLines = 0
-        label.lineBreakMode = .byWordWrapping
-        label.textAlignment = .left
-        label.adjustsFontSizeToFitWidth = true
-        label.textColor = UIColor.systemGray
-        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
-        
-        checkBox.layer.borderColor = UIColor.black.cgColor
-        checkBox.layer.borderWidth = 1
+        checkBox.setTitle(data.name, for: .normal)
+        checkBox.titleLabel?.font = checkBox.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
+        checkBox.setImage(UIImage(named: "uncheck"), for: .normal)
+        checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
-        checkBox.isEnabled = false
         
-        if (isCommentOption){
+        if (!isCommentOption){
             checkBox.translatesAutoresizingMaskIntoConstraints = false
-            checkBox.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-            checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: (UIScreen.main.bounds.width * 0.05)).isActive = true
-            checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.075).isActive = true
-            checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
-            
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-            label.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: -(UIScreen.main.bounds.width * 0.1)).isActive = true
-            label.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.6).isActive = true
-            label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.5).isActive = true
+            checkBox.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+            checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+            checkBox.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+            checkBox.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+
         } else {
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            label.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 30).isActive = true
-            label.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5).isActive = true
-            label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/2).isActive = true
-            
             checkBox.translatesAutoresizingMaskIntoConstraints = false
-            checkBox.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            checkBox.trailingAnchor.constraint(equalTo: label.leadingAnchor, constant: -5).isActive = true
-            checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.15).isActive = true
-            checkBox.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/4).isActive = true
+            checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+            checkBox.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0).isActive = true
+            checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.55).isActive = true
+            
+            checkBox.titleLabel?.font = checkBox.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
+
         }
         
         updateControlState()
@@ -72,10 +57,8 @@ class CheckBoxField : UIView, InputControl{
     func configureCheckBoxForCommentOptions(){
         self.backgroundColor = UIColor.white
         
-        label.textColor = UIColor.black
-        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
-        
         checkBox.backgroundColor = UIColor.white
+        checkBox.setTitleColor(UIColor.black, for: .normal)
         checkBox.isEnabled = true
         
         self.isCommentOption = true
@@ -84,32 +67,32 @@ class CheckBoxField : UIView, InputControl{
     }
     
     func onTimerStarted() {
-        self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+        self.checkBox.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         self.checkBox.isEnabled = true
   }
     
     func setCheckBoxState(){
         if ((self.scoutingActivity.isStarted) || isCommentOption){
             self.checkBox.isEnabled = true
+            self.checkBox.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
             if (self.value == 1){
-                self.checkBox.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                self.checkBox.setImage(UIImage(named : "checked"), for: .normal)
+                checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             } else {
-                if (isCommentOption){
-                    self.checkBox.backgroundColor = UIColor.white
-                } else {
-                    self.checkBox.backgroundColor = UIColor.systemGray5
-                }
+                    self.checkBox.setImage(UIImage(named : "uncheck"), for: .normal)
+                    checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    
             }
+        } else {
+            self.checkBox.setTitleColor(UIColor.systemGray, for: .normal)
+            self.checkBox.isEnabled = false
         }
         
     }
     
     func updateControlState() {
-        if (self.scoutingActivity.isStarted){
-            self.label.textColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-            self.checkBox.isEnabled = true
-        }
-        
          let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
                if (self.value != newPosition){
                    self.value = newPosition
