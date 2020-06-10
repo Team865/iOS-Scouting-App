@@ -40,12 +40,13 @@ class ViewController: UIViewController {
         
         loadDataInCore()
         
-        self.updateScoutedEntries(matchEntry : self.selectedMatchEntry)
-        self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
-        
         self.setupNavigationBar()
         self.configureEventNameLabel()
         self.configureTableView()
+        
+        self.updateScoutedEntries(matchEntry : self.selectedMatchEntry)
+        self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
+        
         
         
     }
@@ -99,8 +100,19 @@ class ViewController: UIViewController {
     
     private func createSelectBoardButton() -> UIButton{
         let selectBoardButton = UIButton(type : .system)
-        selectBoardButton.setImage(UIImage (named : "paste")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        selectBoardButton.frame = CGRect(x : 0, y : 0, width : 34, height : 34)
+        selectBoardButton.setImage(UIImage(named : "paste"), for: .normal)
+        selectBoardButton.setTitle(self.selectedBoard, for: .normal)
+        selectBoardButton.tintColor = UIColor.black
+        
+        if (self.selectedBoard.prefix(1) == "B"){
+            selectBoardButton.setTitleColor(UIColor.blue, for: .normal)
+        } else if (self.selectedBoard.prefix(1) == "R"){
+            selectBoardButton.setTitleColor(UIColor.red, for: .normal)
+        }
+        
+        selectBoardButton.frame = CGRect(x : 0, y : 0, width : 68, height : 34)
+        selectBoardButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        selectBoardButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         selectBoardButton.tag = self.boardSelectionTag
         selectBoardButton.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
         
@@ -109,10 +121,15 @@ class ViewController: UIViewController {
     
     private func createEditNameButton() -> UIButton{
         let editNameButton = UIButton(type : .system)
-        editNameButton.setImage(UIImage(named : "users")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        editNameButton.setImage(UIImage(named : "users"), for: .normal)
+        editNameButton.setTitle(self.scoutName, for: .normal)
+        editNameButton.tintColor = UIColor.black
+        editNameButton.setTitleColor(UIColor.black, for: .normal)
         editNameButton.tag = self.editNameTag
         editNameButton.addTarget(self, action: #selector(self.clickHandler(srcObj:)), for: .touchUpInside)
         editNameButton.frame = CGRect(x : 0, y : 0, width : 34, height : 34)
+        editNameButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        editNameButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         return editNameButton
     }
@@ -142,23 +159,10 @@ class ViewController: UIViewController {
     
     private func setupNavigationBar(){
         navigationController?.navigationBar.backgroundColor = UIColor.white
-        let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
-        selectedBoard.isUserInteractionEnabled = false
-        selectedBoard.text = self.selectedBoard
-        
-        if (self.selectedBoard.prefix(1) == "B"){
-            selectedBoard.textColor = UIColor.blue
-        } else if (self.selectedBoard.prefix(1) == "R"){
-            selectedBoard.textColor = UIColor.red
-        }
-        
-        let scoutName = UITextField(frame : .init(x : 0, y : 0, width: 34, height: 34))
-        scoutName.isUserInteractionEnabled = false
-        scoutName.text = self.scoutName
         
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: rightSideButtonsNavBar()[0]), UIBarButtonItem(customView: rightSideButtonsNavBar()[1])]
         
-        navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
+        navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: self.createSelectBoardButton()), UIBarButtonItem(customView: self.createEditNameButton())]
     }
     
     //These two functions updates the stored data in the core and load data from core. Consider whether to put this in CoreData class or not
@@ -223,21 +227,16 @@ class ViewController: UIViewController {
                 (UITextField) in UITextField.placeholder = "Team"
             }
             
-            alert.addTextField {
-                (UITextField) in UITextField.placeholder = "Opposing teams - Super scout only"
-            }
-            
             let addMatch = UIAlertAction(title: "OK", style: .default){
                 [weak alert] (_) in
                 let match = alert?.textFields?[0].text ?? ""
                 let team = alert?.textFields?[1].text ?? ""
-                let opposingTeam = alert?.textFields?[2].text ?? ""
                 
                 let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
                 let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: self.idsAndKeys.scoutingActivity) as! ScoutingActivity
                 
                 let entry = MatchEntry()
-                entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: opposingTeam
+                entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: ""
                     , teamNumber: team, eventKey: self.selectedEvent?.key ?? "", atIndex : 0, isScouted: false, addedEntry : true, scoutedData: "")
                 scoutingVC.matchEntry = entry
                 
@@ -247,25 +246,18 @@ class ViewController: UIViewController {
             
             addMatch.isEnabled = false
             
-           NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
-                                                  queue: OperationQueue.main) { (notification) -> Void in
-                                                   
-                                                   let textFieldName = alert.textFields?[0].text
-                                                    addMatch.isEnabled = self.isValidEntry(match: textFieldName ?? "", team: alert.textFields?[1].text! ?? "", opposingTeam: alert.textFields?[2].text ?? "")
-           }
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
+                                                   queue: OperationQueue.main) { (notification) -> Void in
+                                                    
+                                                    let textFieldName = alert.textFields?[0].text
+                                                    addMatch.isEnabled = self.isValidEntry(match: textFieldName ?? "", team: alert.textFields?[1].text! ?? "")
+            }
             
             NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[1],
                                                    queue: OperationQueue.main) { (notification) -> Void in
                                                     
                                                     let textFieldName = alert.textFields?[1].text
-                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text ?? "", team: textFieldName ?? "", opposingTeam: alert.textFields?[2].text ?? "")
-            }
-            
-            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[2],
-                                                   queue: OperationQueue.main) { (notification) -> Void in
-                                                    
-                                                    let textFieldName = alert.textFields?[2].text
-                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text! ?? "", team: alert.textFields?[1].text! ?? "", opposingTeam: textFieldName ?? "")
+                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text ?? "", team: textFieldName ?? "")
             }
             
             let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
@@ -286,6 +278,7 @@ class ViewController: UIViewController {
                 [weak alert] (_) in
                 let scoutName = alert?.textFields![0]
                 self.scoutName = scoutName!.text ?? ""
+                self.scoutName = self.scoutName.trim()
                 UserDefaults.standard.set(self.scoutName, forKey: self.idsAndKeys.scoutName)
                 self.updateBoard(board: self.selectedBoard, scout: self.scoutName)
                 self.updateDataInCore()
@@ -330,18 +323,15 @@ class ViewController: UIViewController {
     }
     
     //String management
-    private func isValidEntry(match : String, team : String, opposingTeam : String) -> Bool{
+    private func isValidEntry(match : String, team : String) -> Bool{
         var isMatchValid = false
         var isTeamValid = false
-        var isOpposingTeamValid = true
         
         let arr1 = match.components(separatedBy: " ")
         let arr2 = team.components(separatedBy: " ")
-        let arr3 = opposingTeam.components(separatedBy: " ")
         
         var count1 = 0
         var count2 = 0
-        var count3 = 0
         
         for i in 0..<arr1.count{
             if (arr1[i].isStringContainsOnlyNumbers() && arr1[i] != ""){
@@ -355,25 +345,13 @@ class ViewController: UIViewController {
             }
         }
         
-        if (self.selectedBoard.suffix(1) == "X"){
-            for j in 0..<arr3.count{
-                if (arr3[j].isStringContainsOnlyNumbers() && arr3[j] != ""){
-                    count3 += 1
-                }
-            }
-            if (count3 != arr3.count){
-                isOpposingTeamValid = false
-            }
-        }
-        
-        
         
         if (count1 == arr1.count && count2 == arr2.count){
             isMatchValid = true
             isTeamValid = true
         }
         
-        if ((isMatchValid && isTeamValid) && isOpposingTeamValid){
+        if (isMatchValid && isTeamValid){
             return true
         }
         
@@ -391,7 +369,7 @@ class ViewController: UIViewController {
         let arr = trim.components(separatedBy: " ")
         
         for i in 1..<arr.count{
-            if (arr[i].containsSpecialCharacter || arr[i].containsNumber || arr[i].count > 1){
+            if (arr[i].containsSpecialCharacter || arr[i].containsNumber || arr[i].count > 1 || arr[i].isEmpty){
                 return false
             }
         }
@@ -430,18 +408,8 @@ class ViewController: UIViewController {
     
     //Update board after an action is performed
     private func updateBoard(board : String, scout : String){
-        let selectedBoard = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
-        selectedBoard.isUserInteractionEnabled = false
-        selectedBoard.text = board
-        
         listOfSelectedTeams.removeAll()
         listOfOpposingTeams.removeAll()
-        
-        if (self.selectedBoard.prefix(1) == "B"){
-            selectedBoard.textColor = UIColor.blue
-        } else if (self.selectedBoard.prefix(1) == "R"){
-            selectedBoard.textColor = UIColor.red
-        }
         
         self.updateListOfSelectedTeams(list: self.listOfMatches, index: ((Int(String(board.suffix(1))) ?? 1) - 1), board: board)
         
@@ -455,7 +423,7 @@ class ViewController: UIViewController {
         let scoutName = UITextField(frame: .init(x: 0, y: 0, width: 34, height: 34))
         scoutName.isUserInteractionEnabled = false
         scoutName.text = scout
-        self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: selectedBoard), UIBarButtonItem(customView: self.createEditNameButton()), UIBarButtonItem(customView: scoutName)]
+        self.navigationItem.leftBarButtonItems = [UIBarButtonItem(customView : self.createSelectBoardButton()), UIBarButtonItem(customView: self.createEditNameButton())]
         
         self.matchTable.reloadData()
     }
@@ -557,13 +525,8 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
     }
     
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == .delete){
-            
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let delete = UIContextualAction(style: .destructive, title: "Delete") { (action, sourceView, completionHandler) in
             if(!self.listOfMatches[indexPath.row].isScouted){
                 let alert = UIAlertController(title: "Warning", message: "You cannot delete original matches", preferredStyle: .alert)
                 self.present(alert, animated: true, completion: nil)
@@ -574,12 +537,28 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
                     alert.dismiss(animated: true, completion: nil)
                 }
             } else {
-                self.listOfMatches.remove(at: indexPath.row)
-                self.matchTable.deleteRows(at: [indexPath], with: .automatic)
-                self.matchTable.reloadData()
-                self.updateDataInCore()
+                let alert = UIAlertController(title: "Are you sure ?", message: "You cannot restore this entry unless it is rescouted", preferredStyle: .alert)
+                
+                let cancel = UIAlertAction(title : "Cancel", style: .cancel)
+                alert.addAction(cancel)
+                
+                let ok = UIAlertAction(title : "Confirm", style : .default){
+                    [weak alert] (_) in
+                    self.listOfMatches.remove(at: indexPath.row)
+                    self.matchTable.deleteRows(at: [indexPath], with: .automatic)
+                    self.matchTable.reloadData()
+                    self.updateDataInCore()
+                }
+                
+                alert.addAction(ok)
+
+                self.present(alert, animated: true, completion: nil)
             }
+            
         }
+        let swipeAction = UISwipeActionsConfiguration(actions: [delete])
+        swipeAction.performsFirstActionWithFullSwipe = false // This is the line which disables full swipe
+        return swipeAction
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -614,13 +593,20 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             qrAction.setValue(resizeImage?.withRenderingMode(.alwaysOriginal), forKey: "image")
             alert.addAction(qrAction)
             
-            let cancel = UIAlertAction(title : "OK", style: .destructive)
+            let cancel = UIAlertAction(title : "OK", style: .cancel)
             alert.addAction(cancel)
             
             let share = UIAlertAction(title : "Share", style : .default){
                 [weak alert] (_) in
-                let sharing = Sharing()
-                sharing.startSharingQRData(data: self.listOfMatches[indexPath.row].scoutedData, viewController : self)
+                let dataToShare = [ self.listOfMatches[indexPath.row].scoutedData ]
+                let activityViewController = UIActivityViewController(activityItems: dataToShare, applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = self.view // so that iPads won't crash
+                activityViewController.popoverPresentationController?.sourceRect = CGRect(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height, width: 0, height: 0)
+                // exclude some activity types from the list (optional)
+                activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+                
+                // present the view controller
+                self.present(activityViewController, animated: true, completion: nil)
             }
             
             alert.addAction(share)

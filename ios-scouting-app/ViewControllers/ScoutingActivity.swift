@@ -166,7 +166,7 @@ class ScoutingActivity : UIViewController {
             listOfTexts[2] = "ALL"
         }
         
-        let listOfIconNames = ["layers2", "paste", "users", "timer"]
+        let listOfIconNames = ["layers", "paste", "users", "timer"]
         
         for i in 0..<listOfTexts.count{
             let icon = self.createIcon(iconName : listOfIconNames[i])
@@ -245,6 +245,8 @@ class ScoutingActivity : UIViewController {
             let vc = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: self.idsAndKeys.mainController) as? ViewController)!
             self.matchEntry.scoutedData = self.qrEntry.getQRData()
             vc.selectedMatchEntry = self.matchEntry
+            
+            self.navigationController?.view.layer.add(CATransition().segueFromLeft(), forKey: nil)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }

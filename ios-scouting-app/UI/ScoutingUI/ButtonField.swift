@@ -32,7 +32,7 @@ public class ButtonField : UIView, InputControl{
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.titleLabel?.font = button.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
-        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchDown)
         button.tag = data.tag
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -110,6 +110,8 @@ public class ButtonField : UIView, InputControl{
         self.scoutingActivity.playSoundOnAction()
         
         self.isFocused()
+        
+        sender.pulsate()
         
         updateControlState()
     }
