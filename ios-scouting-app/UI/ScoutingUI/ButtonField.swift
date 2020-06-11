@@ -56,8 +56,8 @@ public class ButtonField : UIView, InputControl{
     }
     
     func isFocused(){
-        let progress = Progress(totalUnitCount: 100)
-        Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true){
+        let progress = Progress(totalUnitCount: 10)
+        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true){
         (timer) in
             guard progress.isFinished == false else {
             timer.invalidate()
