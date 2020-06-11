@@ -22,7 +22,7 @@ class ScoutingActivity : UIViewController {
     var commentOptions : [FieldData] = []
     var idsAndKeys = IDsAndKeys()
     
-    var listOfLabels : [UILabel] = []
+    var listOfNavBarElement : [UIButton] = []
     var screenTitles : [String] = []
     
     //UIs
@@ -42,9 +42,7 @@ class ScoutingActivity : UIViewController {
     
     //Progress bar
     @IBOutlet weak var progressBar: UISlider!
-    var progressBarTimer : Timer!
-    var totalProgress : Float = 0
-    let progress = Progress(totalUnitCount: 15000)
+    
     
     //ScoutingScreen variables
     var QRImageCellMade : [QRImageCell] = []
@@ -60,12 +58,11 @@ class ScoutingActivity : UIViewController {
         configureProgressBar()
         configureScoutingView()
         
-        
         self.qrEntry.setUpEntry(selectedEntry: self.matchEntry)
         self.qrEntry.scoutingActivity = self
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
         
-    }
+   }
     
     func playSoundOnAction(){
         if (self.coreData.isPlayingSounds()){
@@ -90,13 +87,14 @@ class ScoutingActivity : UIViewController {
         parser.getLayoutForScreenWithBoard(board: self.matchEntry.board, index: 0, currentTeams: currentTeams, opposingTeams: opposingTeams, scoutingActivity: self)
         
         //Get screen titles
+        self.scoutingView.isPagingEnabled = true
         self.screenTitles = parser.getScreenTitles()
         self.screenTitles.append("QR Code")
         screenTitle.text = self.screenTitles[0]
         screenTitle.font = screenTitle.font.withSize(UIScreen.main.bounds.height * 0.035)
         
         //Configure Scouting view UI
-        self.scoutingView.isPagingEnabled = true
+        //self.scoutingView.isPagingEnabled = true
         self.scoutingView.register(ScoutingScreenCell.self, forCellWithReuseIdentifier: self.idsAndKeys.scoutingCellsID)
         self.scoutingView.register(QRImageCell.self, forCellWithReuseIdentifier: self.idsAndKeys.QRCellID)
         self.scoutingView.dataSource = self
@@ -118,33 +116,20 @@ class ScoutingActivity : UIViewController {
         self.progressBar.tintColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
         self.progressBar.addTarget(self, action: #selector(pauseTimerOnPBSelection(sender:)), for: .touchDown)
         self.progressBar.addTarget(self, action: #selector(updateTimerOnPBDrag(sender:)), for: .touchDragInside)
-        self.progressBar.addTarget(self, action: #selector(progressBarReleased(sender:)), for: .touchUpInside)
         self.progressBar.isEnabled = false
     }
     
-    func createTextView(text : String) -> UILabel{
-        let textView = UILabel()
-        textView.textAlignment = .center
-        textView.isUserInteractionEnabled = false
-        textView.text = text
-        textView.font = textView.font.withSize((UIScreen.main.bounds.height * 0.0175))
-        switch (text.prefix(1)){
-        case "B":
-            textView.textColor = UIColor.blue
-        case "R":
-            textView.textColor = UIColor.red
-        default :
-            textView.textColor = UIColor.black
-        }
+    func createButtons(iconName : String, title : String) -> UIButton{
+        let button = UIButton(type : .custom)
+        button.setTitle(title, for: .normal)
+        button.setImage(UIImage(named : iconName)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setTitleColor(UIColor.black, for: .normal)
+        button.isEnabled = true
+        button.tintColor = UIColor.black
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
-        return textView
-    }
-    
-    func createIcon(iconName : String) -> UIImageView{
-        let icon = UIImageView()
-        icon.image = UIImage(named : iconName)
-        icon.contentMode = .scaleAspectFit
-        return icon
+        return button
     }
     
     func createNavBarView() -> UIStackView{
@@ -169,21 +154,19 @@ class ScoutingActivity : UIViewController {
         let listOfIconNames = ["layers", "paste", "users", "timer"]
         
         for i in 0..<listOfTexts.count{
-            let icon = self.createIcon(iconName : listOfIconNames[i])
+            let button = self.createButtons(iconName: listOfIconNames[i], title: listOfTexts[i])
             
-            view.addArrangedSubview(icon)
-            
-            let textView = self.createTextView(text : listOfTexts[i])
-            
-            if (i == listOfTexts.count - 1){
-                textView.textColor = UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00)
+            if (i == 1){
+                let color = self.matchEntry.board.prefix(1) == "B" ? UIColor.blue : UIColor.red
+                button.setTitleColor(color, for: .normal)
             }
             
-            view.addArrangedSubview(textView)
+            if (i == listOfTexts.count - 1){
+                button.setTitleColor(UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00), for: .normal)
+            }
             
-            self.listOfLabels.append(textView)
-            
-            
+            view.addArrangedSubview(button)
+            self.listOfNavBarElement.append(button)
         }
         
         return view
@@ -202,17 +185,13 @@ class ScoutingActivity : UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView : self.backButton)
     }
     
-    @objc func progressBarReleased(sender : UISlider){
-        self.totalProgress = sender.value
-    }
-    
     @objc func updateTimerOnPBDrag(sender : UISlider){
-        self.totalProgress = sender.value
-        self.dataTimer.updateTimer(scoutingActivity: self)
+        self.dataTimer.totalProgress = sender.value * 150
+        self.dataTimer.updateTimer()
     }
     
     @objc func pauseTimerOnPBSelection(sender : UISlider){
-        self.progressBarTimer.invalidate()
+        self.dataTimer.progressBarTimer.invalidate()
     }
     
     @objc func clickHandler(sender : UIButton){
@@ -231,7 +210,11 @@ class ScoutingActivity : UIViewController {
             if (dataPoint != nil){
                 playSoundOnAction()
             }
-            self.scoutingView.reloadData()
+
+            let row =  (self.screenTitles.count - 1)
+            let indexPath = IndexPath(row: row, section: 0)
+            self.scoutingView.reloadItems(at: [indexPath])
+
         }
         else if (sender.tag == 5){
             playSoundOnAction()
@@ -266,6 +249,8 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         return self.screenTitles.count
     }
     
+    
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if (indexPath.row < self.screenTitles.count - 1){
             let currentTeams = self.matchEntry.teamNumber.components(separatedBy: " ")
@@ -296,9 +281,12 @@ extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionVie
         let visibleIndexPath = scoutingView.indexPathForItem(at: visiblePoint)
         
         if (visibleIndexPath?[1] ?? 0 == (self.screenTitles.count - 1)){
-            self.scoutingView.reloadData()
+            let row =  (self.screenTitles.count - 1)
+            let indexPath = IndexPath(row: row, section: 0)
+            self.scoutingView.reloadItems(at: [indexPath])
             self.listOfInputControls.removeAll()
         }
+        
         screenTitle.text = screenTitles[visibleIndexPath?.item ?? 0]
         
     }
