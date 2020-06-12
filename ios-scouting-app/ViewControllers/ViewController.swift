@@ -502,6 +502,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         for i in 0..<boards.count{
             boards[i].textColor = UIColor.gray
+            boards[i].backgroundColor = UIColor.white
         }
         
         switch(match.board){
@@ -519,6 +520,23 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
             }
         default:
             break
+        }
+        
+        if let selectedTeam = UserDefaults.standard.object(forKey: self.idsAndKeys.userTeam) as? String {
+                let color = UIColor(red: 1.00, green: 0.93, blue: 0.53, alpha: 1.00)
+                switch selectedTeam {
+                    
+                case match.blueAlliance[0] : cell.blue1.backgroundColor = color
+                case match.blueAlliance[1] : cell.blue2.backgroundColor = color
+                case match.blueAlliance[2] : cell.blue3.backgroundColor = color
+                    
+                case match.redAlliance[0] : cell.red1.backgroundColor = color
+                case match.redAlliance[1] : cell.red2.backgroundColor = color
+                case match.redAlliance[2] : cell.red3.backgroundColor = color
+                default:
+                   break
+                }
+            
         }
         
         return cell

@@ -38,6 +38,7 @@ class IDsAndKeys {
     
     let year = "year"
     let team = "team"
+    let userTeam = "userTeam"
     
     let matchScheduleCellID = "matchScheduleCell"
     let QRCellID = "QRImageCell"
