@@ -27,11 +27,11 @@ class CheckBoxField : UIView, InputControl{
         self.tag = data.tag
         
         checkBox.setTitle(data.name, for: .normal)
-        checkBox.titleLabel?.font = checkBox.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
+        checkBox.titleLabel?.font = checkBox.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
         checkBox.setImage(UIImage(named: "uncheck"), for: .normal)
-        checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        checkBox.titleLabel?.textAlignment = .left
         checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
         
         if (!isCommentOption){
@@ -40,15 +40,14 @@ class CheckBoxField : UIView, InputControl{
             checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
             checkBox.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
             checkBox.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+            checkBox.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+            checkBox.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         } else {
             checkBox.translatesAutoresizingMaskIntoConstraints = false
-            checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+            checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+            checkBox.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
             checkBox.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0).isActive = true
-            checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.55).isActive = true
-            
-            checkBox.titleLabel?.font = checkBox.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
-
         }
         
         updateControlState()
@@ -63,6 +62,9 @@ class CheckBoxField : UIView, InputControl{
         
         self.isCommentOption = true
         
+        checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
+        checkBox.contentHorizontalAlignment = .left
         updateControlState()
     }
     

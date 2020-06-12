@@ -37,7 +37,9 @@ class CustomAlertController : UIViewController {
             checkbox.value = self.scoutingActivity.qrEntry.lastValue(type: self.commentOptions[i].tag)?.value ?? 0
             checkbox.setCheckBoxState()
             //Calling this function will cause Unable to simultaneously satisfy constraints error, but it will not affect the behaviour of the app for the time being.
+            
             self.stackView.addArrangedSubview(checkbox)
+            
         }
         
         configureCommentTextField()
@@ -114,6 +116,7 @@ class CustomAlertController : UIViewController {
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         stackView.spacing = 0
+        
     }
     
     func configureCommentTextField(){
@@ -170,3 +173,4 @@ class CustomAlertController : UIViewController {
         }
     }
 }
+
