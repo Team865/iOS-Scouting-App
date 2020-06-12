@@ -145,6 +145,8 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
             self.eventTable.reloadData()
         }
         
+        UserDefaults.standard.set(teamText.text ?? "", forKey: self.idsAndKeys.userTeam)
+        
         return true
     }
     
