@@ -12,10 +12,13 @@ import UIKit
 public class ButtonField : UIView, InputControl{
     
     var isBeingFocused = false
+    var isHeldDown = false
     var scoutingActivity = ScoutingActivity()
     let counterField = UILabel()
     var button = UIButton()
     var fieldData = FieldData()
+    
+    var timeStamp : Float = -2.0
     
     func setUpView(data: FieldData) {
         self.fieldData = data
@@ -32,7 +35,9 @@ public class ButtonField : UIView, InputControl{
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.titleLabel?.font = button.titleLabel?.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.025))
-        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchDown)
+        button.addTarget(self, action: #selector(updateCounter(sender:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(recognizeTap(sender:)), for: .touchDown)
+        button.addTarget(self, action: #selector(dragOutOfBounds(sender:)), for: .touchUpOutside)
         button.tag = data.tag
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -55,19 +60,14 @@ public class ButtonField : UIView, InputControl{
         self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
     }
     
-    func isFocused(){
-        let progress = Progress(totalUnitCount: 10)
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true){
-        (timer) in
-            guard progress.isFinished == false else {
-            timer.invalidate()
-                self.isBeingFocused = false
-            return
-        }
-            progress.completedUnitCount += 1
+    func isFocused() -> Bool{
+        if (self.scoutingActivity.dataTimer.getTimeStamp() - self.timeStamp <= 1.0 && self.scoutingActivity.dataTimer.getTimeStamp() - self.timeStamp >= -1.0){
             self.isBeingFocused = true
-    }
+        } else {
+            self.isBeingFocused = false
+        }
 
+        return self.isBeingFocused
     }
     
     override init (frame : CGRect){
@@ -78,7 +78,7 @@ public class ButtonField : UIView, InputControl{
     func updateControlState() {
        if (self.scoutingActivity.isStarted){
             self.button.isEnabled = true
-        if (self.isBeingFocused){
+        if (self.isFocused()){
             self.button.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
             self.button.setTitleColor(UIColor.systemGray5, for: .normal)
             counterField.textColor = UIColor.systemGray5
@@ -87,6 +87,11 @@ public class ButtonField : UIView, InputControl{
             self.button.backgroundColor = UIColor.systemGray5
             self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         }
+        
+        if (self.isHeldDown){
+            self.button.darkenBackground()
+        }
+        
        } else {
         self.button.isEnabled = false
         self.button.setTitleColor(UIColor.systemGray, for: .normal)
@@ -109,10 +114,20 @@ public class ButtonField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
-        self.isFocused()
+        self.isHeldDown = false
         
-        sender.pulsate()
+        sender.spring()
+        
+        self.timeStamp = self.scoutingActivity.dataTimer.getTimeStamp()
         
         updateControlState()
+    }
+    
+    @objc func recognizeTap(sender : UIButton){
+        self.isHeldDown = true
+    }
+    
+    @objc func dragOutOfBounds(sender : UIButton){
+        self.isHeldDown = false
     }
 }

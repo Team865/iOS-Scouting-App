@@ -33,6 +33,8 @@ class MultiToggleField : UIView, InputControl{
     var defaultValue = 0
     var fieldData = FieldData()
     let label = UILabel()
+    var isHeldDown = false
+    var tempPosition = -1
     let toggleButtons = UIStackView()
     
     var checkedPosition = -1
@@ -51,10 +53,10 @@ class MultiToggleField : UIView, InputControl{
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.15) .isActive = true
+        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.175) .isActive = true
         label.topAnchor.constraint(equalTo: topAnchor).isActive = true
         label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.015))
+        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
         label.textAlignment = .center
         label.textColor = UIColor.black
         label.text = data.name
@@ -67,6 +69,8 @@ class MultiToggleField : UIView, InputControl{
             toggleButton = ToggleButton()
             toggleButton.setUpToggleButton(tagOfToggle: i, name: self.fieldData.choice[i])
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
+            toggleButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+            toggleButton.addTarget(self, action: #selector(dragOutOfBounds(sender:)), for: .touchUpOutside)
             self.toggleButtons.addArrangedSubview(toggleButton)
             self.listOfToggleButtons.append(toggleButton)
         }
@@ -74,7 +78,7 @@ class MultiToggleField : UIView, InputControl{
         toggleButtons.translatesAutoresizingMaskIntoConstraints = false
         toggleButtons.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         toggleButtons.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
-        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.85).isActive = true
+        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.825).isActive = true
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
         updateControlState()
@@ -87,8 +91,8 @@ class MultiToggleField : UIView, InputControl{
     func setCheckedPosition(){
         for i in 0..<listOfToggleButtons.count{
             if (i == self.checkedPosition){
-                self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
+                    self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                    self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
             } else {
                 self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
                 self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
@@ -98,6 +102,10 @@ class MultiToggleField : UIView, InputControl{
     
     func updateControlState(){
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? self.fieldData.default_choice
+        
+        if (self.isHeldDown){
+            self.listOfToggleButtons[self.tempPosition].darkenBackground()
+        }
         
         if(checkedPosition != newPosition){
             checkedPosition = newPosition
@@ -125,9 +133,21 @@ class MultiToggleField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.pulsate()
+        sender.spring()
+        
+        self.isHeldDown = false
         
         setCheckedPosition()
         
+    }
+    
+    @objc func onHold(sender : UIButton){
+        self.isHeldDown = true
+        self.tempPosition = sender.tag
+    }
+    
+    @objc func dragOutOfBounds(sender: UIButton){
+        self.isHeldDown = false
+        setCheckedPosition()
     }
 }

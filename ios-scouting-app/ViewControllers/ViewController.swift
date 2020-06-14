@@ -502,7 +502,7 @@ extension ViewController : UITableViewDataSource, UITableViewDelegate
         
         for i in 0..<boards.count{
             boards[i].textColor = UIColor.gray
-            boards[i].backgroundColor = UIColor.white
+            boards[i].backgroundColor = UIColor.clear
         }
         
         switch(match.board){

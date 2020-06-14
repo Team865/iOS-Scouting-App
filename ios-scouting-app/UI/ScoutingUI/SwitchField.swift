@@ -11,6 +11,7 @@ import UIKit
 public class SwitchField : UIView, InputControl {
     var scoutingActivity = ScoutingActivity()
     var value = -1
+    var isHeldDown = false
     var lite = false
     var fieldData = FieldData()
     var switchButton = UIButton()
@@ -33,7 +34,8 @@ public class SwitchField : UIView, InputControl {
         
         self.scoutingActivity = data.scoutingActivity
         switchButton.addTarget(self, action: #selector(activateSwitch(sender:)), for: .touchUpInside)
-        
+        switchButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        switchButton.addTarget(self, action: #selector(dragOutOfBounds(sender:)), for: .touchUpOutside)
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         switchButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive = true
         switchButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0).isActive = true
@@ -56,7 +58,6 @@ public class SwitchField : UIView, InputControl {
             self.switchButton.isEnabled = true
             if (self.value == 1){
                 if (self.fieldData.is_lite){
-                    //UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                     self.switchButton.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
                     self.switchButton.setTitleColor(UIColor.white, for: .normal)
                 } else {
@@ -71,14 +72,26 @@ public class SwitchField : UIView, InputControl {
                 }
                 self.switchButton.backgroundColor = UIColor.systemGray5
             }
+            
         } else {
             self.switchButton.backgroundColor = UIColor.systemGray5
             self.switchButton.setTitleColor(UIColor.systemGray, for: .normal)
         }
+        
     }
     
     func updateControlState() {
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
+        
+        if (self.isHeldDown){
+            self.switchButton.darkenBackground()
+            
+            if (self.value == 1){
+                self.switchButton.backgroundColor = UIColor(red: 1.00, green: 0.49, blue: 0.24, alpha: 1.00)
+            }
+            
+        }
+        
         if (self.value != newPosition){
             self.value = newPosition
             setSwitchState()
@@ -109,8 +122,19 @@ public class SwitchField : UIView, InputControl {
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.pulsate()
+        sender.spring()
         
+        self.isHeldDown = false
+        
+        setSwitchState()
+    }
+    
+    @objc func onHold(sender : UIButton){
+        self.isHeldDown = true
+    }
+    
+    @objc func dragOutOfBounds(sender: UIButton){
+        self.isHeldDown = false
         setSwitchState()
     }
 }

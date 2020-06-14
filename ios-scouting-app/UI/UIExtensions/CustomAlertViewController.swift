@@ -36,8 +36,6 @@ class CustomAlertController : UIViewController {
             checkbox.configureCheckBoxForCommentOptions()
             checkbox.value = self.scoutingActivity.qrEntry.lastValue(type: self.commentOptions[i].tag)?.value ?? 0
             checkbox.setCheckBoxState()
-            //Calling this function will cause Unable to simultaneously satisfy constraints error, but it will not affect the behaviour of the app for the time being.
-            
             self.stackView.addArrangedSubview(checkbox)
             
         }
@@ -172,5 +170,6 @@ class CustomAlertController : UIViewController {
             self.scoutingActivity.playSoundOnAction()
         }
     }
+    
 }
 

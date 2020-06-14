@@ -97,7 +97,7 @@ class EventSelectionController : UIViewController, UITextFieldDelegate{
         teamText.textAlignment = .center
         
         let teams = UIImageView()
-        teams.image = UIImage(named : "team")
+        teams.image = UIImage(named : "users")
         
         teamText.leftViewMode = .always
         teamText.leftView = teams

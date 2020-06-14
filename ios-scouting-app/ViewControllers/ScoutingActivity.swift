@@ -62,7 +62,7 @@ class ScoutingActivity : UIViewController {
         self.qrEntry.scoutingActivity = self
         self.matchEntry.scoutedData = self.qrEntry.getQRData()
         
-   }
+    }
     
     func playSoundOnAction(){
         if (self.coreData.isPlayingSounds()){
@@ -104,10 +104,22 @@ class ScoutingActivity : UIViewController {
     func configureButtons(){
         StartTimerButton.layer.cornerRadius = 5
         StartTimerButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        
         PauseButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PauseButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        PauseButton.addTarget(self, action: #selector(onDrag(sender:)), for: .touchUpOutside)
+        
         PlayButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        PlayButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        PlayButton.addTarget(self, action: #selector(onDrag(sender:)), for: .touchUpOutside)
+        
         CommentButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        CommentButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        CommentButton.addTarget(self, action: #selector(onDrag(sender:)), for: .touchUpOutside)
+        
         UndoButton.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        UndoButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        UndoButton.addTarget(self, action: #selector(onDrag(sender:)), for: .touchUpOutside)
         
     }
     
@@ -177,6 +189,8 @@ class ScoutingActivity : UIViewController {
         button.tag = 6
         button.setImage(UIImage(named : "back")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(clickHandler(sender:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        button.addTarget(self, action: #selector(onDrag(sender:)), for: .touchUpOutside)
         return button
     }()
     
@@ -194,7 +208,16 @@ class ScoutingActivity : UIViewController {
         self.dataTimer.progressBarTimer.invalidate()
     }
     
+    @objc func onHold(sender : UIButton){
+        sender.darkenBackground()
+    }
+    
+    @objc func onDrag(sender : UIButton){
+        sender.backgroundColor = UIColor.white
+    }
+    
     @objc func clickHandler(sender : UIButton){
+        sender.backgroundColor = UIColor.white
         if(sender.tag == 1){
             playSoundOnAction()
             self.dataTimer.startTimer(scoutingActivity: self)
@@ -210,11 +233,9 @@ class ScoutingActivity : UIViewController {
             if (dataPoint != nil){
                 playSoundOnAction()
             }
-
-            let row =  (self.screenTitles.count - 1)
-            let indexPath = IndexPath(row: row, section: 0)
-            self.scoutingView.reloadItems(at: [indexPath])
-
+            
+            updateActivityState()
+            
         }
         else if (sender.tag == 5){
             playSoundOnAction()
@@ -234,6 +255,11 @@ class ScoutingActivity : UIViewController {
         }
     }
     
+    func updateActivityState(){
+        let row =  (self.screenTitles.firstIndex(of: self.screenTitle.text ?? "")) ?? self.screenTitles.count - 1
+        let indexPath = IndexPath(row: row, section: 0)
+        self.scoutingView.reloadItems(at: [indexPath])
+    }
 }
 
 extension ScoutingActivity : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
