@@ -53,10 +53,10 @@ class MultiToggleField : UIView, InputControl{
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.15) .isActive = true
+        label.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.175) .isActive = true
         label.topAnchor.constraint(equalTo: topAnchor).isActive = true
         label.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.015))
+        label.font = label.font.withSize(CGFloat(Double(UIScreen.main.bounds.height) * 0.02))
         label.textAlignment = .center
         label.textColor = UIColor.black
         label.text = data.name
@@ -78,7 +78,7 @@ class MultiToggleField : UIView, InputControl{
         toggleButtons.translatesAutoresizingMaskIntoConstraints = false
         toggleButtons.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         toggleButtons.topAnchor.constraint(equalTo: label.bottomAnchor).isActive = true
-        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.85).isActive = true
+        toggleButtons.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.825).isActive = true
         toggleButtons.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         
         updateControlState()
