@@ -218,53 +218,63 @@ class ViewController: UIViewController {
             self.navigationController?.pushViewController(settingsVC, animated: true)
         }
         if(srcObj.tag == additemTag){
-            let alert = UIAlertController(title: "Add new entry", message: "", preferredStyle: .alert)
-            alert.addTextField {
-                (UITextField) in UITextField.placeholder = "Match"
-            }
-            
-            alert.addTextField {
-                (UITextField) in UITextField.placeholder = "Team"
-            }
-            
-            let addMatch = UIAlertAction(title: "OK", style: .default){
-                [weak alert] (_) in
-                let match = alert?.textFields?[0].text ?? ""
-                let team = alert?.textFields?[1].text ?? ""
+            if (self.selectedBoard.suffix(1) == "X"){
+                let alert = UIAlertController(title: "Message", message: "Adding new entries is not available for super scouting", preferredStyle: .alert)
                 
-                let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
-                let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: self.idsAndKeys.scoutingActivity) as! ScoutingActivity
+                let cancel = UIAlertAction(title : "OK", style : .cancel, handler : nil)
                 
-                let entry = MatchEntry()
-                entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: ""
-                    , teamNumber: team, eventKey: self.selectedEvent?.key ?? "", atIndex : 0, isScouted: false, addedEntry : true, scoutedData: "")
-                scoutingVC.matchEntry = entry
+                alert.addAction(cancel)
+                self.present(alert, animated: true, completion: nil)
+
+            } else {
+                let alert = UIAlertController(title: "Add new entry", message: "", preferredStyle: .alert)
+                alert.addTextField {
+                    (UITextField) in UITextField.placeholder = "Match"
+                }
                 
-                self.navigationController?.pushViewController(scoutingVC, animated: true)
+                alert.addTextField {
+                    (UITextField) in UITextField.placeholder = "Team"
+                }
                 
+                let addMatch = UIAlertAction(title: "OK", style: .default){
+                    [weak alert] (_) in
+                    let match = alert?.textFields?[0].text ?? ""
+                    let team = alert?.textFields?[1].text ?? ""
+                    
+                    let scoutingActivity = UIStoryboard(name : "Main", bundle: nil)
+                    let scoutingVC = scoutingActivity.instantiateViewController(withIdentifier: self.idsAndKeys.scoutingActivity) as! ScoutingActivity
+                    
+                    let entry = MatchEntry()
+                    entry.setMatchEntry(board: self.selectedBoard, scoutName: self.scoutName, matchNumber: match, opposingTeamNumber: ""
+                        , teamNumber: team, eventKey: self.selectedEvent?.key ?? "", atIndex : 0, isScouted: false, addedEntry : true, scoutedData: "")
+                    scoutingVC.matchEntry = entry
+                    
+                    self.navigationController?.pushViewController(scoutingVC, animated: true)
+                    
+                }
+                
+                addMatch.isEnabled = false
+                
+                NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
+                                                       queue: OperationQueue.main) { (notification) -> Void in
+                                                        
+                                                        let textFieldName = alert.textFields?[0].text
+                                                        addMatch.isEnabled = self.isValidEntry(match: textFieldName ?? "", team: alert.textFields?[1].text! ?? "")
+                }
+                
+                NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[1],
+                                                       queue: OperationQueue.main) { (notification) -> Void in
+                                                        
+                                                        let textFieldName = alert.textFields?[1].text
+                                                        addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text ?? "", team: textFieldName ?? "")
+                }
+                
+                let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
+                
+                alert.addAction(addMatch)
+                alert.addAction(cancel)
+                self.present(alert, animated: true, completion: nil)
             }
-            
-            addMatch.isEnabled = false
-            
-            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[0],
-                                                   queue: OperationQueue.main) { (notification) -> Void in
-                                                    
-                                                    let textFieldName = alert.textFields?[0].text
-                                                    addMatch.isEnabled = self.isValidEntry(match: textFieldName ?? "", team: alert.textFields?[1].text! ?? "")
-            }
-            
-            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object:alert.textFields?[1],
-                                                   queue: OperationQueue.main) { (notification) -> Void in
-                                                    
-                                                    let textFieldName = alert.textFields?[1].text
-                                                    addMatch.isEnabled = self.isValidEntry(match: alert.textFields?[0].text ?? "", team: textFieldName ?? "")
-            }
-            
-            let cancel = UIAlertAction(title : "Cancel", style : .cancel, handler : nil)
-            
-            alert.addAction(addMatch)
-            alert.addAction(cancel)
-            self.present(alert, animated: true, completion: nil)
         }
         if(srcObj.tag == editNameTag){
             let alert = UIAlertController(title: "Enter name", message: "Initial and Last", preferredStyle: .alert)
