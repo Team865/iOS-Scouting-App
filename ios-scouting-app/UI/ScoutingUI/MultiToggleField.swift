@@ -33,6 +33,8 @@ class MultiToggleField : UIView, InputControl{
     var defaultValue = 0
     var fieldData = FieldData()
     let label = UILabel()
+    var isHeldDown = false
+    var tempPosition = -1
     let toggleButtons = UIStackView()
     
     var checkedPosition = -1
@@ -67,6 +69,8 @@ class MultiToggleField : UIView, InputControl{
             toggleButton = ToggleButton()
             toggleButton.setUpToggleButton(tagOfToggle: i, name: self.fieldData.choice[i])
             toggleButton.addTarget(self, action: #selector(getSelectedToggleButton(sender:)), for: .touchUpInside)
+            toggleButton.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+            toggleButton.addTarget(self, action: #selector(dragOutOfBounds(sender:)), for: .touchUpOutside)
             self.toggleButtons.addArrangedSubview(toggleButton)
             self.listOfToggleButtons.append(toggleButton)
         }
@@ -87,8 +91,8 @@ class MultiToggleField : UIView, InputControl{
     func setCheckedPosition(){
         for i in 0..<listOfToggleButtons.count{
             if (i == self.checkedPosition){
-                self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-                self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
+                    self.listOfToggleButtons[i].backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                    self.listOfToggleButtons[i].setTitleColor(UIColor.white, for: .normal)
             } else {
                 self.listOfToggleButtons[i].backgroundColor = UIColor.systemGray5
                 self.listOfToggleButtons[i].setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
@@ -98,6 +102,10 @@ class MultiToggleField : UIView, InputControl{
     
     func updateControlState(){
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? self.fieldData.default_choice
+        
+        if (self.isHeldDown){
+            self.listOfToggleButtons[self.tempPosition].darkenBackground()
+        }
         
         if(checkedPosition != newPosition){
             checkedPosition = newPosition
@@ -125,9 +133,21 @@ class MultiToggleField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.pulsate()
+        sender.spring()
+        
+        self.isHeldDown = false
         
         setCheckedPosition()
         
+    }
+    
+    @objc func onHold(sender : UIButton){
+        self.isHeldDown = true
+        self.tempPosition = sender.tag
+    }
+    
+    @objc func dragOutOfBounds(sender: UIButton){
+        self.isHeldDown = false
+        setCheckedPosition()
     }
 }

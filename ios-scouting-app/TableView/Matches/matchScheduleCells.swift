@@ -63,9 +63,9 @@ class MatchScheduleCells : UITableViewCell{
         red2 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth, y: Double(yCoordinate), width: Double(labelWidth), height: Double(labelHeight))
         red3 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth * 2, y: Double(yCoordinate), width: Double(labelWidth), height: Double(labelHeight))
 
-        blue1 = configureUILabel(x: Double(Int(cellWidth * 0.3)), y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
-        blue2 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth, y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
-        blue3 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth * 2, y: Double(yCoordinate) + Double(labelHeight) * 1.75, width: Double(labelWidth), height: Double(labelHeight))
+        blue1 = configureUILabel(x: Double(Int(cellWidth * 0.3)), y: Double(yCoordinate) + Double(labelHeight) * 1.9, width: Double(labelWidth), height: Double(labelHeight))
+        blue2 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth, y: Double(yCoordinate) + Double(labelHeight) * 1.9, width: Double(labelWidth), height: Double(labelHeight))
+        blue3 = configureUILabel(x: Double(cellWidth * 0.3) + labelWidth * 2, y: Double(yCoordinate) + Double(labelHeight) * 1.9, width: Double(labelWidth), height: Double(labelHeight))
         
         matchNumber = configureUILabel(x: Double(cellWidth * 0.05), y: Double(yCoordinate) + Double(imageHeight) * 1.15, width: Double(cellWidth * 0.3) - Double(cellWidth * 0.05), height: Double(labelHeight))
         

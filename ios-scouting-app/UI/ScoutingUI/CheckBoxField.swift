@@ -13,6 +13,7 @@ class CheckBoxField : UIView, InputControl{
     var fieldData = FieldData()
     var checkBox = UIButton()
     var value = -1
+    var isHeldDown = false
     let label = UILabel()
     var isCommentOption = false
     func setUpView(data : FieldData) {
@@ -33,6 +34,8 @@ class CheckBoxField : UIView, InputControl{
         checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
         checkBox.addTarget(self, action: #selector(activateCheckBox(sender:)), for: .touchUpInside)
+        checkBox.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        checkBox.addTarget(self, action: #selector(dragOutOfBounds(sender:)), for: .touchUpOutside)
         
         if (!isCommentOption){
             checkBox.translatesAutoresizingMaskIntoConstraints = false
@@ -42,11 +45,11 @@ class CheckBoxField : UIView, InputControl{
             checkBox.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
             checkBox.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             checkBox.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-
+            
         } else {
             checkBox.translatesAutoresizingMaskIntoConstraints = false
             checkBox.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-            checkBox.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+            checkBox.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.925).isActive = true
             checkBox.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0).isActive = true
         }
         
@@ -65,15 +68,18 @@ class CheckBoxField : UIView, InputControl{
         checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         checkBox.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -10)
         checkBox.contentHorizontalAlignment = .left
-        updateControlState()
     }
     
     func onTimerStarted() {
         self.checkBox.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
         self.checkBox.isEnabled = true
-  }
+    }
     
     func setCheckBoxState(){
+        if (self.isCommentOption){
+            self.checkBox.backgroundColor = UIColor.white
+        }
+        
         if ((self.scoutingActivity.isStarted) || isCommentOption){
             self.checkBox.isEnabled = true
             self.checkBox.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
@@ -82,10 +88,9 @@ class CheckBoxField : UIView, InputControl{
                 checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
                 checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             } else {
-                    self.checkBox.setImage(UIImage(named : "uncheck"), for: .normal)
-                    checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                    checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                    
+                self.checkBox.setImage(UIImage(named : "uncheck"), for: .normal)
+                checkBox.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                checkBox.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
             }
         } else {
             self.checkBox.setTitleColor(UIColor.systemGray, for: .normal)
@@ -95,11 +100,22 @@ class CheckBoxField : UIView, InputControl{
     }
     
     func updateControlState() {
-         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
-               if (self.value != newPosition){
-                   self.value = newPosition
-                   setCheckBoxState()
-               }
+        let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
+        
+        if (self.isHeldDown){
+            self.checkBox.darkenBackground()
+        } else {
+            if (self.isCommentOption){
+                self.checkBox.backgroundColor = UIColor.white
+            } else {
+                self.checkBox.resetBackground()
+            }
+        }
+        
+        if (self.value != newPosition){
+            self.value = newPosition
+            setCheckBoxState()
+        }
         
     }
     
@@ -125,9 +141,23 @@ class CheckBoxField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.pulsate()
+        self.scoutingActivity.updateActivityState()
+        
+        sender.spring()
+        
+        self.isHeldDown = false
         
         setCheckBoxState()
+    }
+    
+    @objc func onHold(sender : UIButton){
+        self.isHeldDown = true
+        updateControlState()
+    }
+    
+    @objc func dragOutOfBounds(sender: UIButton){
+        self.isHeldDown = false
+        updateControlState()
     }
 }
 
