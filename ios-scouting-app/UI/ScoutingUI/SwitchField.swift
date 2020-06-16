@@ -83,15 +83,6 @@ public class SwitchField : UIView, InputControl {
     func updateControlState() {
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
         
-        if (self.isHeldDown){
-            self.switchButton.darkenBackground()
-            
-            if (self.value == 1){
-                self.switchButton.backgroundColor = UIColor(red: 1.00, green: 0.49, blue: 0.24, alpha: 1.00)
-            }
-            
-        }
-        
         if (self.value != newPosition){
             self.value = newPosition
             setSwitchState()
@@ -122,19 +113,26 @@ public class SwitchField : UIView, InputControl {
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.spring()
-        
         self.isHeldDown = false
         
         setSwitchState()
     }
     
     @objc func onHold(sender : UIButton){
-        self.isHeldDown = true
-    }
+            self.switchButton.darkenBackground()
+            
+            if (self.value == 1){
+                self.switchButton.backgroundColor = UIColor(red: 1.00, green: 0.49, blue: 0.24, alpha: 1.00)
+                
+                if (self.fieldData.is_lite){
+                    self.switchButton.backgroundColor = UIColor.init(red: 0.36, green: 0.54, blue: 1.00, alpha: 1.00)
+
+                }
+            }
+            
+        }
     
     @objc func dragOutOfBounds(sender: UIButton){
-        self.isHeldDown = false
         setSwitchState()
     }
 }

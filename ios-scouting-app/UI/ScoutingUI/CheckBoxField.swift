@@ -102,16 +102,6 @@ class CheckBoxField : UIView, InputControl{
     func updateControlState() {
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? 0
         
-        if (self.isHeldDown){
-            self.checkBox.darkenBackground()
-        } else {
-            if (self.isCommentOption){
-                self.checkBox.backgroundColor = UIColor.white
-            } else {
-                self.checkBox.resetBackground()
-            }
-        }
-        
         if (self.value != newPosition){
             self.value = newPosition
             setCheckBoxState()
@@ -143,8 +133,6 @@ class CheckBoxField : UIView, InputControl{
         
         self.scoutingActivity.updateActivityState()
         
-        sender.spring()
-        
         self.isHeldDown = false
         
         setCheckBoxState()
@@ -152,12 +140,15 @@ class CheckBoxField : UIView, InputControl{
     
     @objc func onHold(sender : UIButton){
         self.isHeldDown = true
-        updateControlState()
+        self.checkBox.darkenBackground()
     }
     
     @objc func dragOutOfBounds(sender: UIButton){
         self.isHeldDown = false
-        updateControlState()
-    }
+        if (self.isCommentOption){
+            self.checkBox.backgroundColor = UIColor.white
+        } else {
+            self.checkBox.resetBackground()
+        }    }
 }
 

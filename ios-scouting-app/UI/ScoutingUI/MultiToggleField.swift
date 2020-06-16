@@ -103,10 +103,6 @@ class MultiToggleField : UIView, InputControl{
     func updateControlState(){
         let newPosition = self.scoutingActivity.qrEntry.lastValue(type: self.tag)?.value ?? self.fieldData.default_choice
         
-        if (self.isHeldDown){
-            self.listOfToggleButtons[self.tempPosition].darkenBackground()
-        }
-        
         if(checkedPosition != newPosition){
             checkedPosition = newPosition
             setCheckedPosition()
@@ -133,8 +129,6 @@ class MultiToggleField : UIView, InputControl{
         
         self.scoutingActivity.playSoundOnAction()
         
-        sender.spring()
-        
         self.isHeldDown = false
         
         setCheckedPosition()
@@ -142,12 +136,11 @@ class MultiToggleField : UIView, InputControl{
     }
     
     @objc func onHold(sender : UIButton){
-        self.isHeldDown = true
-        self.tempPosition = sender.tag
+        self.listOfToggleButtons[sender.tag].darkenBackground()
+
     }
     
     @objc func dragOutOfBounds(sender: UIButton){
-        self.isHeldDown = false
         setCheckedPosition()
     }
 }
