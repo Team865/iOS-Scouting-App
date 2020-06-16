@@ -84,6 +84,8 @@ class CustomAlertController : UIViewController {
         button.tag = tag
         button.backgroundColor = UIColor.white
         button.addTarget(self, action: #selector(actionHandler(sender:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(onHold(sender:)), for: .touchDown)
+        button.addTarget(self, action: #selector(onDragOutOfBounds(sender:)), for: .touchUpOutside)
         return button
     }
     
@@ -169,6 +171,14 @@ class CustomAlertController : UIViewController {
             self.dismiss(animated: true, completion: nil)
             self.scoutingActivity.playSoundOnAction()
         }
+    }
+    
+    @objc func onHold(sender : UIButton){
+        sender.darkenBackground()
+    }
+    
+    @objc func onDragOutOfBounds(sender : UIButton){
+        sender.backgroundColor = UIColor.white
     }
     
 }
