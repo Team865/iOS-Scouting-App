@@ -35,7 +35,7 @@ class SettingsViewController: UIViewController {
         }
         
         tempSection.append(Settings(image : UIImage(named: "event")!,title: "Select FRC Event", description: selectedEvent, hideSwitch: true))
-        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Play Sound", description : "Play a sound when the app successfully complete an action", hideSwitch : false))
+        tempSection.append(Settings(image : UIImage(named: "tools")!, title: "Allow sound", description : "Allow sounds to play as a feedback when a button is clicked", hideSwitch : false))
         
         return tempSection
     }
@@ -43,8 +43,8 @@ class SettingsViewController: UIViewController {
     func createInfoSettingsSection() -> [Settings]{
         var tempSection: [Settings] = []
         
-        tempSection.append(Settings(image : UIImage(named: "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.1.0 debug", hideSwitch : true))
-        tempSection.append(Settings(image : UIImage(named : "github")!, title: "Repository on GitHub", description: "Including sources and new releases", hideSwitch: true))
+        tempSection.append(Settings(image : UIImage(named: "warp7")!, title: "Team 865 iOS Scouting App", description : "Version : 2020.2.1", hideSwitch : true))
+        tempSection.append(Settings(image : UIImage(named : "github")!, title: "Repository on GitHub", description: "Including source code and instruction on how to use the app", hideSwitch: true))
         tempSection.append(Settings(image : UIImage(named : "badge")!, title : "Open source Licenses", description : "MIT License", hideSwitch : true))
         
         return tempSection
@@ -61,7 +61,6 @@ class SettingsViewController: UIViewController {
         tableView.frame = view.frame
         tableView.tableFooterView = UIView()
     }
-    
     
     @objc func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if(indexPath.section == 0){
