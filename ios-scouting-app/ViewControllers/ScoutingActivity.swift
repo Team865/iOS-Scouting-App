@@ -177,6 +177,8 @@ class ScoutingActivity : UIViewController {
                 button.setTitleColor(UIColor(red:0.80, green:0.60, blue:0.00, alpha:1.00), for: .normal)
             }
             
+            button.titleLabel?.font = button.titleLabel?.font.withSize(UIScreen.main.bounds.height * 0.02)
+            
             view.addArrangedSubview(button)
             self.listOfNavBarElement.append(button)
         }

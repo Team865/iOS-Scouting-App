@@ -66,7 +66,7 @@ public class ButtonField : UIView, InputControl{
         } else {
             self.isBeingFocused = false
         }
-
+        
         return self.isBeingFocused
     }
     
@@ -77,26 +77,34 @@ public class ButtonField : UIView, InputControl{
     
     func updateUI(){
         if (self.scoutingActivity.isStarted){
-             self.button.isEnabled = true
-         if (self.isFocused()){
-             self.button.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
-             self.button.setTitleColor(UIColor.systemGray5, for: .normal)
-             counterField.textColor = UIColor.systemGray5
-         } else {
-             counterField.textColor = UIColor.black
-             self.button.backgroundColor = UIColor.systemGray5
-             self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
-         }
-         
+            self.button.isEnabled = true
+            if (self.isFocused()){
+                self.button.backgroundColor = UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00)
+                self.button.setTitleColor(UIColor.systemGray5, for: .normal)
+                counterField.textColor = UIColor.systemGray5
+            } else {
+                counterField.textColor = UIColor.black
+                self.button.backgroundColor = UIColor.systemGray5
+                self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+            }
+            
+            if (self.isHeldDown){
+                self.button.darkenBackground()
+                if (self.isFocused()){
+                    self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+                    self.counterField.textColor = UIColor.black
+                }
+            }
+            
         } else {
-         self.button.isEnabled = false
-         self.button.setTitleColor(UIColor.systemGray, for: .normal)
-         }
+            self.button.isEnabled = false
+            self.button.setTitleColor(UIColor.systemGray, for: .normal)
+        }
     }
     
     func updateControlState() {
         self.counterField.text = String(self.scoutingActivity.qrEntry.count(type: self.fieldData.tag))
-    
+        
         self.timeStamp = self.scoutingActivity.qrEntry.lastValue(type: self.button.tag)?.time ?? -2.0
         
         updateUI()
@@ -122,10 +130,15 @@ public class ButtonField : UIView, InputControl{
     }
     
     @objc func recognizeTap(sender : UIButton){
+        self.isHeldDown = true
         sender.darkenBackground()
     }
     
     @objc func dragOutOfBounds(sender : UIButton){
-        sender.backgroundColor = UIColor.systemGray5
+        self.isHeldDown = false
+        if (self.isFocused()){
+            self.button.setTitleColor(UIColor.init(red:0.24, green:0.36, blue:0.58, alpha:1.00), for: .normal)
+            self.counterField.textColor = UIColor.black
+        }
     }
 }
